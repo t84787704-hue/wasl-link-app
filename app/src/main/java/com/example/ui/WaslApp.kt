@@ -19,8 +19,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
@@ -53,6 +56,7 @@ import com.example.ui.screens.PreviewScreen
 import com.example.ui.screens.QrBottomSheet
 import com.example.ui.theme.WaslBgCream
 import com.example.ui.theme.WaslBorderBeige
+import com.example.ui.theme.WaslGoldLight
 import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
 import com.example.ui.theme.WaslSaudiGreen
@@ -74,11 +78,15 @@ fun WaslApp(viewModel: WaslViewModel) {
             topBar = {
                 WaslTopAppBar(
                     isArabic = uiState.isArabicLayout,
+                    isDarkMode = uiState.isDarkMode,
+                    useDynamicColor = uiState.useDynamicColor,
                     onToggleLanguage = { viewModel.toggleLanguage() },
+                    onToggleDarkMode = { viewModel.toggleDarkMode() },
+                    onToggleDynamicColor = { viewModel.toggleDynamicColor() },
                     onOpenQr = { viewModel.setShowQrSheet(true) }
                 )
             },
-            containerColor = WaslBgCream,
+            containerColor = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
@@ -90,7 +98,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                         .fillMaxSize()
                         .padding(paddingValues)
                 ) {
-                    CircularProgressIndicator(color = WaslSandGold)
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             } else {
                 Column(
@@ -103,7 +111,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                         selectedTab = uiState.activeTab,
                         isArabic = uiState.isArabicLayout,
                         onTabSelected = { viewModel.setActiveTab(it) },
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
                     )
 
                     // Main Screen Area
@@ -173,11 +181,15 @@ fun WaslApp(viewModel: WaslViewModel) {
 @Composable
 fun WaslTopAppBar(
     isArabic: Boolean,
+    isDarkMode: Boolean,
+    useDynamicColor: Boolean,
     onToggleLanguage: () -> Unit,
+    onToggleDarkMode: () -> Unit,
+    onToggleDynamicColor: () -> Unit,
     onOpenQr: () -> Unit
 ) {
     Surface(
-        color = WaslBgCream,
+        color = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -185,7 +197,7 @@ fun WaslTopAppBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
             // Brand Logo & Title
             Row(
@@ -193,8 +205,8 @@ fun WaslTopAppBar(
             ) {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = WaslSaudiGreen,
-                    border = BorderStroke(1.dp, WaslSandGold.copy(alpha = 0.5f)),
+                    color = MaterialTheme.colorScheme.tertiary,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f)),
                     modifier = Modifier.size(38.dp)
                 ) {
                     Box(
@@ -205,7 +217,7 @@ fun WaslTopAppBar(
                             text = "و",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = WaslSandGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
@@ -218,34 +230,58 @@ fun WaslTopAppBar(
                             text = "وَصْل",
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = WaslPrimaryCharcoal
+                            color = MaterialTheme.colorScheme.onBackground
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = "• Wasl",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
-                            color = WaslSandGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                     Text(
                         text = if (isArabic) "صفحة روابط المتاجر السعودية" else "Saudi Shop Link Hub",
                         style = MaterialTheme.typography.labelSmall,
-                        color = WaslTextSecondary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
 
-            // Top Actions: QR Code Quick Action + Language Switcher
+            // Top Actions: Dark Mode Toggle + Dynamic Theme + QR Quick Action + Language Switcher
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
+                // Dark Mode Toggle Button
+                Surface(
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+                    modifier = Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onToggleDarkMode)
+                        .testTag("button_toggle_dark_mode")
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Icon(
+                            imageVector = if (isDarkMode) Icons.Default.LightMode else Icons.Default.DarkMode,
+                            contentDescription = if (isDarkMode) "Light Mode" else "Dark Mode",
+                            tint = if (isDarkMode) WaslGoldLight else MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    }
+                }
+
                 // QR Button
                 Surface(
                     shape = RoundedCornerShape(20.dp),
-                    color = WaslSurfaceWhite,
-                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .clickable(onClick = onOpenQr)
@@ -253,20 +289,20 @@ fun WaslTopAppBar(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.QrCode2,
                             contentDescription = "Show QR",
-                            tint = WaslSandGold,
+                            tint = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.size(16.dp)
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = "QR",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
-                            color = WaslPrimaryCharcoal
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -274,8 +310,8 @@ fun WaslTopAppBar(
                 // Language Switcher Pill
                 Surface(
                     shape = RoundedCornerShape(20.dp),
-                    color = WaslSurfaceWhite,
-                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .clickable(onClick = onToggleLanguage)
@@ -283,20 +319,20 @@ fun WaslTopAppBar(
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Language,
                             contentDescription = "Switch Language",
-                            tint = WaslPrimaryCharcoal,
-                            modifier = Modifier.size(16.dp)
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(15.dp)
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = if (isArabic) "EN" else "عربي",
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
-                            color = WaslPrimaryCharcoal
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -314,8 +350,8 @@ fun WaslTabSwitcher(
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = WaslSurfaceBeige),
-        border = BorderStroke(1.dp, WaslBorderBeige),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
         modifier = modifier.fillMaxWidth()
     ) {
         Row(
@@ -327,7 +363,7 @@ fun WaslTabSwitcher(
             val tab0Selected = selectedTab == 0
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = if (tab0Selected) WaslSurfaceWhite else Color.Transparent,
+                color = if (tab0Selected) MaterialTheme.colorScheme.surface else Color.Transparent,
                 shadowElevation = if (tab0Selected) 2.dp else 0.dp,
                 modifier = Modifier
                     .weight(1f)
@@ -343,7 +379,7 @@ fun WaslTabSwitcher(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = null,
-                        tint = if (tab0Selected) WaslPrimaryCharcoal else WaslTextSecondary,
+                        tint = if (tab0Selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -351,7 +387,7 @@ fun WaslTabSwitcher(
                         text = if (isArabic) "تعديل البيانات" else "Edit Form",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = if (tab0Selected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (tab0Selected) WaslPrimaryCharcoal else WaslTextSecondary
+                        color = if (tab0Selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -362,7 +398,7 @@ fun WaslTabSwitcher(
             val tab1Selected = selectedTab == 1
             Surface(
                 shape = RoundedCornerShape(16.dp),
-                color = if (tab1Selected) WaslSurfaceWhite else Color.Transparent,
+                color = if (tab1Selected) MaterialTheme.colorScheme.surface else Color.Transparent,
                 shadowElevation = if (tab1Selected) 2.dp else 0.dp,
                 modifier = Modifier
                     .weight(1f)
@@ -378,7 +414,7 @@ fun WaslTabSwitcher(
                     Icon(
                         imageVector = Icons.Default.Visibility,
                         contentDescription = null,
-                        tint = if (tab1Selected) WaslPrimaryCharcoal else WaslTextSecondary,
+                        tint = if (tab1Selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -386,7 +422,7 @@ fun WaslTabSwitcher(
                         text = if (isArabic) "معاينة المتجر" else "Preview Page",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = if (tab1Selected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (tab1Selected) WaslPrimaryCharcoal else WaslTextSecondary
+                        color = if (tab1Selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }

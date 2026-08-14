@@ -45,6 +45,8 @@ data class WaslUiState(
     val city: String = "الرياض • Riyadh",
     val activeTab: Int = 0, // 0 = Form, 1 = Preview
     val isArabicLayout: Boolean = true,
+    val isDarkMode: Boolean = false,
+    val useDynamicColor: Boolean = true,
     val showMenuSheet: Boolean = false,
     val showQrSheet: Boolean = false,
     val isDetectingLocation: Boolean = false,
@@ -135,6 +137,14 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
     fun toggleLanguage() {
         _uiState.update { it.copy(isArabicLayout = !it.isArabicLayout) }
+    }
+
+    fun toggleDarkMode() {
+        _uiState.update { it.copy(isDarkMode = !it.isDarkMode) }
+    }
+
+    fun toggleDynamicColor() {
+        _uiState.update { it.copy(useDynamicColor = !it.useDynamicColor) }
     }
 
     fun setShowMenuSheet(show: Boolean) {
