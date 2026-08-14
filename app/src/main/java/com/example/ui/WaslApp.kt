@@ -193,7 +193,8 @@ fun WaslTopAppBar(
             ) {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = WaslPrimaryCharcoal,
+                    color = WaslSaudiGreen,
+                    border = BorderStroke(1.dp, WaslSandGold.copy(alpha = 0.5f)),
                     modifier = Modifier.size(38.dp)
                 ) {
                     Box(
