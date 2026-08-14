@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Storefront Canopy Icon & Link Connector for Wasl -->
+    <path
+        android:fillColor="#2C221E"
+        android:pathData="M34,42L74,42L71,30L37,30Z" />
+    <path
+        android:fillColor="#8C6D46"
+        android:pathData="M37,42L43,42L42,47C42,48.7 40.7,50 39,50C37.3,50 36,48.7 36,47Z" />
+    <path
+        android:fillColor="#2C221E"
+        android:pathData="M43,42L49,42L49,47C49,48.7 47.7,50 46,50C44.3,50 43,48.7 43,47Z" />
+    <path
+        android:fillColor="#8C6D46"
+        android:pathData="M49,42L55,42L55,47C55,48.7 53.7,50 52,50C50.3,50 49,48.7 49,47Z" />
+    <path
+        android:fillColor="#2C221E"
+        android:pathData="M55,42L61,42L61,47C61,48.7 59.7,50 58,50C56.3,50 55,48.7 55,47Z" />
+    <path
+        android:fillColor="#8C6D46"
+        android:pathData="M61,42L67,42L67,47C67,48.7 65.7,50 64,50C62.3,50 61,48.7 61,47Z" />
+    <path
+        android:fillColor="#2C221E"
+        android:pathData="M67,42L73,42L72,47C72,48.7 70.7,50 69,50C67.3,50 66,48.7 66,47Z" />
+    <!-- Shop base and doorway -->
+    <path
+        android:fillColor="#2C221E"
+        android:pathData="M37,50L71,50L71,76C71,77.1 70.1,78 69,78L39,78C37.9,78 37,77.1 37,76Z" />
+    <!-- Doorway / Link connection accent -->
+    <path
+        android:fillColor="#FBF9F5"
+        android:pathData="M48,60C48,56.7 50.7,54 54,54C57.3,54 60,56.7 60,60L60,78L48,78Z" />
+    <path
+        android:fillColor="#8C6D46"
+        android:pathData="M53,66C53,65.4 53.4,65 54,65C54.6,65 55,65.4 55,66L55,70C55,70.6 54.6,71 54,71C53.4,71 53,70.6 53,70Z" />
+</vector>
+

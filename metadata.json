@@ -1,0 +1,7 @@
+{
+  "name": "Wasl",
+  "description": "Digital storefront and link-in-bio creator for Saudi small shops with WhatsApp, Google Maps, and menu preview.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
