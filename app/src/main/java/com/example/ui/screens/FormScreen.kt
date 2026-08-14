@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,11 +51,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.WaslUiState
 import com.example.ui.components.ShopLogoAvatar
 import com.example.ui.components.TemplatePresetChip
+import com.example.ui.theme.WaslBgCream
 import com.example.ui.theme.WaslBorderBeige
 import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
@@ -88,10 +92,16 @@ fun FormScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(horizontal = 20.dp, vertical = 16.dp)
             .testTag("form_screen")
     ) {
+        // Scrollable Form Fields
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+        ) {
         // Hero Header Card
         Card(
             shape = RoundedCornerShape(24.dp),
@@ -356,108 +366,140 @@ fun FormScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Save Status Banner
-        AnimatedVisibility(
-            visible = uiState.isSaveSuccess,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Surface(
-                shape = RoundedCornerShape(16.dp),
-                color = WaslSaudiGreenLight,
-                border = BorderStroke(1.dp, WaslSaudiGreen.copy(alpha = 0.3f)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 12.dp)
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        tint = WaslSaudiGreen,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (isArabic) "تم حفظ بيانات المتجر بنجاح على الجهاز!" else "Shop details saved successfully to phone!",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = WaslSaudiGreen
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // Action Buttons Row
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        // Sticky Bottom Action Bar Container
+        Surface(
+            color = WaslBgCream,
+            shadowElevation = 8.dp,
+            border = BorderStroke(1.dp, WaslBorderBeige.copy(alpha = 0.6f)),
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Save Button
-            Button(
-                onClick = onSaveClick,
-                shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = WaslPrimaryCharcoal
-                ),
+            Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .height(54.dp)
-                    .testTag("button_save_form")
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 20.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Save,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (isArabic) "حفظ التغييرات" else "Save Changes",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                // Save Status Banner
+                AnimatedVisibility(
+                    visible = uiState.isSaveSuccess,
+                    enter = fadeIn(),
+                    exit = fadeOut()
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = WaslSaudiGreenLight,
+                        border = BorderStroke(1.dp, WaslSaudiGreen.copy(alpha = 0.3f)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp)
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null,
+                                tint = WaslSaudiGreen,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isArabic) "تم حفظ بيانات المتجر بنجاح على الجهاز!" else "Shop details saved successfully to phone!",
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Bold,
+                                color = WaslSaudiGreen,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
                 }
-            }
 
-            // Preview Button
-            Button(
-                onClick = onPreviewClick,
-                shape = RoundedCornerShape(18.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = WaslSandGold
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(54.dp)
-                    .testTag("button_preview_page")
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Visibility,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (isArabic) "معاينة الرابط" else "Preview Link",
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                // Action Buttons Row: Equal width, side by side with 12px gap, height 56px, padding 16px, single line centered
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Save Button: Black background, white text, save icon, text "Save Shop"
+                    Button(
+                        onClick = onSaveClick,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Black
+                        ),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                            .testTag("button_save_form")
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Save,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isArabic) "حفظ المتجر" else "Save Shop",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                maxLines = 1,
+                                softWrap = false,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+
+                    // Preview Link Button: Gold background #C9A86A, white text, eye icon, text "Preview Link"
+                    Button(
+                        onClick = onPreviewClick,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFFC9A86A)
+                        ),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(56.dp)
+                            .testTag("button_preview_page")
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Visibility,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = if (isArabic) "معاينة الرابط" else "Preview Link",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                                maxLines = 1,
+                                softWrap = false,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

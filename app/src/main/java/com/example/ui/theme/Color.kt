@@ -14,7 +14,7 @@ val WaslPrimaryCharcoal = Color(0xFF231F1C)
 val WaslPrimaryContainer = Color(0xFFEDE5D8)
 val WaslOnPrimaryContainer = Color(0xFF2A241F)
 
-val WaslSandGold = Color(0xFFC09848)
+val WaslSandGold = Color(0xFFC9A86A)
 val WaslGoldLight = Color(0xFFDFBF76)
 val WaslGoldContainer = Color(0xFFF9F3E5)
 
