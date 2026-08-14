@@ -292,13 +292,18 @@ fun PreviewScreen(
                 } else {
                     "+966 ${uiState.whatsappNumber}"
                 }
+                val whatsappSubtitle = if (uiState.defaultGreeting.isNotBlank()) {
+                    "$formattedPhone • 💬 \"${uiState.defaultGreeting.take(28)}...\""
+                } else {
+                    formattedPhone
+                }
                 WaslBigActionButton(
                     icon = Icons.Default.Storefront,
                     iconColor = WaslSaudiGreen,
                     iconBgColor = WaslWhatsAppContainer,
                     titleArabic = "تواصل عبر واتساب",
                     titleEnglish = "WhatsApp Chat",
-                    subtitle = formattedPhone,
+                    subtitle = whatsappSubtitle,
                     badgeText = "رد فوري",
                     testTag = "button_preview_whatsapp",
                     onClick = { onOpenWhatsApp(context) }

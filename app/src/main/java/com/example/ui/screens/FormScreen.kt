@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
@@ -85,6 +86,7 @@ fun FormScreen(
     onShopNameChange: (String) -> Unit,
     onShopNameArabicChange: (String) -> Unit,
     onWhatsappChange: (String) -> Unit,
+    onDefaultGreetingChange: (String) -> Unit = {},
     onLocationUrlChange: (String) -> Unit,
     onMenuItemsChange: (String) -> Unit,
     onLogoEmojiChange: (String) -> Unit,
@@ -338,7 +340,88 @@ fun FormScreen(
 
                 Spacer(modifier = Modifier.height(18.dp))
 
-                // 4. Google Maps Location Link
+                // 4. Default WhatsApp Greeting
+                FormFieldLabel(
+                    title = if (isArabic) "رسالة الترحيب والطلب المسبقة (واتساب)" else "Default WhatsApp Greeting",
+                    subtitle = if (isArabic) "الرسالة التي ستظهر تلقائياً في شات الواتساب عند ضغط العميل على الرابط" else "Pre-filled text when customer taps WhatsApp",
+                    icon = Icons.AutoMirrored.Filled.Chat
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                OutlinedTextField(
+                    value = uiState.defaultGreeting,
+                    onValueChange = onDefaultGreetingChange,
+                    minLines = 2,
+                    maxLines = 4,
+                    placeholder = {
+                        Text(
+                            if (isArabic) "مثال: السلام عليكم، أود الطلب والاستفسار من متجركم..."
+                            else "e.g. Hello, I would like to order..."
+                        )
+                    },
+                    shape = RoundedCornerShape(16.dp),
+                    colors = outlinedFieldColors(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("input_default_greeting")
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Quick Greeting Preset Chips
+                val greetingSuggestions = if (isArabic) {
+                    listOf(
+                        "☕ أود الطلب من القائمة",
+                        "📦 الاستفسار عن التوصيل",
+                        "📍 السؤال عن ساعات العمل",
+                        "✨ الاستفسار عن توفر المنتجات"
+                    )
+                } else {
+                    listOf(
+                        "☕ I'd like to order from the menu",
+                        "📦 Inquire about delivery",
+                        "📍 Ask about opening hours",
+                        "✨ Inquire about available items"
+                    )
+                }
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 2.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    items(greetingSuggestions) { suggestion ->
+                        Surface(
+                            shape = RoundedCornerShape(12.dp),
+                            color = WaslSurfaceBeige,
+                            border = BorderStroke(1.dp, WaslBorderBeige),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable {
+                                    val current = uiState.defaultGreeting.trim()
+                                    if (current.isBlank() || current == "السلام عليكم، أود الطلب والاستفسار من متجركم.") {
+                                        onDefaultGreetingChange(
+                                            if (isArabic) "السلام عليكم، $suggestion" else "Hello, $suggestion"
+                                        )
+                                    } else {
+                                        onDefaultGreetingChange(suggestion)
+                                    }
+                                }
+                                .testTag("chip_greeting_${suggestion.take(8)}")
+                        ) {
+                            Text(
+                                text = suggestion,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = WaslTextSecondary,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(18.dp))
+
+                // 5. Google Maps Location Link
                 FormFieldLabel(
                     title = if (isArabic) "رابط موقع المتجر (خرائط جوجل)" else "Google Maps Location Link",
                     subtitle = if (isArabic) "رابط خرائط جوجل أو الإحداثيات المباشرة" else "Google Maps URL or GPS coordinates",

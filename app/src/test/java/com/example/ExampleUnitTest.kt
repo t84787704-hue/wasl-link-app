@@ -19,4 +19,14 @@ class ExampleUnitTest {
     val url = "https://maps.google.com/?q=$formattedLat,$formattedLng"
     assertEquals("https://maps.google.com/?q=24.71360,46.67530", url)
   }
+
+  @Test
+  fun whatsAppUrlWithDefaultGreeting_isProperlyEncoded() {
+    val phone = "501234567"
+    val greeting = "Hello, I would like to order..."
+    val encoded = java.net.URLEncoder.encode(greeting, "UTF-8")
+    val url = "https://wa.me/966$phone?text=$encoded"
+    assertTrue(url.startsWith("https://wa.me/966501234567?text=Hello"))
+    assertTrue(url.contains("order"))
+  }
 }

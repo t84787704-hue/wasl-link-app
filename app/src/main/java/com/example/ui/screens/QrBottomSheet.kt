@@ -88,7 +88,15 @@ fun QrBottomSheet(
         "966$rawNumber"
     }
 
-    val storeUrl = "https://wa.me/$formattedNumber"
+    val greetingText = if (uiState.defaultGreeting.isNotBlank()) {
+        uiState.defaultGreeting
+    } else if (isArabic) {
+        "السلام عليكم، أود الطلب والاستفسار من ${uiState.shopNameArabic}."
+    } else {
+        "Hello, I would like to order and inquire from ${uiState.shopName}."
+    }
+    val encodedGreeting = android.net.Uri.encode(greetingText)
+    val storeUrl = "https://wa.me/$formattedNumber?text=$encodedGreeting"
     val qrBitmap: Bitmap? = remember(storeUrl) {
         QrCodeGenerator.generateQrBitmap(storeUrl, size = 512)
     }
@@ -97,10 +105,12 @@ fun QrBottomSheet(
         📍 ${uiState.shopNameArabic} (${uiState.shopName})
         ${uiState.category} - ${uiState.city}
         
-        💬 رابط المتجر والتواصل عبر واتساب:
+        💬 رابط المتجر والتواصل المباشر عبر واتساب:
         $storeUrl
         
-        ✨ تم إنشاء الرابط عبر تطبيق وصل (Wasl)
+        🗺️ موقع المتجر: ${uiState.locationUrl}
+        
+        ✨ تم إنشاء الرابط والرمز عبر تطبيق وصل (Wasl)
     """.trimIndent()
 
     ModalBottomSheet(

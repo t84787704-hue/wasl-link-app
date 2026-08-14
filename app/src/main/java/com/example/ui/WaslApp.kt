@@ -118,6 +118,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                                 onShopNameChange = viewModel::onShopNameChange,
                                 onShopNameArabicChange = viewModel::onShopNameArabicChange,
                                 onWhatsappChange = viewModel::onWhatsappNumberChange,
+                                onDefaultGreetingChange = viewModel::onDefaultGreetingChange,
                                 onLocationUrlChange = viewModel::onLocationUrlChange,
                                 onMenuItemsChange = viewModel::onMenuItemsTextChange,
                                 onLogoEmojiChange = viewModel::onLogoEmojiChange,

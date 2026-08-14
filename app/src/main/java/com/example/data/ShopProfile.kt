@@ -21,5 +21,6 @@ data class ShopProfile(
     val logoEmoji: String = "☕",
     val category: String = "مقهى ومخبوزات • Specialty Cafe",
     val city: String = "الرياض • Riyadh",
+    val defaultGreeting: String = "السلام عليكم، أود الطلب والاستفسار من متجركم.",
     val updatedAt: Long = System.currentTimeMillis()
 )

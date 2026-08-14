@@ -30,6 +30,7 @@ data class WaslUiState(
     val shopName: String = "Al-Naseem Specialty Coffee",
     val shopNameArabic: String = "محمصة وقهوة النسيم المختصة",
     val whatsappNumber: String = "501234567",
+    val defaultGreeting: String = "السلام عليكم، أود الطلب والاستفسار من متجركم.",
     val locationUrl: String = "https://maps.google.com/?q=Riyadh+Saudi+Arabia",
     val menuItemsText: String = """
         • فلات وايت | Flat White - 18 ر.س
@@ -72,6 +73,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         shopName = savedProfile.shopName,
                         shopNameArabic = savedProfile.shopNameArabic,
                         whatsappNumber = savedProfile.whatsappNumber,
+                        defaultGreeting = savedProfile.defaultGreeting,
                         locationUrl = savedProfile.locationUrl,
                         menuItemsText = savedProfile.menuItemsText,
                         logoEmoji = savedProfile.logoEmoji,
@@ -101,6 +103,10 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         // Filter numeric digits only, limit to reasonable length (e.g. 9 or 10 digits)
         val cleaned = value.filter { it.isDigit() }
         _uiState.update { it.copy(whatsappNumber = cleaned, isSaveSuccess = false) }
+    }
+
+    fun onDefaultGreetingChange(value: String) {
+        _uiState.update { it.copy(defaultGreeting = value, isSaveSuccess = false) }
     }
 
     fun onLocationUrlChange(value: String) {
@@ -147,6 +153,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 shopName = state.shopName.ifBlank { "Wasl Shop" },
                 shopNameArabic = state.shopNameArabic.ifBlank { "متجر وصل" },
                 whatsappNumber = state.whatsappNumber,
+                defaultGreeting = state.defaultGreeting,
                 locationUrl = state.locationUrl,
                 menuItemsText = state.menuItemsText,
                 logoEmoji = state.logoEmoji,
@@ -167,6 +174,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         shopName = "Al-Naseem Specialty Coffee",
                         shopNameArabic = "محمصة وقهوة النسيم المختصة",
                         whatsappNumber = "501234567",
+                        defaultGreeting = "السلام عليكم، أود طلب قهوة ومخبوزات من قائمة اليوم ☕",
                         locationUrl = "https://maps.google.com/?q=Riyadh+Al-Olaya",
                         logoEmoji = "☕",
                         category = "مقهى ومخبوزات • Specialty Cafe",
@@ -189,6 +197,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         shopName = "Loom Artisanal Bakery",
                         shopNameArabic = "مخبز لوم الحرفي",
                         whatsappNumber = "559876543",
+                        defaultGreeting = "مرحباً، أود حجز مخبوزات طازجة من مخبز لوم 🥐",
                         locationUrl = "https://maps.google.com/?q=Jeddah+Rawdah",
                         logoEmoji = "🥐",
                         category = "مخبوزات وحلويات • Bakery & Pastries",
@@ -210,6 +219,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         shopName = "Dar Al-Zain Abayas",
                         shopNameArabic = "دار الزين للعبايات والأزياء",
                         whatsappNumber = "543210987",
+                        defaultGreeting = "السلام عليكم، أود الاستفسار عن المقاسات والطلب من تشكيلة العبايات 👗",
                         locationUrl = "https://maps.google.com/?q=Khobar+Corniche",
                         logoEmoji = "👗",
                         category = "أزياء وعبايات • Fashion Boutique",
@@ -230,6 +240,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         shopName = "Tayeb Al-Murjan Perfumes",
                         shopNameArabic = "طيب المرجان للعطور والبخور",
                         whatsappNumber = "567890123",
+                        defaultGreeting = "السلام عليكم، أود الاستفسار وطلب عطور ودخون من طيب المرجان 🌸",
                         locationUrl = "https://maps.google.com/?q=Dammam+Saudi+Arabia",
                         logoEmoji = "🌸",
                         category = "عطور ودخون • Luxury Fragrances",
@@ -259,10 +270,12 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             "966$rawNumber"
         }
 
-        val greetingText = if (state.isArabicLayout) {
-            "السلام عليكم، أود الاستفسار عن منتجات ${state.shopNameArabic}."
+        val greetingText = if (state.defaultGreeting.isNotBlank()) {
+            state.defaultGreeting
+        } else if (state.isArabicLayout) {
+            "السلام عليكم، أود الطلب والاستفسار من ${state.shopNameArabic}."
         } else {
-            "Hello, I would like to inquire about ${state.shopName} items."
+            "Hello, I would like to order and inquire from ${state.shopName}."
         }
         val encodedMessage = Uri.encode(greetingText)
         val url = "https://wa.me/$formattedNumber?text=$encodedMessage"
@@ -311,11 +324,19 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     // Share Storefront Link
     fun shareStoreLink(context: Context) {
         val state = _uiState.value
+        val greetingText = if (state.defaultGreeting.isNotBlank()) {
+            state.defaultGreeting
+        } else if (state.isArabicLayout) {
+            "السلام عليكم، أود الطلب والاستفسار من ${state.shopNameArabic}."
+        } else {
+            "Hello, I would like to order and inquire from ${state.shopName}."
+        }
+        val encodedGreeting = Uri.encode(greetingText)
         val shareText = """
             📍 ${state.shopNameArabic} (${state.shopName})
             ${state.category} - ${state.city}
             
-            💬 واتساب: https://wa.me/966${state.whatsappNumber}
+            💬 واتساب: https://wa.me/966${state.whatsappNumber}?text=$encodedGreeting
             🗺️ الخريطة: ${state.locationUrl}
             
             ✨ تم إنشاء الرابط عبر تطبيق وصل (Wasl)
