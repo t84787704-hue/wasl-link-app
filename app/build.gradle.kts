@@ -14,11 +14,11 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "com.wasl.shop"
+    applicationId = "com.wasl.saudishop"
     minSdk = 24
     targetSdk = 36
-    versionCode = 2
-    versionName = "1.1"
+    versionCode = 10
+    versionName = "1.10"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
