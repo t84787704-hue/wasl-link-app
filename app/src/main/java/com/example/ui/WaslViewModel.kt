@@ -1,21 +1,30 @@
 package com.example.ui
 
+import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.net.Uri
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.AppDatabase
 import com.example.data.ShopProfile
 import com.example.data.ShopRepository
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 data class WaslUiState(
     val shopName: String = "Al-Naseem Specialty Coffee",
@@ -36,6 +45,8 @@ data class WaslUiState(
     val activeTab: Int = 0, // 0 = Form, 1 = Preview
     val isArabicLayout: Boolean = true,
     val showMenuSheet: Boolean = false,
+    val showQrSheet: Boolean = false,
+    val isDetectingLocation: Boolean = false,
     val isSaveSuccess: Boolean = false,
     val isLoading: Boolean = true
 )
@@ -122,6 +133,10 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setShowMenuSheet(show: Boolean) {
         _uiState.update { it.copy(showMenuSheet = show) }
+    }
+
+    fun setShowQrSheet(show: Boolean) {
+        _uiState.update { it.copy(showQrSheet = show) }
     }
 
     fun saveProfile() {
@@ -314,5 +329,139 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         val shareIntent = Intent.createChooser(sendIntent, "مشاركة صفحة المتجر | Share Shop")
         shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(shareIntent)
+    }
+
+    // Auto-detect current GPS location
+    fun detectCurrentLocation(context: Context) {
+        val isArabic = _uiState.value.isArabicLayout
+        val hasFinePermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasCoarsePermission = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (!hasFinePermission && !hasCoarsePermission) {
+            Toast.makeText(
+                context,
+                if (isArabic) "يرجى السماح بالوصول للموقع لتحديده تلقائياً" else "Please allow location permission to auto-detect",
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        _uiState.update { it.copy(isDetectingLocation = true) }
+
+        try {
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+            val cancellationTokenSource = CancellationTokenSource()
+
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationTokenSource.token
+            ).addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    applyDetectedLocation(context, location.latitude, location.longitude)
+                } else {
+                    // Fallback to last known location
+                    fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc: Location? ->
+                        if (lastLoc != null) {
+                            applyDetectedLocation(context, lastLoc.latitude, lastLoc.longitude)
+                        } else {
+                            tryLocationManagerFallback(context)
+                        }
+                    }.addOnFailureListener {
+                        tryLocationManagerFallback(context)
+                    }
+                }
+            }.addOnFailureListener {
+                tryLocationManagerFallback(context)
+            }
+        } catch (e: SecurityException) {
+            _uiState.update { it.copy(isDetectingLocation = false) }
+            Toast.makeText(
+                context,
+                if (isArabic) "تم رفض إذن الموقع" else "Location permission denied",
+                Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            tryLocationManagerFallback(context)
+        }
+    }
+
+    private fun tryLocationManagerFallback(context: Context) {
+        val isArabic = _uiState.value.isArabicLayout
+        try {
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+            val gpsLoc = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            val networkLoc = locationManager?.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+            val fallbackLocation = gpsLoc ?: networkLoc
+
+            if (fallbackLocation != null) {
+                applyDetectedLocation(context, fallbackLocation.latitude, fallbackLocation.longitude)
+            } else {
+                _uiState.update { it.copy(isDetectingLocation = false) }
+                Toast.makeText(
+                    context,
+                    if (isArabic) "تعذر الحصول على إحداثيات الموقع حالياً. تأكد من تفعيل الـ GPS" else "Could not get GPS location. Please check GPS settings",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } catch (e: Exception) {
+            _uiState.update { it.copy(isDetectingLocation = false) }
+            Toast.makeText(
+                context,
+                if (isArabic) "تعذر تحديد الموقع. يمكنك اختياره يدوياً عبر الخريطة" else "Could not detect location. You can pick it on Map",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    private fun applyDetectedLocation(context: Context, latitude: Double, longitude: Double) {
+        val isArabic = _uiState.value.isArabicLayout
+        val formattedLat = String.format(Locale.US, "%.5f", latitude)
+        val formattedLng = String.format(Locale.US, "%.5f", longitude)
+        val locationUrl = "https://maps.google.com/?q=$formattedLat,$formattedLng"
+
+        _uiState.update {
+            it.copy(
+                locationUrl = locationUrl,
+                isDetectingLocation = false
+            )
+        }
+
+        // Auto-save the detected location into the Room database
+        saveProfile()
+
+        Toast.makeText(
+            context,
+            if (isArabic) "📍 تم تحديد وحفظ موقعك بنجاح!" else "📍 Current location detected & saved!",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    // Opens Google Maps so user can search or pick their exact location and copy link
+    fun openMapPicker(context: Context) {
+        val isArabic = _uiState.value.isArabicLayout
+        val mapUrl = "https://www.google.com/maps"
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl)).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
+            Toast.makeText(
+                context,
+                if (isArabic) "حدد موقع متجرك وانسخ الرابط ثم الصقه هنا" else "Select your shop location, copy link & paste here",
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+            Toast.makeText(
+                context,
+                if (isArabic) "تعذر فتح الخرائط" else "Could not open Google Maps",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }

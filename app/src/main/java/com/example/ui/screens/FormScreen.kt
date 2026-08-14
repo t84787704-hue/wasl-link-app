@@ -1,5 +1,10 @@
 package com.example.ui.screens
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,6 +34,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Storefront
@@ -37,6 +43,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -48,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -55,6 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import com.example.ui.WaslUiState
 import com.example.ui.components.ShopLogoAvatar
 import com.example.ui.components.TemplatePresetChip
@@ -82,10 +91,52 @@ fun FormScreen(
     onPresetSelect: (String) -> Unit,
     onSaveClick: () -> Unit,
     onPreviewClick: () -> Unit,
+    onShareQr: () -> Unit = {},
+    onDetectLocationClick: () -> Unit = {},
+    onOpenMapPicker: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
     val isArabic = uiState.isArabicLayout
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (fineGranted || coarseGranted) {
+            onDetectLocationClick()
+        } else {
+            Toast.makeText(
+                context,
+                if (isArabic) "يرجى منح إذن الموقع لتحديده تلقائياً" else "Location permission is required to detect GPS location",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    val handleDetectLocationClick: () -> Unit = {
+        val fineGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+        val coarseGranted = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (fineGranted || coarseGranted) {
+            onDetectLocationClick()
+        } else {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+            )
+        }
+    }
 
     val emojiList = listOf("☕", "🥐", "👗", "🌸", "🍔", "🛍️", "💎", "💈", "🍦", "📚", "🪴", "🍰")
 
@@ -290,7 +341,7 @@ fun FormScreen(
                 // 4. Google Maps Location Link
                 FormFieldLabel(
                     title = if (isArabic) "رابط موقع المتجر (خرائط جوجل)" else "Google Maps Location Link",
-                    subtitle = if (isArabic) "رابط خرائط جوجل أو اسم الحي والمدينة" else "Google Maps URL or address",
+                    subtitle = if (isArabic) "رابط خرائط جوجل أو الإحداثيات المباشرة" else "Google Maps URL or GPS coordinates",
                     icon = Icons.Default.LocationOn
                 )
                 Spacer(modifier = Modifier.height(6.dp))
@@ -298,13 +349,115 @@ fun FormScreen(
                     value = uiState.locationUrl,
                     onValueChange = onLocationUrlChange,
                     singleLine = true,
-                    placeholder = { Text("https://maps.app.goo.gl/...") },
+                    placeholder = { Text("https://maps.google.com/?q=24.7136,46.6753") },
                     shape = RoundedCornerShape(16.dp),
                     colors = outlinedFieldColors(),
+                    trailingIcon = {
+                        if (uiState.isDetectingLocation) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                color = WaslSaudiGreen,
+                                strokeWidth = 2.dp
+                            )
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("input_location_link")
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // Location Helper Action Buttons
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Button 1: "📍 Use My Current Location"
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = if (uiState.isDetectingLocation) WaslSaudiGreenLight.copy(alpha = 0.6f) else WaslSaudiGreenLight,
+                        border = BorderStroke(1.dp, WaslSaudiGreen.copy(alpha = 0.35f)),
+                        modifier = Modifier
+                            .weight(1.25f)
+                            .height(44.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable(enabled = !uiState.isDetectingLocation) {
+                                handleDetectLocationClick()
+                            }
+                            .testTag("button_detect_location")
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 10.dp)
+                        ) {
+                            if (uiState.isDetectingLocation) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    color = WaslSaudiGreen,
+                                    strokeWidth = 2.dp
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = if (isArabic) "جاري تحديد الموقع..." else "Detecting location...",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = WaslSaudiGreen
+                                )
+                            } else {
+                                Text(
+                                    text = "📍",
+                                    fontSize = 14.sp
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = if (isArabic) "استخدام موقعي الحالي" else "Use My Current Location",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = WaslSaudiGreen,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+
+                    // Button 2: "🗺️ Pick on Map"
+                    Surface(
+                        shape = RoundedCornerShape(14.dp),
+                        color = WaslSurfaceBeige,
+                        border = BorderStroke(1.dp, WaslBorderBeige),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(44.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                            .clickable {
+                                onOpenMapPicker()
+                            }
+                            .testTag("button_pick_on_map")
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp)
+                        ) {
+                            Text(
+                                text = "🗺️",
+                                fontSize = 14.sp
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = if (isArabic) "تحديد على الخريطة" else "Pick on Map",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = WaslPrimaryCharcoal,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(18.dp))
 

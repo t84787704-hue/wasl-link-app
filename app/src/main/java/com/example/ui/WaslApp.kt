@@ -21,11 +21,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +50,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.ui.screens.FormScreen
 import com.example.ui.screens.MenuBottomSheet
 import com.example.ui.screens.PreviewScreen
+import com.example.ui.screens.QrBottomSheet
 import com.example.ui.theme.WaslBgCream
 import com.example.ui.theme.WaslBorderBeige
 import com.example.ui.theme.WaslPrimaryCharcoal
@@ -60,6 +64,7 @@ import com.example.ui.theme.WaslTextSecondary
 
 @Composable
 fun WaslApp(viewModel: WaslViewModel) {
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val layoutDirection = if (uiState.isArabicLayout) LayoutDirection.Rtl else LayoutDirection.Ltr
@@ -69,7 +74,8 @@ fun WaslApp(viewModel: WaslViewModel) {
             topBar = {
                 WaslTopAppBar(
                     isArabic = uiState.isArabicLayout,
-                    onToggleLanguage = { viewModel.toggleLanguage() }
+                    onToggleLanguage = { viewModel.toggleLanguage() },
+                    onOpenQr = { viewModel.setShowQrSheet(true) }
                 )
             },
             containerColor = WaslBgCream,
@@ -120,7 +126,10 @@ fun WaslApp(viewModel: WaslViewModel) {
                                 onPreviewClick = {
                                     viewModel.saveProfile()
                                     viewModel.setActiveTab(1)
-                                }
+                                },
+                                onShareQr = { viewModel.setShowQrSheet(true) },
+                                onDetectLocationClick = { viewModel.detectCurrentLocation(context) },
+                                onOpenMapPicker = { viewModel.openMapPicker(context) }
                             )
                             1 -> PreviewScreen(
                                 uiState = uiState,
@@ -128,6 +137,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                                 onOpenGoogleMaps = viewModel::openGoogleMaps,
                                 onShowMenu = { viewModel.setShowMenuSheet(true) },
                                 onShareStore = viewModel::shareStoreLink,
+                                onShareQr = { viewModel.setShowQrSheet(true) },
                                 onEditFormClick = { viewModel.setActiveTab(0) }
                             )
                         }
@@ -146,6 +156,15 @@ fun WaslApp(viewModel: WaslViewModel) {
                     onDismiss = { viewModel.setShowMenuSheet(false) }
                 )
             }
+
+            // QR Code Bottom Sheet Modal
+            if (uiState.showQrSheet) {
+                QrBottomSheet(
+                    uiState = uiState,
+                    isArabic = uiState.isArabicLayout,
+                    onDismiss = { viewModel.setShowQrSheet(false) }
+                )
+            }
         }
     }
 }
@@ -153,7 +172,8 @@ fun WaslApp(viewModel: WaslViewModel) {
 @Composable
 fun WaslTopAppBar(
     isArabic: Boolean,
-    onToggleLanguage: () -> Unit
+    onToggleLanguage: () -> Unit,
+    onOpenQr: () -> Unit
 ) {
     Surface(
         color = WaslBgCream,
@@ -214,33 +234,69 @@ fun WaslTopAppBar(
                 }
             }
 
-            // Language Switcher Pill
-            Surface(
-                shape = RoundedCornerShape(20.dp),
-                color = WaslSurfaceWhite,
-                border = BorderStroke(1.dp, WaslBorderBeige),
-                modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .clickable(onClick = onToggleLanguage)
-                    .testTag("button_toggle_language")
+            // Top Actions: QR Code Quick Action + Language Switcher
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                // QR Button
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = WaslSurfaceWhite,
+                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .clickable(onClick = onOpenQr)
+                        .testTag("button_top_qr")
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Language,
-                        contentDescription = "Switch Language",
-                        tint = WaslPrimaryCharcoal,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = if (isArabic) "English" else "العربية",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = WaslPrimaryCharcoal
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.QrCode2,
+                            contentDescription = "Show QR",
+                            tint = WaslSandGold,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "QR",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = WaslPrimaryCharcoal
+                        )
+                    }
+                }
+
+                // Language Switcher Pill
+                Surface(
+                    shape = RoundedCornerShape(20.dp),
+                    color = WaslSurfaceWhite,
+                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .clickable(onClick = onToggleLanguage)
+                        .testTag("button_toggle_language")
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Language,
+                            contentDescription = "Switch Language",
+                            tint = WaslPrimaryCharcoal,
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = if (isArabic) "EN" else "عربي",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = WaslPrimaryCharcoal
+                        )
+                    }
                 }
             }
         }

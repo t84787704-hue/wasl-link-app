@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Storefront
@@ -78,6 +79,7 @@ fun PreviewScreen(
     onOpenGoogleMaps: (Context) -> Unit,
     onShowMenu: () -> Unit,
     onShareStore: (Context) -> Unit,
+    onShareQr: () -> Unit,
     onEditFormClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -128,6 +130,23 @@ fun PreviewScreen(
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Share as QR button
+                IconButton(
+                    onClick = onShareQr,
+                    modifier = Modifier
+                        .size(38.dp)
+                        .clip(CircleShape)
+                        .background(WaslSurfaceWhite)
+                        .testTag("button_share_qr_top")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.QrCode2,
+                        contentDescription = "Share as QR",
+                        tint = WaslSandGold,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
                 // Share link button
                 IconButton(
                     onClick = { onShareStore(context) },
@@ -157,7 +176,7 @@ fun PreviewScreen(
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Edit Profile",
-                        tint = WaslSandGold,
+                        tint = WaslPrimaryCharcoal,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -288,13 +307,21 @@ fun PreviewScreen(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 // Button 2: Location Button that opens Google Maps
+                val locationSubtitle = if (uiState.locationUrl.contains("?q=")) {
+                    val coords = uiState.locationUrl.substringAfter("?q=").take(20)
+                    if (isArabic) "📍 $coords • فتح الخريطة" else "📍 $coords • Open Maps"
+                } else if (uiState.locationUrl.isNotBlank()) {
+                    if (isArabic) "عرض الاتجاهات والموقع" else "View directions & location"
+                } else {
+                    if (isArabic) "عرض موقع المتجر على الخريطة" else "Open in Google Maps"
+                }
                 WaslBigActionButton(
                     icon = Icons.Default.LocationOn,
                     iconColor = WaslMapsBlue,
                     iconBgColor = WaslMapsContainer,
                     titleArabic = "موقع المتجر على الخريطة",
                     titleEnglish = "Google Maps Location",
-                    subtitle = if (isArabic) "عرض الاتجاهات وساعات العمل" else "Open in Google Maps",
+                    subtitle = locationSubtitle,
                     testTag = "button_preview_location",
                     onClick = { onOpenGoogleMaps(context) }
                 )
@@ -331,7 +358,101 @@ fun PreviewScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(18.dp))
+
+        // Store QR Code Action Card
+        Card(
+            shape = RoundedCornerShape(22.dp),
+            colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
+            border = BorderStroke(1.5.dp, WaslSandGold.copy(alpha = 0.6f)),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .widthIn(max = 480.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(18.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .size(46.dp)
+                                .clip(CircleShape)
+                                .background(WaslSurfaceBeige)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.QrCode2,
+                                contentDescription = null,
+                                tint = WaslSandGold,
+                                modifier = Modifier.size(26.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(14.dp))
+
+                        Column {
+                            Text(
+                                text = if (isArabic) "رمز الاستجابة السريعة (QR)" else "Storefront QR Code",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = WaslTextPrimary
+                            )
+                            Text(
+                                text = if (isArabic) "شارك صفحتك كرمز QR أو بوستر جاهز للطباعة" else "Share as QR code or printable poster",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = WaslTextSecondary
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                // Big Gold 'Share as QR' button (56px height)
+                Button(
+                    onClick = onShareQr,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFC9A86A)
+                    ),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .testTag("button_share_as_qr")
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.QrCode2,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = if (isArabic) "مشاركة كرمز QR" else "Share as QR",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
 
         // Return to edit button
         OutlinedButton(
