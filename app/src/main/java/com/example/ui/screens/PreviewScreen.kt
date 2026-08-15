@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.WaslUiState
 import com.example.ui.components.SaudiVerifiedBadge
+import com.example.ui.components.ShopLocationPreviewCard
 import com.example.ui.components.ShopLogoAvatar
 import com.example.ui.components.WaslBigActionButton
 import com.example.ui.theme.WaslBgCream
@@ -311,24 +312,14 @@ fun PreviewScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // Button 2: Location Button that opens Google Maps
-                val locationSubtitle = if (uiState.locationUrl.contains("?q=")) {
-                    val coords = uiState.locationUrl.substringAfter("?q=").take(20)
-                    if (isArabic) "📍 $coords • فتح الخريطة" else "📍 $coords • Open Maps"
-                } else if (uiState.locationUrl.isNotBlank()) {
-                    if (isArabic) "عرض الاتجاهات والموقع" else "View directions & location"
-                } else {
-                    if (isArabic) "عرض موقع المتجر على الخريطة" else "Open in Google Maps"
-                }
-                WaslBigActionButton(
-                    icon = Icons.Default.LocationOn,
-                    iconColor = WaslMapsBlue,
-                    iconBgColor = WaslMapsContainer,
-                    titleArabic = "موقع المتجر على الخريطة",
-                    titleEnglish = "Google Maps Location",
-                    subtitle = locationSubtitle,
-                    testTag = "button_preview_location",
-                    onClick = { onOpenGoogleMaps(context) }
+                // Component 2: Interactive Shop Map Location Preview Card with Google Maps Launcher
+                ShopLocationPreviewCard(
+                    shopName = uiState.shopNameArabic.ifBlank { uiState.shopName },
+                    city = uiState.city,
+                    locationUrl = uiState.locationUrl,
+                    isArabic = isArabic,
+                    onOpenGoogleMaps = onOpenGoogleMaps,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))

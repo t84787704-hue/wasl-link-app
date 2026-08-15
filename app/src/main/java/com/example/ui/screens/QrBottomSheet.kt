@@ -116,7 +116,7 @@ fun QrBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = WaslBgCream,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     ) {
@@ -140,12 +140,12 @@ fun QrBottomSheet(
                         modifier = Modifier
                             .size(42.dp)
                             .clip(CircleShape)
-                            .background(WaslSurfaceBeige)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Icon(
                             imageVector = Icons.Default.QrCode2,
                             contentDescription = null,
-                            tint = WaslSandGold,
+                            tint = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -155,12 +155,12 @@ fun QrBottomSheet(
                             text = if (isArabic) "رمز QR الخاص بالمتجر" else "Storefront QR Code",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = WaslTextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = if (isArabic) "شارك الرمز لمسحه عبر الكاميرا والوصول السريع" else "Share to scan via camera for quick access",
                             style = MaterialTheme.typography.bodySmall,
-                            color = WaslTextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -170,12 +170,12 @@ fun QrBottomSheet(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(WaslSurfaceWhite)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        tint = WaslTextPrimary,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -186,8 +186,8 @@ fun QrBottomSheet(
             // Branded QR Card Container
             Card(
                 shape = RoundedCornerShape(24.dp),
-                colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
-                border = BorderStroke(1.5.dp, WaslBorderBeige),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                 elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -212,7 +212,7 @@ fun QrBottomSheet(
                         text = uiState.shopNameArabic.ifBlank { "متجر وصل" },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = WaslTextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
@@ -221,7 +221,7 @@ fun QrBottomSheet(
                             text = uiState.shopName,
                             style = MaterialTheme.typography.bodyMedium,
                             fontWeight = FontWeight.Medium,
-                            color = WaslSandGold,
+                            color = MaterialTheme.colorScheme.secondary,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -234,7 +234,7 @@ fun QrBottomSheet(
                         Text(
                             text = uiState.city.ifBlank { "المملكة العربية السعودية" },
                             style = MaterialTheme.typography.labelSmall,
-                            color = WaslTextSecondary
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
@@ -285,8 +285,8 @@ fun QrBottomSheet(
                     // Store URL text container with copy action
                     Surface(
                         shape = RoundedCornerShape(12.dp),
-                        color = WaslSurfaceBeige,
-                        border = BorderStroke(1.dp, WaslBorderBeige),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Row(
@@ -297,7 +297,7 @@ fun QrBottomSheet(
                             Text(
                                 text = storeUrl,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = WaslTextSecondary,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f)
@@ -310,7 +310,7 @@ fun QrBottomSheet(
                                 Icon(
                                     imageVector = Icons.Default.ContentCopy,
                                     contentDescription = "Copy Link",
-                                    tint = WaslPrimaryCharcoal,
+                                    tint = MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -341,7 +341,7 @@ fun QrBottomSheet(
                 },
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFC9A86A)
+                    containerColor = WaslSandGold
                 ),
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 modifier = Modifier
@@ -390,8 +390,8 @@ fun QrBottomSheet(
                     },
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = WaslSurfaceBeige,
-                        contentColor = WaslPrimaryCharcoal
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -415,7 +415,7 @@ fun QrBottomSheet(
                 OutlinedButton(
                     onClick = { QrCodeGenerator.copyToClipboard(context, storeUrl) },
                     shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
@@ -424,7 +424,7 @@ fun QrBottomSheet(
                     Icon(
                         imageVector = Icons.Default.ContentCopy,
                         contentDescription = null,
-                        tint = WaslPrimaryCharcoal,
+                        tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
@@ -432,7 +432,7 @@ fun QrBottomSheet(
                         text = if (isArabic) "نسخ الرابط" else "Copy Link",
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
-                        color = WaslPrimaryCharcoal
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

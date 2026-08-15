@@ -66,6 +66,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import com.example.ui.WaslUiState
+import com.example.ui.components.ShopLocationPreviewCard
 import com.example.ui.components.ShopLogoAvatar
 import com.example.ui.components.TemplatePresetChip
 import com.example.ui.theme.WaslBgCream
@@ -541,6 +542,17 @@ fun FormScreen(
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Live Map Preview for the physical address
+                ShopLocationPreviewCard(
+                    shopName = uiState.shopNameArabic.ifBlank { uiState.shopName },
+                    city = uiState.city,
+                    locationUrl = uiState.locationUrl,
+                    isArabic = isArabic,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Spacer(modifier = Modifier.height(18.dp))
 

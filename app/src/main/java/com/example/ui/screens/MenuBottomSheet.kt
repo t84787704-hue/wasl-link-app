@@ -84,7 +84,7 @@ fun MenuBottomSheet(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = WaslBgCream,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = null,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     ) {
@@ -108,12 +108,12 @@ fun MenuBottomSheet(
                         modifier = Modifier
                             .size(44.dp)
                             .clip(CircleShape)
-                            .background(WaslSurfaceBeige)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Icon(
                             imageVector = Icons.Default.RestaurantMenu,
                             contentDescription = null,
-                            tint = WaslPrimaryCharcoal,
+                            tint = MaterialTheme.colorScheme.secondary,
                             modifier = Modifier.size(24.dp)
                         )
                     }
@@ -123,12 +123,12 @@ fun MenuBottomSheet(
                             text = if (isArabic) "قائمة المنتجات والأسعار" else "Menu & Products",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = WaslTextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = if (shopNameArabic.isNotBlank()) shopNameArabic else shopName,
                             style = MaterialTheme.typography.bodySmall,
-                            color = WaslSandGold
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                 }
@@ -138,12 +138,12 @@ fun MenuBottomSheet(
                     modifier = Modifier
                         .size(36.dp)
                         .clip(CircleShape)
-                        .background(WaslSurfaceWhite)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Close,
                         contentDescription = "Close",
-                        tint = WaslTextSecondary,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp)
                     )
                 }
@@ -154,8 +154,8 @@ fun MenuBottomSheet(
             if (menuItems.isEmpty()) {
                 Card(
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
-                    border = BorderStroke(1.dp, WaslBorderBeige),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
@@ -173,12 +173,12 @@ fun MenuBottomSheet(
                             text = if (isArabic) "لم تتم إضافة منتجات بعد" else "No menu items added yet",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = WaslTextPrimary
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
                             text = if (isArabic) "يمكنك إضافة المنتجات والأسعار من صفحة التعديل" else "You can add items and prices from the edit form",
                             style = MaterialTheme.typography.bodySmall,
-                            color = WaslTextSecondary,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -218,7 +218,11 @@ fun MenuBottomSheet(
                     val text = if (isArabic) "السلام عليكم، أود الطلب من القائمة" else "Hello, I would like to order from the menu"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(text)}"))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intent)
+                    try {
+                        context.startActivity(intent)
+                    } catch (e: Exception) {
+                        // Fallback
+                    }
                 },
                 shape = RoundedCornerShape(18.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = WaslSaudiGreen),
@@ -259,8 +263,8 @@ fun MenuItemCard(
 ) {
     Card(
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
-        border = BorderStroke(1.dp, WaslBorderBeige),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -277,7 +281,7 @@ fun MenuItemCard(
                     text = item.title,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = WaslTextPrimary
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 if (item.price != null) {
                     Spacer(modifier = Modifier.height(3.dp))
@@ -302,8 +306,8 @@ fun MenuItemCard(
                 onClick = onOrderClick,
                 shape = RoundedCornerShape(12.dp),
                 colors = ButtonDefaults.filledTonalButtonColors(
-                    containerColor = WaslSurfaceBeige,
-                    contentColor = WaslPrimaryCharcoal
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 modifier = Modifier.height(36.dp)
             ) {

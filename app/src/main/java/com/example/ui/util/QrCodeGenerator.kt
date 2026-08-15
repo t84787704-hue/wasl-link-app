@@ -46,9 +46,7 @@ object QrCodeGenerator {
                     pixels[offset + x] = if (bitMatrix.get(x, y)) darkColor else lightColor
                 }
             }
-            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-            bitmap.setPixels(pixels, 0, width, 0, 0, width, height)
-            bitmap
+            Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888)
         } catch (e: Exception) {
             e.printStackTrace()
             null
@@ -137,6 +135,7 @@ object QrCodeGenerator {
         val qrLeft = (cardWidth - qrBitmap.width) / 2f
         val qrTop = 290f
         canvas.drawBitmap(qrBitmap, qrLeft, qrTop, null)
+        try { qrBitmap.recycle() } catch (e: Exception) {}
 
         // Scan Prompt
         val promptPaint = Paint().apply {
