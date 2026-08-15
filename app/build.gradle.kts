@@ -16,22 +16,15 @@ android {
   defaultConfig {
     applicationId = "com.wasl.saudishop"
     minSdk = 24
-    targetSdk = 36
-    versionCode = 14
-    versionName = "1.14"
+    targetSdk = 35
+    versionCode = 16
+    versionName = "1.16"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   signingConfigs {
-    create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
-      storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
-    }
-    create("debugConfig") {
+    create("persistentSigning") {
       storeFile = file("${rootDir}/debug.keystore")
       storePassword = "android"
       keyAlias = "androiddebugkey"
@@ -44,9 +37,11 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("release")
+      signingConfig = signingConfigs.getByName("persistentSigning")
     }
-    debug { signingConfig = signingConfigs.getByName("debugConfig") }
+    debug {
+      signingConfig = signingConfigs.getByName("persistentSigning")
+    }
   }
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
