@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">Wasl Market</string>
+    <string name="app_tagline">सऊदी दुकानों का डिजिटल लिंक हब</string>
+    <string name="wasl_brand_arabic">وَصْل</string>
+    <string name="wasl_brand_sub">• वास्ल मार्केट (Wasl Market)</string>
+
+    <!-- Navigation & Tabs -->
+    <string name="tab_edit_form">दुकान विवरण</string>
+    <string name="tab_preview_page">दुकान प्रीव्यू</string>
+    <string name="tab_settings">सेटिंग्स</string>
+
+    <!-- Form Screen Header & Templates -->
+    <string name="form_header_title">दुकान का पेज बनाएं और संपादित करें</string>
+    <string name="form_header_subtitle">ग्राहकों के लिए अपना डिजिटल स्टोर लिंक बनाने हेतु विवरण दर्ज करें</string>
+    <string name="quick_templates_title">त्वरित व्यापार टेम्पलेट:</string>
+    <string name="template_cafe">कॉफ़ी शॉप</string>
+    <string name="template_bakery">बेकरी</string>
+    <string name="template_abayas">अबाया और फैशन</string>
+    <string name="template_perfumes">इत्र और सुगंध</string>
+
+    <!-- Form Field Labels & Placeholders -->
+    <string name="field_shop_name_en_title">दुकान का नाम (अंग्रेज़ी / मानक)</string>
+    <string name="field_shop_name_en_subtitle">ब्रांड का अंग्रेज़ी या अंतरराष्ट्रीय नाम</string>
+    <string name="field_shop_name_en_hint">उदा: Al-Naseem Specialty Coffee</string>
+
+    <string name="field_shop_name_ar_title">दुकान का अरबी नाम</string>
+    <string name="field_shop_name_ar_subtitle">स्टोरफ्रंट पर दिखने वाला अरबी नाम</string>
+    <string name="field_shop_name_ar_hint">उदा: محمصة وقهوة النسيم</string>
+
+    <string name="field_whatsapp_title">व्हाट्सएप नंबर</string>
+    <string name="field_whatsapp_subtitle">सऊदी व्हाट्सएप नंबर (9 अंक)</string>
+    <string name="field_whatsapp_hint">501234567</string>
+
+    <string name="field_greeting_title">डिफ़ॉल्ट व्हाट्सएप संदेश</string>
+    <string name="field_greeting_subtitle">ग्राहक जब व्हाट्सएप दबाएगा तो यह संदेश पहले से लिखा होगा</string>
+    <string name="field_greeting_hint">उदा: नमस्ते, मैं आपकी दुकान से ऑर्डर और पूछताछ करना चाहता हूँ...</string>
+
+    <string name="greeting_suggestion_order">☕ नमस्ते, मैं मेनू से ऑर्डर करना चाहता हूँ</string>
+    <string name="greeting_suggestion_delivery">📦 नमस्ते, डिलीवरी शुल्क और समय की जानकारी चाहिए</string>
+    <string name="greeting_suggestion_hours">📍 नमस्ते, दुकान खुलने का समय क्या है?</string>
+    <string name="greeting_suggestion_stock">✨ मुझे उपलब्ध स्टॉक और सामान के बारे में जानना है</string>
+
+    <string name="field_location_title">गूगल मैप्स लोकेशन लिंक</string>
+    <string name="field_location_subtitle">गूगल मैप्स यूआरएल या जीपीएस निर्देशांक</string>
+    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+
+    <string name="btn_use_current_location">वर्तमान लोकेशन का उपयोग करें</string>
+    <string name="btn_detecting_location">लोकेशन खोजी जा रही है…</string>
+    <string name="btn_pick_on_map">मैप पर चुनें</string>
+
+    <string name="field_menu_title">मेनू और कीमतों की सूची</string>
+    <string name="field_menu_subtitle">प्रत्येक उत्पाद और कीमत अलग पंक्ति में दर्ज करें</string>
+    <string name="field_menu_hint">• फ़्लैट व्हाइट - 18 रियाल\n• कोरटाडो - 16 रियाल\n• केसर केक - 28 रियाल</string>
+
+    <string name="field_emblem_title">दुकान का प्रतीक / इमोजी</string>
+    <string name="save_success_banner">दुकान की जानकारी सफलतापूर्वक फ़ोन में सहेज ली गई!</string>
+    <string name="btn_save_shop">दुकान सहेजें</string>
+    <string name="btn_preview_link">लिंक प्रीव्यू</string>
+
+    <!-- Preview Screen -->
+    <string name="preview_live_badge">लाइव स्टोर प्रीव्यू</string>
+    <string name="preview_verified_badge">सत्यापित सऊदी स्टोर</string>
+    <string name="preview_country_default">सऊदी अरब साम्राज्य</string>
+    <string name="btn_whatsapp_chat">व्हाट्सएप पर ऑर्डर व चैट</string>
+    <string name="btn_whatsapp_instant_reply">त्वरित उत्तर</string>
+    <string name="btn_view_menu">मेनू और कीमतें देखें</string>
+    <string name="menu_items_available">%d उत्पाद उपलब्ध हैं</string>
+    <string name="preview_powered_by">✨ Wasl Market द्वारा संचालित</string>
+
+    <string name="qr_card_title">दुकान का क्यूआर कोड (QR)</string>
+    <string name="qr_card_subtitle">क्यूआर कोड या प्रिंट करने योग्य पोस्टर साझा करें</string>
+    <string name="btn_share_as_qr">QR के रूप में साझा करें</string>
+    <string name="btn_back_to_edit">दुकान विवरण में बदलाव करें</string>
+
+    <!-- Menu Bottom Sheet -->
+    <string name="menu_sheet_title">मेनू और उत्पाद सूची</string>
+    <string name="menu_empty_title">अभी तक कोई उत्पाद नहीं जोड़ा गया</string>
+    <string name="menu_empty_subtitle">आप संपादन फॉर्म से मेनू और कीमतें जोड़ सकते हैं।</string>
+    <string name="btn_order_via_whatsapp">व्हाट्सएप द्वारा ऑर्डर करें</string>
+
+    <!-- QR Bottom Sheet -->
+    <string name="qr_sheet_title">दुकान का क्यूआर कोड</string>
+    <string name="qr_bottom_sheet_title">दुकान का क्यूआर कोड</string>
+    <string name="qr_bottom_sheet_subtitle">तुरंत दुकान खोलने के लिए कैमरे से स्कैन करें</string>
+    <string name="qr_scan_prompt">दुकान खोलने के लिए मोबाइल कैमरे से स्कैन करें</string>
+    <string name="qr_save_poster_title">प्रिंट के लिए तैयार स्टोर पोस्टर</string>
+    <string name="qr_save_poster_subtitle">काउंटर, टेबल और शॉपिंग बैग पर लगाने के लिए उच्च गुणवत्ता वाला पोस्टर</string>
+    <string name="btn_save_share_poster">पोस्टर सहेजें और साझा करें</string>
+    <string name="btn_share_qr_poster">QR पोस्टर साझा करें</string>
+    <string name="btn_share_link">लिंक साझा करें</string>
+    <string name="btn_copy_link">लिंक कॉपी करें</string>
+    <string name="link_copied_toast">दुकान का लिंक क्लिपबोर्ड पर कॉपी हो गया!</string>
+    <string name="share_chooser_title">दुकान का लिंक साझा करें</string>
+
+    <!-- Settings & Language Screen / Dialog -->
+    <string name="settings_title">सेटिंग्स और प्राथमिकताएं</string>
+    <string name="language_title">ऐप की भाषा</string>
+    <string name="language_subtitle">अपनी पसंदीदा भाषा चुनें</string>
+    <string name="language_system_default">सिस्टम डिफ़ॉल्ट (स्वतः)</string>
+    <string name="language_en">English (अंग्रेज़ी)</string>
+    <string name="language_ar">العربية (अरबी)</string>
+    <string name="language_zh">中文 (चीनी)</string>
+    <string name="language_ur">اردو (उर्दू)</string>
+    <string name="language_hi">हिंदी (Hindi)</string>
+    <string name="theme_title">थीम और रूप-रंग</string>
+    <string name="theme_dark_mode">डार्क मोड (गहरा थीम)</string>
+    <string name="theme_dynamic_color">डायनामिक रंग (Material You)</string>
+    <string name="about_app_title">Wasl Market के बारे में</string>
+    <string name="about_app_version">संस्करण 1.14 (बिल्ड 14)</string>
+    <string name="about_app_desc">Wasl Market खुदरा और विशेष दुकानों के लिए सबसे तेज़ डिजिटल स्टोरफ्रंट और बायो-लिंक निर्माता है।</string>
+
+    <!-- Location & Toast Messages -->
+    <string name="toast_location_permission_needed">लोकेशन का स्वतः पता लगाने के लिए अनुमति दें</string>
+    <string name="toast_location_permission_denied">लोकेशन की अनुमति अस्वीकृत कर दी गई</string>
+    <string name="toast_location_detected_success">📍 आपकी वर्तमान लोकेशन प्राप्त और सहेज ली गई!</string>
+    <string name="toast_location_detect_failed">लोकेशन नहीं मिल सकी, आप मैप पर चुन सकते हैं</string>
+    <string name="toast_location_gps_failed">जीपीएस सिग्नल नहीं मिला, कृपया जीपीएस चालू करें</string>
+    <string name="toast_map_picker_guide">मैप पर अपनी दुकान की लोकेशन चुनकर लिंक यहाँ पेस्ट करें</string>
+    <string name="toast_whatsapp_error">व्हाट्सएप खोलने में असमर्थ</string>
+    <string name="toast_maps_error">गूगल मैप्स खोलने में असमर्थ</string>
+    <string name="toast_location_copied">लोकेशन लिंक कॉपी हो गया 📋</string>
+
+    <!-- Map & Badge Components -->
+    <string name="badge_verified_saudi_store">सत्यापित स्टोर 🇸🇦</string>
+    <string name="badge_live_gps">लाइव GPS</string>
+    <string name="store_location_label">दुकान का वास्तविक पता</string>
+    <string name="btn_open_google_maps">गूगल मैप्स में खोलें</string>
+    <string name="btn_directions">दिशा-निर्देश</string>
+    <string name="map_label_location">दुकान की लोकेशन</string>
+    <string name="map_btn_open_google_maps">गूगल मैप्स में खोलें</string>
+    <string name="map_btn_get_directions">दिशा-निर्देश</string>
+    <string name="map_verified_address">सत्यापित मैप निर्देशांक</string>
+</resources>

@@ -35,7 +35,6 @@ import androidx.compose.material.icons.filled.Directions
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.NearMe
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.Button
@@ -64,26 +63,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.R
 import com.example.ui.theme.WaslBorderBeige
-import com.example.ui.theme.WaslBorderDark
 import com.example.ui.theme.WaslMapsBlue
-import com.example.ui.theme.WaslMapsContainer
 import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
 import com.example.ui.theme.WaslSaudiGreen
 import com.example.ui.theme.WaslSaudiGreenLight
 import com.example.ui.theme.WaslSurfaceBeige
-import com.example.ui.theme.WaslSurfaceCard
 import com.example.ui.theme.WaslSurfaceWhite
 import com.example.ui.theme.WaslTextPrimary
 import com.example.ui.theme.WaslTextSecondary
-import com.example.ui.theme.WaslTextTertiary
 
 /**
  * Big Rounded Action Button for the Preview Page (WhatsApp, Location, Menu)
@@ -235,7 +232,6 @@ fun ShopLogoAvatar(
             )
             .background(WaslSurfaceWhite)
     ) {
-        // Inner decorative ring
         Surface(
             shape = CircleShape,
             color = Color.Transparent,
@@ -282,45 +278,10 @@ fun SaudiVerifiedBadge(
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = if (isArabic) "متجر معتمد 🇸🇦" else "Verified Saudi Store 🇸🇦",
+                text = stringResource(R.string.badge_verified_saudi_store),
                 style = MaterialTheme.typography.labelSmall,
                 color = WaslSaudiGreen,
                 fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-/**
- * Quick Template Preset Chip for fast filling
- */
-@Composable
-fun TemplatePresetChip(
-    title: String,
-    emoji: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = if (isSelected) WaslPrimaryCharcoal else WaslSurfaceWhite,
-        border = BorderStroke(1.dp, if (isSelected) WaslPrimaryCharcoal else WaslBorderBeige),
-        modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .clickable(onClick = onClick)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
-        ) {
-            Text(text = emoji, fontSize = 14.sp)
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = title,
-                style = MaterialTheme.typography.bodySmall,
-                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                color = if (isSelected) Color.White else WaslTextPrimary
             )
         }
     }
@@ -341,7 +302,6 @@ fun ShopLocationPreviewCard(
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
 
-    // Pulsing animation for map radar effect
     val infiniteTransition = rememberInfiniteTransition(label = "mapPulse")
     val pulseScale by infiniteTransition.animateFloat(
         initialValue = 0.8f,
@@ -362,11 +322,10 @@ fun ShopLocationPreviewCard(
         label = "pulseAlpha"
     )
 
-    // Parse coordinates or display text
     val cleanCoords = if (locationUrl.contains("?q=")) {
         locationUrl.substringAfter("?q=").substringBefore("&")
     } else if (locationUrl.contains("maps.google.com") || locationUrl.contains("goo.gl")) {
-        city.ifBlank { "المملكة العربية السعودية" }
+        city.ifBlank { stringResource(R.string.preview_country_default) }
     } else if (locationUrl.isNotBlank()) {
         locationUrl
     } else {
@@ -383,7 +342,6 @@ fun ShopLocationPreviewCard(
             .testTag("shop_location_preview_card")
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            // 1. Vector Map Canvas Preview Header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -391,12 +349,10 @@ fun ShopLocationPreviewCard(
                     .background(Color(0xFFE8ECE9))
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
             ) {
-                // Procedural stylized street map canvas
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     val w = size.width
                     val h = size.height
 
-                    // Background grid
                     val gridSpacing = 36.dp.toPx()
                     var x = 0f
                     while (x < w) {
@@ -419,11 +375,9 @@ fun ShopLocationPreviewCard(
                         y += gridSpacing
                     }
 
-                    // Main highway curves
                     val roadPaint = Color(0xFFFFFFFF)
                     val roadBorder = Color(0xFFC0CEC3)
 
-                    // Road 1: Diagonal main avenue
                     val path1 = Path().apply {
                         moveTo(-20f, h * 0.8f)
                         cubicTo(w * 0.3f, h * 0.7f, w * 0.6f, h * 0.3f, w + 20f, h * 0.2f)
@@ -431,7 +385,6 @@ fun ShopLocationPreviewCard(
                     drawPath(path1, roadBorder, style = Stroke(width = 16.dp.toPx(), cap = StrokeCap.Round))
                     drawPath(path1, roadPaint, style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round))
 
-                    // Road 2: Cross street
                     val path2 = Path().apply {
                         moveTo(w * 0.45f, -10f)
                         lineTo(w * 0.55f, h + 10f)
@@ -439,15 +392,6 @@ fun ShopLocationPreviewCard(
                     drawPath(path2, roadBorder, style = Stroke(width = 12.dp.toPx(), cap = StrokeCap.Round))
                     drawPath(path2, roadPaint, style = Stroke(width = 9.dp.toPx(), cap = StrokeCap.Round))
 
-                    // Road 3: Secondary loop
-                    val path3 = Path().apply {
-                        moveTo(w * 0.1f, h * 0.15f)
-                        quadraticBezierTo(w * 0.5f, h * 0.5f, w * 0.85f, h * 0.85f)
-                    }
-                    drawPath(path3, roadBorder, style = Stroke(width = 8.dp.toPx(), cap = StrokeCap.Round))
-                    drawPath(path3, Color(0xFFFFF9E6), style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round))
-
-                    // Pulsing pin radar at center
                     val pinCenter = Offset(w * 0.5f, h * 0.52f)
                     drawCircle(
                         color = Color(0xFFE53935).copy(alpha = pulseAlpha),
@@ -456,7 +400,6 @@ fun ShopLocationPreviewCard(
                     )
                 }
 
-                // Top Floating Badges
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
@@ -464,7 +407,6 @@ fun ShopLocationPreviewCard(
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 10.dp)
                 ) {
-                    // Google Maps Branding Pill
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = Color.White.copy(alpha = 0.95f),
@@ -490,7 +432,6 @@ fun ShopLocationPreviewCard(
                         }
                     }
 
-                    // GPS Coordinates / Live location badge
                     Surface(
                         shape = RoundedCornerShape(12.dp),
                         color = WaslSaudiGreen.copy(alpha = 0.9f),
@@ -508,7 +449,7 @@ fun ShopLocationPreviewCard(
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = if (isArabic) "موقع معتمد" else "Live GPS",
+                                text = stringResource(R.string.badge_live_gps),
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -517,7 +458,6 @@ fun ShopLocationPreviewCard(
                     }
                 }
 
-                // Center Pin Icon Marker with Saudi Emerald Base
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -543,7 +483,6 @@ fun ShopLocationPreviewCard(
                 }
             }
 
-            // 2. Address Details & Action Buttons Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -556,14 +495,14 @@ fun ShopLocationPreviewCard(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = if (isArabic) "الموقع الفعلي للمتجر" else "Store Physical Location",
+                            text = stringResource(R.string.store_location_label),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Bold,
                             color = WaslSandGold
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = if (city.isNotBlank()) city else if (isArabic) "الرياض، المملكة العربية السعودية" else "Riyadh, Saudi Arabia",
+                            text = if (city.isNotBlank()) city else stringResource(R.string.preview_country_default),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -580,14 +519,13 @@ fun ShopLocationPreviewCard(
                         )
                     }
 
-                    // Copy Address button
                     IconButton(
                         onClick = {
                             val textToCopy = if (locationUrl.isNotBlank()) locationUrl else "$city ($cleanCoords)"
                             clipboardManager.setText(AnnotatedString(textToCopy))
                             Toast.makeText(
                                 context,
-                                if (isArabic) "تم نسخ رابط الموقع 📋" else "Location link copied 📋",
+                                context.getString(R.string.toast_location_copied),
                                 Toast.LENGTH_SHORT
                             ).show()
                         },
@@ -608,12 +546,10 @@ fun ShopLocationPreviewCard(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                // 3. Action Buttons Row: Google Maps Intent Launchers
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Primary Button: Open in Google Maps
                     Button(
                         onClick = {
                             if (onOpenGoogleMaps != null) {
@@ -644,7 +580,7 @@ fun ShopLocationPreviewCard(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = if (isArabic) "فتح في خرائط Google" else "Open in Maps",
+                                text = stringResource(R.string.btn_open_google_maps),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -654,7 +590,6 @@ fun ShopLocationPreviewCard(
                         }
                     }
 
-                    // Secondary Button: Directions (Navigation)
                     OutlinedButton(
                         onClick = {
                             launchGoogleMapsDirectionsIntent(context, locationUrl, city)
@@ -682,7 +617,7 @@ fun ShopLocationPreviewCard(
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = if (isArabic) "الاتجاهات" else "Directions",
+                                text = stringResource(R.string.btn_directions),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = WaslSaudiGreen,
@@ -696,9 +631,6 @@ fun ShopLocationPreviewCard(
     }
 }
 
-/**
- * Helper to launch Google Maps Intent
- */
 fun launchGoogleMapsIntent(context: Context, locationUrl: String, city: String) {
     val rawUrl = locationUrl.trim()
     val mapUri = if (rawUrl.startsWith("http://") || rawUrl.startsWith("https://")) {
@@ -717,15 +649,12 @@ fun launchGoogleMapsIntent(context: Context, locationUrl: String, city: String) 
     } catch (e: Exception) {
         Toast.makeText(
             context,
-            "تعذر فتح خرائط جوجل | Could not open Google Maps",
+            context.getString(R.string.toast_maps_error),
             Toast.LENGTH_SHORT
         ).show()
     }
 }
 
-/**
- * Helper to launch Google Maps Navigation Directions Intent
- */
 fun launchGoogleMapsDirectionsIntent(context: Context, locationUrl: String, city: String) {
     val destination = if (locationUrl.contains("?q=")) {
         locationUrl.substringAfter("?q=").substringBefore("&")
@@ -744,9 +673,8 @@ fun launchGoogleMapsDirectionsIntent(context: Context, locationUrl: String, city
     } catch (e: Exception) {
         Toast.makeText(
             context,
-            "تعذر فتح مسار الاتجاهات | Could not open Directions",
+            context.getString(R.string.toast_maps_error),
             Toast.LENGTH_SHORT
         ).show()
     }
 }
-

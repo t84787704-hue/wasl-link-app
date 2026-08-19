@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">Wasl Market</string>
+    <string name="app_tagline">منصة روابط المتاجر السعودية</string>
+    <string name="wasl_brand_arabic">وَصْل</string>
+    <string name="wasl_brand_sub">• متجر وصل</string>
+
+    <!-- Navigation & Tabs -->
+    <string name="tab_edit_form">تعديل البيانات</string>
+    <string name="tab_preview_page">معاينة المتجر</string>
+    <string name="tab_settings">الإعدادات</string>
+
+    <!-- Form Screen Header & Templates -->
+    <string name="form_header_title">إنشاء وتعديل صفحة المتجر</string>
+    <string name="form_header_subtitle">أدخل بيانات متجرك لإنشاء صفحة روابط احترافية لعملائك</string>
+    <string name="quick_templates_title">نماذج متاجر جاهزة وسريعة:</string>
+    <string name="template_cafe">مقهى</string>
+    <string name="template_bakery">مخبز</string>
+    <string name="template_abayas">عبايات</string>
+    <string name="template_perfumes">عطور</string>
+
+    <!-- Form Field Labels & Placeholders -->
+    <string name="field_shop_name_en_title">اسم المتجر (إنجليزي / قياسي)</string>
+    <string name="field_shop_name_en_subtitle">الاسم الإنجليزي للعلامة التجارية</string>
+    <string name="field_shop_name_en_hint">مثال: Al-Naseem Specialty Coffee</string>
+
+    <string name="field_shop_name_ar_title">اسم المتجر بالعربي</string>
+    <string name="field_shop_name_ar_subtitle">الاسم العربي المعروض في واجهة متجرك</string>
+    <string name="field_shop_name_ar_hint">مثال: محمصة وقهوة النسيم المختصة</string>
+
+    <string name="field_whatsapp_title">رقم الواتساب</string>
+    <string name="field_whatsapp_subtitle">رقم الواتساب السعودي للطلب (9 أرقام)</string>
+    <string name="field_whatsapp_hint">501234567</string>
+
+    <string name="field_greeting_title">رسالة الترحيب الافتراضية</string>
+    <string name="field_greeting_subtitle">النص التلقائي عند نقر العميل على زر الواتساب</string>
+    <string name="field_greeting_hint">مثال: السلام عليكم، أود الطلب والاستفسار من متجركم...</string>
+
+    <string name="greeting_suggestion_order">☕ السلام عليكم، أود الطلب من القائمة</string>
+    <string name="greeting_suggestion_delivery">📦 مرحباً، أود الاستفسار عن التوصيل والأسعار</string>
+    <string name="greeting_suggestion_hours">📍 السلام عليكم، ما هي ساعات العمل لديكم؟</string>
+    <string name="greeting_suggestion_stock">✨ أود الاستفسار عن توفر المنتجات لديكم</string>
+
+    <string name="field_location_title">رابط موقع المتجر (خرائط Google)</string>
+    <string name="field_location_subtitle">رابط خرائط جوجل أو إحداثيات GPS</string>
+    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+
+    <string name="btn_use_current_location">استخدام موقعي الحالي</string>
+    <string name="btn_detecting_location">جاري تحديد الموقع…</string>
+    <string name="btn_pick_on_map">اختيار من الخريطة</string>
+
+    <string name="field_menu_title">قائمة المنتجات والأسعار (المنيو)</string>
+    <string name="field_menu_subtitle">أدخل كل منتج مع السعر في سطر منفصل</string>
+    <string name="field_menu_hint">• فلات وايت - 18 ر.س\n• كورتادو - 16 ر.س\n• كيكة الزعفران - 28 ر.س</string>
+
+    <string name="field_emblem_title">شعار / أيقونة المتجر</string>
+    <string name="save_success_banner">تم حفظ بيانات المتجر بنجاح على جهازك!</string>
+    <string name="btn_save_shop">حفظ المتجر</string>
+    <string name="btn_preview_link">معاينة الرابط</string>
+
+    <!-- Preview Screen -->
+    <string name="preview_live_badge">معاينة حية لصفحة المتجر</string>
+    <string name="preview_verified_badge">متجر تجاري معتمد</string>
+    <string name="preview_country_default">المملكة العربية السعودية</string>
+    <string name="btn_whatsapp_chat">محادثة واتساب</string>
+    <string name="btn_whatsapp_instant_reply">رد فوري</string>
+    <string name="btn_view_menu">عرض المنيو والأسعار</string>
+    <string name="menu_items_available">%d منتجات متاحة</string>
+    <string name="preview_powered_by">✨ تم الإنشاء عبر تطبيق متجر وصل</string>
+
+    <string name="qr_card_title">رمز الاستجابة السريعة (QR Code)</string>
+    <string name="qr_card_subtitle">شارك كرمز استجابة أو بوستر جاهز للطباعة</string>
+    <string name="btn_share_as_qr">مشاركة كـ QR</string>
+    <string name="btn_back_to_edit">العودة لتعديل البيانات</string>
+
+    <!-- Menu Bottom Sheet -->
+    <string name="menu_sheet_title">المنيو وقائمة المنتجات</string>
+    <string name="menu_empty_title">لم تتم إضافة منتجات بعد</string>
+    <string name="menu_empty_subtitle">يمكنك إضافة المنتجات والأسعار من صفحة التعديل.</string>
+    <string name="btn_order_via_whatsapp">طلب عبر واتساب</string>
+
+    <!-- QR Bottom Sheet -->
+    <string name="qr_sheet_title">رمز QR الخاص بالمتجر</string>
+    <string name="qr_bottom_sheet_title">رمز QR الخاص بالمتجر</string>
+    <string name="qr_bottom_sheet_subtitle">شارك الرمز لمسحه عبر الكاميرا والوصول السريع</string>
+    <string name="qr_scan_prompt">امسح الرمز عبر كاميرا الجوال للوصول للمتجر</string>
+    <string name="qr_save_poster_title">بوستر المتجر للطباعة (A4 / ستاند)</string>
+    <string name="qr_save_poster_subtitle">بوستر عالي الدقة بهوية متجرك جاهز للطباعة على الطاولات والمحاسبة والأكياس</string>
+    <string name="btn_save_share_poster">حفظ ومشاركة بوستر المتجر</string>
+    <string name="btn_share_qr_poster">مشاركة بوستر الرمز (صورة QR)</string>
+    <string name="btn_share_link">مشاركة الرابط</string>
+    <string name="btn_copy_link">نسخ الرابط</string>
+    <string name="link_copied_toast">تم نسخ رابط المتجر إلى الحافظة!</string>
+    <string name="share_chooser_title">مشاركة رابط المتجر</string>
+
+    <!-- Settings & Language Screen / Dialog -->
+    <string name="settings_title">الإعدادات والتفضيلات</string>
+    <string name="language_title">لغة التطبيق</string>
+    <string name="language_subtitle">اختر اللغة المناسبة لواجهة التطبيق</string>
+    <string name="language_system_default">تلقائي (لغة النظام)</string>
+    <string name="language_en">English (الإنجليزية)</string>
+    <string name="language_ar">العربية</string>
+    <string name="language_zh">中文 (الصينية المبسطة)</string>
+    <string name="language_ur">اردو (الأوردو)</string>
+    <string name="language_hi">हिंदी (الهندية)</string>
+    <string name="theme_title">المظهر والسمات</string>
+    <string name="theme_dark_mode">الوضع الليلي (الداكن)</string>
+    <string name="theme_dynamic_color">الألوان التفاعلية (Material You)</string>
+    <string name="about_app_title">حول متجر وصل</string>
+    <string name="about_app_version">الإصدار 1.14 (بناء 14)</string>
+    <string name="about_app_desc">وصل ماركت هو صانع واجهات المتاجر والروابط الذكية السريع للمتاجر المتخصصة والتجزئة.</string>
+
+    <!-- Location & Toast Messages -->
+    <string name="toast_location_permission_needed">يرجى السماح بالوصول للموقع لتحديده تلقائياً</string>
+    <string name="toast_location_permission_denied">تم رفض إذن الموقع</string>
+    <string name="toast_location_detected_success">📍 تم تحديد وحفظ موقعك بنجاح!</string>
+    <string name="toast_location_detect_failed">تعذر تحديد الموقع. يمكنك اختياره يدوياً عبر الخريطة</string>
+    <string name="toast_location_gps_failed">تعذر الحصول على إحداثيات الموقع حالياً. تأكد من تفعيل الـ GPS</string>
+    <string name="toast_map_picker_guide">حدد موقع متجرك وانسخ الرابط ثم الصقه هنا</string>
+    <string name="toast_whatsapp_error">تعذر فتح تطبيق واتساب</string>
+    <string name="toast_maps_error">تعذر فتح خرائط جوجل</string>
+    <string name="toast_location_copied">تم نسخ رابط الموقع 📋</string>
+
+    <!-- Map & Badge Components -->
+    <string name="badge_verified_saudi_store">متجر معتمد 🇸🇦</string>
+    <string name="badge_live_gps">موقع معتمد</string>
+    <string name="store_location_label">الموقع الفعلي للمتجر</string>
+    <string name="btn_open_google_maps">فتح في خرائط Google</string>
+    <string name="btn_directions">الاتجاهات</string>
+    <string name="map_label_location">موقع المتجر</string>
+    <string name="map_btn_open_google_maps">فتح في خرائط Google</string>
+    <string name="map_btn_get_directions">الاتجاهات</string>
+    <string name="map_verified_address">إحداثيات معتمدة</string>
+</resources>

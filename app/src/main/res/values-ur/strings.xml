@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">Wasl Market</string>
+    <string name="app_tagline">سعودی دکانوں کا لنک مرکز</string>
+    <string name="wasl_brand_arabic">وَصْل</string>
+    <string name="wasl_brand_sub">• وصل مارکیٹ (Wasl Market)</string>
+
+    <!-- Navigation & Tabs -->
+    <string name="tab_edit_form">دکان میں ترمیم</string>
+    <string name="tab_preview_page">دکان کا پیش نظارہ</string>
+    <string name="tab_settings">ترتیبات</string>
+
+    <!-- Form Screen Header & Templates -->
+    <string name="form_header_title">دکان کا صفحہ بنائیں اور ترتیب دیں</string>
+    <string name="form_header_subtitle">صارفین کے لیے ڈیجیٹل صفحہ بنانے کی غرض سے دکان کی معلومات درج کریں</string>
+    <string name="quick_templates_title">تیار شدہ کاروباری نمونے:</string>
+    <string name="template_cafe">کافی شاپ</string>
+    <string name="template_bakery">بیکری</string>
+    <string name="template_abayas">عبایہ شاپ</string>
+    <string name="template_perfumes">خوشبو اور عود</string>
+
+    <!-- Form Field Labels & Placeholders -->
+    <string name="field_shop_name_en_title">دکان کا نام (انگریزی / معیاری)</string>
+    <string name="field_shop_name_en_subtitle">برانڈ کا انگریزی یا بین الاقوامی نام</string>
+    <string name="field_shop_name_en_hint">مثلاً: Al-Naseem Specialty Coffee</string>
+
+    <string name="field_shop_name_ar_title">دکان کا عربی نام</string>
+    <string name="field_shop_name_ar_subtitle">دکان کے صفحے پر نظر آنے والا عربی نام</string>
+    <string name="field_shop_name_ar_hint">مثلاً: محمصة وقهوة النسيم</string>
+
+    <string name="field_whatsapp_title">واٹس ایپ نمبر</string>
+    <string name="field_whatsapp_subtitle">سعودی واٹس ایپ نمبر (9 ہندسے)</string>
+    <string name="field_whatsapp_hint">501234567</string>
+
+    <string name="field_greeting_title">پہلے سے طے شدہ واٹس ایپ پیغام</string>
+    <string name="field_greeting_subtitle">جب کسٹمر رابطہ کرے تو یہ پیغام خود بخود لکھا ہوا آئے گا</string>
+    <string name="field_greeting_hint">مثلاً: السلام علیکم، مجھے آپ کی دکان سے آرڈر کرنا ہے...</string>
+
+    <string name="greeting_suggestion_order">☕ السلام علیکم، مجھے مینو سے آرڈر دینا ہے</string>
+    <string name="greeting_suggestion_delivery">📦 آداب، ہوم ڈلیوری کی فیس اور تفصیلات کیا ہیں؟</string>
+    <string name="greeting_suggestion_hours">📍 السلام علیکم، دکان کے کھلنے کے اوقات کیا ہیں؟</string>
+    <string name="greeting_suggestion_stock">✨ مجھے دستیاب اشیاء اور اسٹاک کے بارے میں جاننا ہے</string>
+
+    <string name="field_location_title">گوگل میپس لوکیشن لنک</string>
+    <string name="field_location_subtitle">گوگل میپس لنک یا جی پی ایس کوآرڈینیٹس</string>
+    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+
+    <string name="btn_use_current_location">موجودہ لوکیشن استعمال کریں</string>
+    <string name="btn_detecting_location">لوکیشن تلاش کی جا رہی ہے…</string>
+    <string name="btn_pick_on_map">نقشے پر منتخب کریں</string>
+
+    <string name="field_menu_title">مینو اور قیمتوں کی فہرست</string>
+    <string name="field_menu_subtitle">ہر آئٹم اور قیمت الگ سطر میں درج کریں</string>
+    <string name="field_menu_hint">• فلیٹ وائٹ - 18 ریال\n• کورٹادو - 16 ریال\n• زعفران کیک - 28 ریال</string>
+
+    <string name="field_emblem_title">دکان کا نشان / ایموجی</string>
+    <string name="save_success_banner">دکان کی معلومات فون میں کامیابی سے محفوظ کر لی گئیں!</string>
+    <string name="btn_save_shop">دکان محفوظ کریں</string>
+    <string name="btn_preview_link">لنک کا پیش نظارہ</string>
+
+    <!-- Preview Screen -->
+    <string name="preview_live_badge">لائیو دکان کا پیش نظارہ</string>
+    <string name="preview_verified_badge">تصدیق شدہ سعودی اسٹور</string>
+    <string name="preview_country_default">مملکتِ سعودی عرب</string>
+    <string name="btn_whatsapp_chat">واٹس ایپ پر آرڈر اور بات چیت</string>
+    <string name="btn_whatsapp_instant_reply">فوری جواب</string>
+    <string name="btn_view_menu">مینو اور قیمتیں دیکھیں</string>
+    <string name="menu_items_available">%d آئٹمز دستیاب ہیں</string>
+    <string name="preview_powered_by">✨ وصل مارکیٹ کے ذریعے تیار کردہ</string>
+
+    <string name="qr_card_title">دکان کا کیو آر کوڈ (QR)</string>
+    <string name="qr_card_subtitle">کیو آر کوڈ یا پرنٹ شدہ پوسٹر شیئر کریں</string>
+    <string name="btn_share_as_qr">بطور کیو آر شیئر کریں</string>
+    <string name="btn_back_to_edit">دکان کی تفصیلات میں ترمیم کریں</string>
+
+    <!-- Menu Bottom Sheet -->
+    <string name="menu_sheet_title">مینو اور اشیاء کی فہرست</string>
+    <string name="menu_empty_title">ابھی تک کوئی پروڈکٹ شامل نہیں کی گئی</string>
+    <string name="menu_empty_subtitle">آپ ترمیم والے فارم سے مینو اور قیمتیں درج کر سکتے ہیں۔</string>
+    <string name="btn_order_via_whatsapp">واٹس ایپ کے ذریعے آرڈر کریں</string>
+
+    <!-- QR Bottom Sheet -->
+    <string name="qr_sheet_title">دکان کا کیو آر کوڈ</string>
+    <string name="qr_bottom_sheet_title">دکان کا کیو آر کوڈ</string>
+    <string name="qr_bottom_sheet_subtitle">دکان تک فوری رسائی کے لیے کیمرے سے اسکین کریں</string>
+    <string name="qr_scan_prompt">دکان کھولنے کے لیے موبائل کیمرے سے اسکین کریں</string>
+    <string name="qr_save_poster_title">پرنٹ کے لیے تیار دکان کا پوسٹر</string>
+    <string name="qr_save_poster_subtitle">کاؤنٹر، میز اور شاپنگ بیگز پر لگانے کے لیے ہائی ریزولوشن پوسٹر</string>
+    <string name="btn_save_share_poster">پوسٹر محفوظ اور شیئر کریں</string>
+    <string name="btn_share_qr_poster">کیو آر پوسٹر شیئر کریں</string>
+    <string name="btn_share_link">لنک شیئر کریں</string>
+    <string name="btn_copy_link">لنک کاپی کریں</string>
+    <string name="link_copied_toast">دکان کا لنک کلپ بورڈ پر کاپی ہو گیا!</string>
+    <string name="share_chooser_title">دکان کا لنک شیئر کریں</string>
+
+    <!-- Settings & Language Screen / Dialog -->
+    <string name="settings_title">ترتیبات اور ترجیحات</string>
+    <string name="language_title">ایپ کی زبان</string>
+    <string name="language_subtitle">اپنی پسندیدہ زبان منتخب کریں</string>
+    <string name="language_system_default">سسٹم ڈیفالٹ (خودکار)</string>
+    <string name="language_en">English (انگریزی)</string>
+    <string name="language_ar">العربية (عربی)</string>
+    <string name="language_zh">中文 (چینی)</string>
+    <string name="language_ur">اردو (Urdu)</string>
+    <string name="language_hi">हिंदी (ہندی)</string>
+    <string name="theme_title">تھیم اور شکل و صورت</string>
+    <string name="theme_dark_mode">ڈارک موڈ (تاریک تھیم)</string>
+    <string name="theme_dynamic_color">ڈائنامک کلرز (Material You)</string>
+    <string name="about_app_title">وصل مارکیٹ کے بارے میں</string>
+    <string name="about_app_version">ورژن 1.14 (بلڈ 14)</string>
+    <string name="about_app_desc">وصل مارکیٹ خوردہ اور خاص دکانوں کے لیے تیز ترین ڈیجیٹل صفحہ اور بائیو لنک بنانے کا پلیٹ فارم ہے۔</string>
+
+    <!-- Location & Toast Messages -->
+    <string name="toast_location_permission_needed">لوکیشن معلوم کرنے کے لیے اجازت درکار ہے</string>
+    <string name="toast_location_permission_denied">لوکیشن کی اجازت مسترد کر دی گئی</string>
+    <string name="toast_location_detected_success">📍 آپ کی لوکیشن معلوم اور محفوظ ہو گئی ہے!</string>
+    <string name="toast_location_detect_failed">لوکیشن معلوم نہ ہو سکی، آپ نقشے سے منتخب کر سکتے ہیں</string>
+    <string name="toast_location_gps_failed">GPS سگنل نہیں مل سکا، براہ کرم GPS آن کریں</string>
+    <string name="toast_map_picker_guide">نقشے پر دکان کی لوکیشن منتخب کر کے لنک یہاں پیسٹ کریں</string>
+    <string name="toast_whatsapp_error">واٹس ایپ کھولنے میں ناکامی ہوئی</string>
+    <string name="toast_maps_error">گوگل میپس کھولنے میں ناکامی ہوئی</string>
+    <string name="toast_location_copied">لوکیشن لنک کاپی ہو گیا 📋</string>
+
+    <!-- Map & Badge Components -->
+    <string name="badge_verified_saudi_store">تصدیق شدہ اسٹور 🇸🇦</string>
+    <string name="badge_live_gps">لائیو GPS</string>
+    <string name="store_location_label">دکان کا اصل پتہ</string>
+    <string name="btn_open_google_maps">گوگل میپس میں کھولیں</string>
+    <string name="btn_directions">راستہ دیکھیں</string>
+    <string name="map_label_location">دکان کی لوکیشن</string>
+    <string name="map_btn_open_google_maps">گوگل میپس میں کھولیں</string>
+    <string name="map_btn_get_directions">راستہ دیکھیں</string>
+    <string name="map_verified_address">تصدیق شدہ نقشہ کوآرڈینیٹس</string>
+</resources>

@@ -1,6 +1,7 @@
 package com.example.ui
 
 import android.Manifest
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -12,9 +13,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.R
 import com.example.data.AppDatabase
+import com.example.data.AppPreferences
 import com.example.data.ShopProfile
 import com.example.data.ShopRepository
+import com.example.ui.util.LocaleHelper
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -43,7 +47,8 @@ data class WaslUiState(
     val logoEmoji: String = "☕",
     val category: String = "مقهى ومخبوزات • Specialty Cafe",
     val city: String = "الرياض • Riyadh",
-    val activeTab: Int = 0, // 0 = Form, 1 = Preview
+    val activeTab: Int = 0, // 0 = Form, 1 = Preview, 2 = Settings
+    val selectedLanguageCode: String = "system",
     val isArabicLayout: Boolean = true,
     val isDarkMode: Boolean = false,
     val useDynamicColor: Boolean = true,
@@ -64,6 +69,14 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         val db = AppDatabase.getDatabase(application)
         repository = ShopRepository(db.shopDao())
         loadProfile()
+        loadSavedLanguage()
+    }
+
+    private fun loadSavedLanguage() {
+        viewModelScope.launch {
+            val savedLang = AppPreferences.getSelectedLanguage(getApplication()).firstOrNull() ?: "system"
+            _uiState.update { it.copy(selectedLanguageCode = savedLang) }
+        }
     }
 
     private fun loadProfile() {
@@ -102,7 +115,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onWhatsappNumberChange(value: String) {
-        // Filter numeric digits only, limit to reasonable length (e.g. 9 or 10 digits)
         val cleaned = value.filter { it.isDigit() }
         _uiState.update { it.copy(whatsappNumber = cleaned, isSaveSuccess = false) }
     }
@@ -135,8 +147,13 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(activeTab = tabIndex) }
     }
 
-    fun toggleLanguage() {
-        _uiState.update { it.copy(isArabicLayout = !it.isArabicLayout) }
+    fun selectLanguage(languageCode: String, activity: Activity) {
+        viewModelScope.launch {
+            AppPreferences.saveSelectedLanguage(getApplication(), languageCode)
+            _uiState.update { it.copy(selectedLanguageCode = languageCode) }
+            LocaleHelper.applyLanguage(activity, languageCode)
+            activity.recreate()
+        }
     }
 
     fun toggleDarkMode() {
@@ -160,7 +177,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             val profile = ShopProfile(
                 id = 1,
-                shopName = state.shopName.ifBlank { "Wasl Shop" },
+                shopName = state.shopName.ifBlank { "Wasl Market" },
                 shopNameArabic = state.shopNameArabic.ifBlank { "متجر وصل" },
                 whatsappNumber = state.whatsappNumber,
                 defaultGreeting = state.defaultGreeting,
@@ -248,18 +265,19 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = "Tayeb Al-Murjan Perfumes",
-                        shopNameArabic = "طيب المرجان للعطور والبخور",
+                        shopNameArabic = "مرجان للعود والعطور الفاخرة",
                         whatsappNumber = "567890123",
-                        defaultGreeting = "السلام عليكم، أود الاستفسار وطلب عطور ودخون من طيب المرجان 🌸",
-                        locationUrl = "https://maps.google.com/?q=Dammam+Saudi+Arabia",
+                        defaultGreeting = "أهلاً بك، أود الاستفسار وطلب دهن العود والعطور الملكية 🌸",
+                        locationUrl = "https://maps.google.com/?q=Dammam+Ash-Shati",
                         logoEmoji = "🌸",
-                        category = "عطور ودخون • Luxury Fragrances",
+                        category = "عطور وبخور • Luxury Perfumes",
                         city = "الدمام • Dammam",
                         menuItemsText = """
-                            • عطر مخلط المرجان الملكي (100 مل) | Royal Murjan - 290 ر.س
-                            • دهن عود كلمنتان سوبر | Super Kalimatan Oud - 180 ر.س
-                            • رقائق عود موروكي طبيعي | Natural Marouki Chips - 140 ر.س
-                            • معطر مفارش مسك الرمان | Musk Pomegranate Mist - 65 ر.س
+                            • عود كمبودي معتق سوبر | Aged Cambodian Oud - 290 ر.س
+                            • عطر مسك الختام الملكي (100 مل) | Royal Misk 100ml - 185 ر.س
+                            • بخور رقائق لاوسي طبيعي | Natural Laotian Chips - 340 ر.س
+                            • عطر هيل ولافندر نيش (50 مل) | Cardamom Lavender - 240 ر.س
+                            • مخلط العروس الفاخر | Luxury Bridal Blend - 150 ر.س
                         """.trimIndent(),
                         isSaveSuccess = false
                     )
@@ -268,7 +286,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // WhatsApp Action: Opens WhatsApp chat with +966 number and greeting
+    // Direct WhatsApp Launcher Action
     fun openWhatsApp(context: Context) {
         val state = _uiState.value
         val rawNumber = state.whatsappNumber.trim()
@@ -282,24 +300,21 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
         val greetingText = if (state.defaultGreeting.isNotBlank()) {
             state.defaultGreeting
-        } else if (state.isArabicLayout) {
-            "السلام عليكم، أود الطلب والاستفسار من ${state.shopNameArabic}."
         } else {
-            "Hello, I would like to order and inquire from ${state.shopName}."
+            context.getString(R.string.field_greeting_hint)
         }
-        val encodedMessage = Uri.encode(greetingText)
-        val url = "https://wa.me/$formattedNumber?text=$encodedMessage"
+        val encodedGreeting = Uri.encode(greetingText)
+        val url = "https://wa.me/$formattedNumber?text=$encodedGreeting"
 
         try {
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                data = Uri.parse(url)
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             context.startActivity(intent)
         } catch (e: Exception) {
             Toast.makeText(
                 context,
-                if (state.isArabicLayout) "تعذر فتح تطبيق واتساب ($url)" else "Could not open WhatsApp ($url)",
+                context.getString(R.string.toast_whatsapp_error),
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -325,7 +340,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         } catch (e: Exception) {
             Toast.makeText(
                 context,
-                if (state.isArabicLayout) "تعذر فتح الخرائط" else "Could not open Maps",
+                context.getString(R.string.toast_maps_error),
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -336,8 +351,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         val state = _uiState.value
         val greetingText = if (state.defaultGreeting.isNotBlank()) {
             state.defaultGreeting
-        } else if (state.isArabicLayout) {
-            "السلام عليكم، أود الطلب والاستفسار من ${state.shopNameArabic}."
         } else {
             "Hello, I would like to order and inquire from ${state.shopName}."
         }
@@ -346,10 +359,10 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             📍 ${state.shopNameArabic} (${state.shopName})
             ${state.category} - ${state.city}
             
-            💬 واتساب: https://wa.me/966${state.whatsappNumber}?text=$encodedGreeting
-            🗺️ الخريطة: ${state.locationUrl}
+            💬 WhatsApp: https://wa.me/966${state.whatsappNumber}?text=$encodedGreeting
+            🗺️ Map: ${state.locationUrl}
             
-            ✨ تم إنشاء الرابط عبر تطبيق وصل (Wasl)
+            ✨ Created via Wasl Market
         """.trimIndent()
 
         val sendIntent = Intent().apply {
@@ -357,14 +370,13 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/plain"
         }
-        val shareIntent = Intent.createChooser(sendIntent, "مشاركة صفحة المتجر | Share Shop")
+        val shareIntent = Intent.createChooser(sendIntent, context.getString(R.string.share_chooser_title))
         shareIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(shareIntent)
     }
 
     // Auto-detect current GPS location
     fun detectCurrentLocation(context: Context) {
-        val isArabic = _uiState.value.isArabicLayout
         val hasFinePermission = ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -377,7 +389,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         if (!hasFinePermission && !hasCoarsePermission) {
             Toast.makeText(
                 context,
-                if (isArabic) "يرجى السماح بالوصول للموقع لتحديده تلقائياً" else "Please allow location permission to auto-detect",
+                context.getString(R.string.toast_location_permission_needed),
                 Toast.LENGTH_SHORT
             ).show()
             return
@@ -396,7 +408,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 if (location != null) {
                     applyDetectedLocation(context, location.latitude, location.longitude)
                 } else {
-                    // Fallback to last known location
                     fusedLocationClient.lastLocation.addOnSuccessListener { lastLoc: Location? ->
                         if (lastLoc != null) {
                             applyDetectedLocation(context, lastLoc.latitude, lastLoc.longitude)
@@ -414,7 +425,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.update { it.copy(isDetectingLocation = false) }
             Toast.makeText(
                 context,
-                if (isArabic) "تم رفض إذن الموقع" else "Location permission denied",
+                context.getString(R.string.toast_location_permission_denied),
                 Toast.LENGTH_SHORT
             ).show()
         } catch (e: Exception) {
@@ -423,7 +434,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun tryLocationManagerFallback(context: Context) {
-        val isArabic = _uiState.value.isArabicLayout
         try {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
             val gpsLoc = locationManager?.getLastKnownLocation(LocationManager.GPS_PROVIDER)
@@ -436,7 +446,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update { it.copy(isDetectingLocation = false) }
                 Toast.makeText(
                     context,
-                    if (isArabic) "تعذر الحصول على إحداثيات الموقع حالياً. تأكد من تفعيل الـ GPS" else "Could not get GPS location. Please check GPS settings",
+                    context.getString(R.string.toast_location_gps_failed),
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -444,14 +454,13 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             _uiState.update { it.copy(isDetectingLocation = false) }
             Toast.makeText(
                 context,
-                if (isArabic) "تعذر تحديد الموقع. يمكنك اختياره يدوياً عبر الخريطة" else "Could not detect location. You can pick it on Map",
+                context.getString(R.string.toast_location_detect_failed),
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
 
     private fun applyDetectedLocation(context: Context, latitude: Double, longitude: Double) {
-        val isArabic = _uiState.value.isArabicLayout
         val formattedLat = String.format(Locale.US, "%.5f", latitude)
         val formattedLng = String.format(Locale.US, "%.5f", longitude)
         val locationUrl = "https://maps.google.com/?q=$formattedLat,$formattedLng"
@@ -463,19 +472,16 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
 
-        // Auto-save the detected location into the Room database
         saveProfile()
 
         Toast.makeText(
             context,
-            if (isArabic) "📍 تم تحديد وحفظ موقعك بنجاح!" else "📍 Current location detected & saved!",
+            context.getString(R.string.toast_location_detected_success),
             Toast.LENGTH_SHORT
         ).show()
     }
 
-    // Opens Google Maps so user can search or pick their exact location and copy link
     fun openMapPicker(context: Context) {
-        val isArabic = _uiState.value.isArabicLayout
         val mapUrl = "https://www.google.com/maps"
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mapUrl)).apply {
@@ -484,13 +490,13 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             context.startActivity(intent)
             Toast.makeText(
                 context,
-                if (isArabic) "حدد موقع متجرك وانسخ الرابط ثم الصقه هنا" else "Select your shop location, copy link & paste here",
+                context.getString(R.string.toast_map_picker_guide),
                 Toast.LENGTH_LONG
             ).show()
         } catch (e: Exception) {
             Toast.makeText(
                 context,
-                if (isArabic) "تعذر فتح الخرائط" else "Could not open Google Maps",
+                context.getString(R.string.toast_maps_error),
                 Toast.LENGTH_SHORT
             ).show()
         }

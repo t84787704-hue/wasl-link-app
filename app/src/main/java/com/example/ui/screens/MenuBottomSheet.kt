@@ -44,21 +44,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.WaslBgCream
-import com.example.ui.theme.WaslBorderBeige
-import com.example.ui.theme.WaslPrimaryCharcoal
-import com.example.ui.theme.WaslSandGold
+import com.example.R
 import com.example.ui.theme.WaslSaudiGreen
 import com.example.ui.theme.WaslSaudiGreenLight
-import com.example.ui.theme.WaslSurfaceBeige
-import com.example.ui.theme.WaslSurfaceWhite
-import com.example.ui.theme.WaslTextPrimary
-import com.example.ui.theme.WaslTextSecondary
-import com.example.ui.theme.WaslWhatsAppGreen
 
 data class MenuItemParsed(
     val rawText: String,
@@ -73,7 +66,7 @@ fun MenuBottomSheet(
     shopName: String,
     whatsappNumber: String,
     menuText: String,
-    isArabic: Boolean,
+    isArabic: Boolean = false,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -120,13 +113,13 @@ fun MenuBottomSheet(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = if (isArabic) "قائمة المنتجات والأسعار" else "Menu & Products",
+                            text = stringResource(R.string.menu_sheet_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = if (shopNameArabic.isNotBlank()) shopNameArabic else shopName,
+                            text = shopNameArabic.ifBlank { shopName.ifBlank { stringResource(R.string.app_name) } },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.secondary
                         )
@@ -170,13 +163,13 @@ fun MenuBottomSheet(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = if (isArabic) "لم تتم إضافة منتجات بعد" else "No menu items added yet",
+                            text = stringResource(R.string.menu_empty_title),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = if (isArabic) "يمكنك إضافة المنتجات والأسعار من صفحة التعديل" else "You can add items and prices from the edit form",
+                            text = stringResource(R.string.menu_empty_subtitle),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
@@ -193,14 +186,12 @@ fun MenuBottomSheet(
                     items(menuItems) { item ->
                         MenuItemCard(
                             item = item,
-                            isArabic = isArabic,
                             onOrderClick = {
                                 orderItemViaWhatsApp(
                                     context = context,
                                     whatsappNumber = whatsappNumber,
                                     itemTitle = item.title,
-                                    shopName = shopNameArabic.ifBlank { shopName },
-                                    isArabic = isArabic
+                                    shopName = shopNameArabic.ifBlank { shopName }
                                 )
                             }
                         )
@@ -215,7 +206,7 @@ fun MenuBottomSheet(
                 onClick = {
                     val rawNumber = whatsappNumber.trim()
                     val formatted = if (rawNumber.startsWith("966")) rawNumber else "966$rawNumber"
-                    val text = if (isArabic) "السلام عليكم، أود الطلب من القائمة" else "Hello, I would like to order from the menu"
+                    val text = "Hello, I would like to order from the menu"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(text)}"))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     try {
@@ -242,7 +233,7 @@ fun MenuBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = if (isArabic) "إرسال طلب مباشر عبر واتساب" else "Send Order via WhatsApp",
+                        text = stringResource(R.string.btn_order_via_whatsapp),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -258,7 +249,6 @@ fun MenuBottomSheet(
 @Composable
 fun MenuItemCard(
     item: MenuItemParsed,
-    isArabic: Boolean,
     onOrderClick: () -> Unit
 ) {
     Card(
@@ -312,8 +302,8 @@ fun MenuItemCard(
                 modifier = Modifier.height(36.dp)
             ) {
                 Text(
-                    text = if (isArabic) "طلب" else "Order",
-                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(R.string.btn_order_via_whatsapp),
+                    style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -348,16 +338,11 @@ private fun orderItemViaWhatsApp(
     context: Context,
     whatsappNumber: String,
     itemTitle: String,
-    shopName: String,
-    isArabic: Boolean
+    shopName: String
 ) {
     val rawNumber = whatsappNumber.trim()
     val formatted = if (rawNumber.startsWith("966")) rawNumber else "966$rawNumber"
-    val greeting = if (isArabic) {
-        "السلام عليكم، أود طلب ($itemTitle) من $shopName."
-    } else {
-        "Hello, I would like to order ($itemTitle) from $shopName."
-    }
+    val greeting = "Hello, I would like to order ($itemTitle) from $shopName."
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(greeting)}"))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {

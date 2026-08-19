@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import android.content.Context
 import android.graphics.Bitmap
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -15,10 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentCopy
@@ -48,69 +47,44 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.R
 import com.example.ui.WaslUiState
 import com.example.ui.components.SaudiVerifiedBadge
 import com.example.ui.components.ShopLogoAvatar
-import com.example.ui.theme.WaslBgCream
-import com.example.ui.theme.WaslBorderBeige
-import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
 import com.example.ui.theme.WaslSaudiGreen
 import com.example.ui.theme.WaslSaudiGreenLight
-import com.example.ui.theme.WaslSurfaceBeige
-import com.example.ui.theme.WaslSurfaceWhite
-import com.example.ui.theme.WaslTextPrimary
-import com.example.ui.theme.WaslTextSecondary
-import com.example.ui.theme.WaslTextTertiary
 import com.example.ui.util.QrCodeGenerator
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QrBottomSheet(
     uiState: WaslUiState,
-    isArabic: Boolean,
+    isArabic: Boolean = false,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val rawNumber = uiState.whatsappNumber.trim()
-    val formattedNumber = if (rawNumber.startsWith("966")) {
-        rawNumber
-    } else if (rawNumber.startsWith("0")) {
-        "966" + rawNumber.substring(1)
-    } else {
-        "966$rawNumber"
-    }
+    val cleanWhatsapp = uiState.whatsappNumber.trim()
+    val formattedWhatsapp = if (cleanWhatsapp.startsWith("966")) cleanWhatsapp else "966$cleanWhatsapp"
+    val storeUrl = "https://wa.me/$formattedWhatsapp"
 
-    val greetingText = if (uiState.defaultGreeting.isNotBlank()) {
-        uiState.defaultGreeting
-    } else if (isArabic) {
-        "السلام عليكم، أود الطلب والاستفسار من ${uiState.shopNameArabic}."
-    } else {
-        "Hello, I would like to order and inquire from ${uiState.shopName}."
-    }
-    val encodedGreeting = android.net.Uri.encode(greetingText)
-    val storeUrl = "https://wa.me/$formattedNumber?text=$encodedGreeting"
     val qrBitmap: Bitmap? = remember(storeUrl) {
-        QrCodeGenerator.generateQrBitmap(storeUrl, size = 512)
+        QrCodeGenerator.generateQrBitmap(storeUrl, 600)
     }
 
     val shareText = """
         📍 ${uiState.shopNameArabic} (${uiState.shopName})
-        ${uiState.category} - ${uiState.city}
-        
-        💬 رابط المتجر والتواصل المباشر عبر واتساب:
-        $storeUrl
-        
-        🗺️ موقع المتجر: ${uiState.locationUrl}
-        
-        ✨ تم إنشاء الرابط والرمز عبر تطبيق وصل (Wasl)
+        💬 WhatsApp: $storeUrl
+        🗺️ Map: ${uiState.locationUrl}
+        ✨ Created via Wasl Market
     """.trimIndent()
 
     ModalBottomSheet(
@@ -121,10 +95,8 @@ fun QrBottomSheet(
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .verticalScroll(rememberScrollState())
                 .padding(20.dp)
                 .testTag("qr_bottom_sheet")
         ) {
@@ -134,31 +106,33 @@ fun QrBottomSheet(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(42.dp)
+                            .size(44.dp)
                             .clip(CircleShape)
                             .background(MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Icon(
                             imageVector = Icons.Default.QrCode2,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.secondary,
+                            tint = WaslSandGold,
                             modifier = Modifier.size(24.dp)
                         )
                     }
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = if (isArabic) "رمز QR الخاص بالمتجر" else "Storefront QR Code",
+                            text = stringResource(R.string.qr_bottom_sheet_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = if (isArabic) "شارك الرمز لمسحه عبر الكاميرا والوصول السريع" else "Share to scan via camera for quick access",
+                            text = stringResource(R.string.qr_bottom_sheet_subtitle),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -209,7 +183,7 @@ fun QrBottomSheet(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = uiState.shopNameArabic.ifBlank { "متجر وصل" },
+                        text = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { stringResource(R.string.app_name) } },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -229,10 +203,10 @@ fun QrBottomSheet(
                     Spacer(modifier = Modifier.height(6.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        SaudiVerifiedBadge(isArabic = isArabic)
+                        SaudiVerifiedBadge(isArabic = false)
                         Spacer(modifier = Modifier.width(6.dp))
                         Text(
-                            text = uiState.city.ifBlank { "المملكة العربية السعودية" },
+                            text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -272,7 +246,7 @@ fun QrBottomSheet(
                         color = WaslSaudiGreenLight
                     ) {
                         Text(
-                            text = if (isArabic) "امسح الرمز عبر كاميرا الجوال للوصول للمتجر" else "Scan via mobile camera to visit store",
+                            text = stringResource(R.string.qr_scan_prompt),
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
                             color = WaslSaudiGreen,
@@ -361,7 +335,7 @@ fun QrBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = if (isArabic) "مشاركة بوستر الرمز (صورة QR)" else "Share Branded QR Poster",
+                        text = stringResource(R.string.btn_share_qr_poster),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -384,7 +358,7 @@ fun QrBottomSheet(
                             putExtra(android.content.Intent.EXTRA_TEXT, shareText)
                             type = "text/plain"
                         }
-                        val chooser = android.content.Intent.createChooser(sendIntent, "مشاركة رابط المتجر | Share Shop Link")
+                        val chooser = android.content.Intent.createChooser(sendIntent, context.getString(R.string.share_chooser_title))
                         chooser.flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
                         context.startActivity(chooser)
                     },
@@ -405,7 +379,7 @@ fun QrBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (isArabic) "مشاركة الرابط" else "Share Link",
+                        text = stringResource(R.string.btn_share_link),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -429,7 +403,7 @@ fun QrBottomSheet(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (isArabic) "نسخ الرابط" else "Copy Link",
+                        text = stringResource(R.string.btn_copy_link),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface

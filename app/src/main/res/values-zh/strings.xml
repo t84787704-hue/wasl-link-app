@@ -1,0 +1,133 @@
+<resources>
+    <string name="app_name">Wasl Market</string>
+    <string name="app_tagline">沙特商铺快捷链接中心</string>
+    <string name="wasl_brand_arabic">وَصْل</string>
+    <string name="wasl_brand_sub">• 瓦斯尔市场 (Wasl Market)</string>
+
+    <!-- Navigation & Tabs -->
+    <string name="tab_edit_form">编辑资料</string>
+    <string name="tab_preview_page">店铺预览</string>
+    <string name="tab_settings">设置</string>
+
+    <!-- Form Screen Header & Templates -->
+    <string name="form_header_title">创建与编辑店铺页面</string>
+    <string name="form_header_subtitle">填写您的店铺信息，为顾客生成专属移动主页</string>
+    <string name="quick_templates_title">快捷行业模板：</string>
+    <string name="template_cafe">精品咖啡</string>
+    <string name="template_bakery">手作烘焙</string>
+    <string name="template_abayas">时尚长袍</string>
+    <string name="template_perfumes">高端香氛</string>
+
+    <!-- Form Field Labels & Placeholders -->
+    <string name="field_shop_name_en_title">店铺名称 (英文 / 标准)</string>
+    <string name="field_shop_name_en_subtitle">英文或国际品牌名称</string>
+    <string name="field_shop_name_en_hint">例如：Al-Naseem Specialty Coffee</string>
+
+    <string name="field_shop_name_ar_title">店铺阿拉伯语名称</string>
+    <string name="field_shop_name_ar_subtitle">在店铺门面展示的阿拉伯语名称</string>
+    <string name="field_shop_name_ar_hint">例如：محمصة وقهوة النسيم</string>
+
+    <string name="field_whatsapp_title">WhatsApp 订购号码</string>
+    <string name="field_whatsapp_subtitle">沙特 WhatsApp 手机号 (9位数字)</string>
+    <string name="field_whatsapp_hint">501234567</string>
+
+    <string name="field_greeting_title">默认 WhatsApp 问候语</string>
+    <string name="field_greeting_subtitle">顾客点击联系时自动预填的消息</string>
+    <string name="field_greeting_hint">例如：您好！我想咨询并从贵店下单...</string>
+
+    <string name="greeting_suggestion_order">☕ 您好，我想订购菜单上的商品</string>
+    <string name="greeting_suggestion_delivery">📦 您好，请问支持配送吗？费用是多少？</string>
+    <string name="greeting_suggestion_hours">📍 您好，请问今天的营业时间是？</string>
+    <string name="greeting_suggestion_stock">✨ 您好，我想咨询最新现货库存</string>
+
+    <string name="field_location_title">Google 地图位置链接</string>
+    <string name="field_location_subtitle">Google Maps 链接或 GPS 坐标</string>
+    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+
+    <string name="btn_use_current_location">使用当前 GPS 位置</string>
+    <string name="btn_detecting_location">正在定位中…</string>
+    <string name="btn_pick_on_map">在地图上选择</string>
+
+    <string name="field_menu_title">商品菜单与价格</string>
+    <string name="field_menu_subtitle">每行输入一个品名及对应价格</string>
+    <string name="field_menu_hint">• 澳白咖啡 - 18 里亚尔\n• 告尔多咖啡 - 16 里亚尔\n• 藏红花蛋糕 - 28 里亚尔</string>
+
+    <string name="field_emblem_title">店铺图标 / 表情</string>
+    <string name="save_success_banner">店铺信息已成功保存至本地！</string>
+    <string name="btn_save_shop">保存店铺</string>
+    <string name="btn_preview_link">预览主页</string>
+
+    <!-- Preview Screen -->
+    <string name="preview_live_badge">实时店铺预览</string>
+    <string name="preview_verified_badge">官方认证商户</string>
+    <string name="preview_country_default">沙特阿拉伯王国</string>
+    <string name="btn_whatsapp_chat">WhatsApp 咨询下单</string>
+    <string name="btn_whatsapp_instant_reply">秒速响应</string>
+    <string name="btn_view_menu">查看商品与价目表</string>
+    <string name="menu_items_available">共 %d 件商品在售</string>
+    <string name="preview_powered_by">✨ 由 Wasl Market 提供技术支持</string>
+
+    <string name="qr_card_title">店铺专属二维码</string>
+    <string name="qr_card_subtitle">分享二维码或生成打印海报</string>
+    <string name="btn_share_as_qr">生成分享二维码</string>
+    <string name="btn_back_to_edit">返回编辑资料</string>
+
+    <!-- Menu Bottom Sheet -->
+    <string name="menu_sheet_title">商品清单与价格</string>
+    <string name="menu_empty_title">暂未添加商品</string>
+    <string name="menu_empty_subtitle">您可以在编辑页面中添加商品品名与价格。</string>
+    <string name="btn_order_via_whatsapp">通过 WhatsApp 下单</string>
+
+    <!-- QR Bottom Sheet -->
+    <string name="qr_sheet_title">店铺二维码</string>
+    <string name="qr_bottom_sheet_title">店铺专属二维码</string>
+    <string name="qr_bottom_sheet_subtitle">扫码即可直接访问店铺主页并联系商家</string>
+    <string name="qr_scan_prompt">使用手机相机扫码即可直达店铺</string>
+    <string name="qr_save_poster_title">可打印店铺海报 (A4 / 展架)</string>
+    <string name="qr_save_poster_subtitle">高清品牌海报，适用于桌面展架、收银台与打包袋</string>
+    <string name="btn_save_share_poster">保存并分享海报</string>
+    <string name="btn_share_qr_poster">分享二维码海报图</string>
+    <string name="btn_share_link">分享链接</string>
+    <string name="btn_copy_link">复制链接</string>
+    <string name="link_copied_toast">店铺链接已复制到剪贴板！</string>
+    <string name="share_chooser_title">分享店铺链接</string>
+
+    <!-- Settings & Language Screen / Dialog -->
+    <string name="settings_title">设置与偏好</string>
+    <string name="language_title">应用语言</string>
+    <string name="language_subtitle">选择您的首选界面显示语言</string>
+    <string name="language_system_default">跟随系统默认</string>
+    <string name="language_en">English (英语)</string>
+    <string name="language_ar">العربية (阿拉伯语)</string>
+    <string name="language_zh">中文 (简体中文)</string>
+    <string name="language_ur">اردو (乌尔都语)</string>
+    <string name="language_hi">हिंदी (印地语)</string>
+    <string name="theme_title">外观与主题</string>
+    <string name="theme_dark_mode">深色模式</string>
+    <string name="theme_dynamic_color">动态配色 (Material You)</string>
+    <string name="about_app_title">关于 Wasl Market</string>
+    <string name="about_app_version">版本 1.14 (内部构建 14)</string>
+    <string name="about_app_desc">Wasl Market 是一款专为中小零售商与特色小店打造的高效数字化门面与智能主页生成工具。</string>
+
+    <!-- Location & Toast Messages -->
+    <string name="toast_location_permission_needed">请授予位置权限以自动获取经纬度</string>
+    <string name="toast_location_permission_denied">位置权限已被拒绝</string>
+    <string name="toast_location_detected_success">📍 当前位置获取并保存成功！</string>
+    <string name="toast_location_detect_failed">定位失败，您可以在地图上手动选择</string>
+    <string name="toast_location_gps_failed">无法获取 GPS 信号，请检查定位服务是否开启</string>
+    <string name="toast_map_picker_guide">在地图中选取店铺位置后复制链接并粘贴于此</string>
+    <string name="toast_whatsapp_error">未能打开 WhatsApp 应用程序</string>
+    <string name="toast_maps_error">未能打开 Google 地图</string>
+    <string name="toast_location_copied">位置链接已复制 📋</string>
+
+    <!-- Map & Badge Components -->
+    <string name="badge_verified_saudi_store">官方认证 🇸🇦</string>
+    <string name="badge_live_gps">实时 GPS</string>
+    <string name="store_location_label">店铺实体地址</string>
+    <string name="btn_open_google_maps">在 Google 地图中打开</string>
+    <string name="btn_directions">导航路线</string>
+    <string name="map_label_location">店铺位置</string>
+    <string name="map_btn_open_google_maps">在 Google 地图中打开</string>
+    <string name="map_btn_get_directions">导航路线</string>
+    <string name="map_verified_address">已认证地图坐标</string>
+</resources>

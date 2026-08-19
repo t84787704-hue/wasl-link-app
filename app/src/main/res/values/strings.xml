@@ -1,3 +1,133 @@
 <resources>
-    <string name="app_name">Wasl</string>
+    <string name="app_name">Wasl Market</string>
+    <string name="app_tagline">Saudi Shop Link Hub</string>
+    <string name="wasl_brand_arabic">وَصْل</string>
+    <string name="wasl_brand_sub">• Wasl Market</string>
+
+    <!-- Navigation & Tabs -->
+    <string name="tab_edit_form">Edit Form</string>
+    <string name="tab_preview_page">Preview Page</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Form Screen Header & Templates -->
+    <string name="form_header_title">Create &amp; Edit Store Page</string>
+    <string name="form_header_subtitle">Fill in your shop details to generate a link page for customers</string>
+    <string name="quick_templates_title">Quick Shop Templates:</string>
+    <string name="template_cafe">Coffee</string>
+    <string name="template_bakery">Bakery</string>
+    <string name="template_abayas">Abayas</string>
+    <string name="template_perfumes">Perfumes</string>
+
+    <!-- Form Field Labels & Placeholders -->
+    <string name="field_shop_name_en_title">Shop Name (English / Standard)</string>
+    <string name="field_shop_name_en_subtitle">English or standard brand name</string>
+    <string name="field_shop_name_en_hint">e.g. Al-Naseem Specialty Coffee</string>
+
+    <string name="field_shop_name_ar_title">Arabic Shop Name</string>
+    <string name="field_shop_name_ar_subtitle">Arabic display name for your storefront</string>
+    <string name="field_shop_name_ar_hint">e.g. محمصة وقهوة النسيم</string>
+
+    <string name="field_whatsapp_title">WhatsApp Number</string>
+    <string name="field_whatsapp_subtitle">Saudi WhatsApp number (9 digits)</string>
+    <string name="field_whatsapp_hint">501234567</string>
+
+    <string name="field_greeting_title">Default WhatsApp Greeting</string>
+    <string name="field_greeting_subtitle">Pre-filled text when customer taps WhatsApp</string>
+    <string name="field_greeting_hint">e.g. Hello, I would like to order and inquire...</string>
+
+    <string name="greeting_suggestion_order">☕ I\'d like to order from the menu</string>
+    <string name="greeting_suggestion_delivery">📦 Inquire about delivery</string>
+    <string name="greeting_suggestion_hours">📍 Ask about opening hours</string>
+    <string name="greeting_suggestion_stock">✨ Inquire about available items</string>
+
+    <string name="field_location_title">Google Maps Location Link</string>
+    <string name="field_location_subtitle">Google Maps URL or GPS coordinates</string>
+    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+
+    <string name="btn_use_current_location">Use My Current Location</string>
+    <string name="btn_detecting_location">Detecting location…</string>
+    <string name="btn_pick_on_map">Pick on Map</string>
+
+    <string name="field_menu_title">Menu Items &amp; Prices</string>
+    <string name="field_menu_subtitle">Enter each item with price per line</string>
+    <string name="field_menu_hint">• Flat White - 18 SAR\n• Cortado - 16 SAR\n• Saffron Cake - 28 SAR</string>
+
+    <string name="field_emblem_title">Shop Emblem Icon</string>
+    <string name="save_success_banner">Shop details saved successfully to phone!</string>
+    <string name="btn_save_shop">Save Shop</string>
+    <string name="btn_preview_link">Preview Link</string>
+
+    <!-- Preview Screen -->
+    <string name="preview_live_badge">Live Storefront Preview</string>
+    <string name="preview_verified_badge">Saudi Commercial Profile</string>
+    <string name="preview_country_default">Kingdom of Saudi Arabia</string>
+    <string name="btn_whatsapp_chat">WhatsApp Chat</string>
+    <string name="btn_whatsapp_instant_reply">Instant Reply</string>
+    <string name="btn_view_menu">View Menu &amp; Prices</string>
+    <string name="menu_items_available">%d items available</string>
+    <string name="preview_powered_by">✨ Powered by Wasl Market</string>
+
+    <string name="qr_card_title">Storefront QR Code</string>
+    <string name="qr_card_subtitle">Share as QR code or printable poster</string>
+    <string name="btn_share_as_qr">Share as QR</string>
+    <string name="btn_back_to_edit">Back to Edit Shop Form</string>
+
+    <!-- Menu Bottom Sheet -->
+    <string name="menu_sheet_title">Menu &amp; Products</string>
+    <string name="menu_empty_title">No Menu Items Listed</string>
+    <string name="menu_empty_subtitle">You can add your items and prices in the edit form.</string>
+    <string name="btn_order_via_whatsapp">Order via WhatsApp</string>
+
+    <!-- QR Bottom Sheet -->
+    <string name="qr_sheet_title">Storefront QR Code</string>
+    <string name="qr_bottom_sheet_title">Storefront QR Code</string>
+    <string name="qr_bottom_sheet_subtitle">Share to scan via camera for quick access</string>
+    <string name="qr_scan_prompt">Scan with your camera to open shop</string>
+    <string name="qr_save_poster_title">Printable Store Poster (A4 / Stand)</string>
+    <string name="qr_save_poster_subtitle">High-resolution branded poster ready for table stands, counters and bags</string>
+    <string name="btn_save_share_poster">Save &amp; Share Store Poster</string>
+    <string name="btn_share_qr_poster">Share Branded QR Poster</string>
+    <string name="btn_share_link">Share Store Link</string>
+    <string name="btn_copy_link">Copy Link</string>
+    <string name="link_copied_toast">Store link copied to clipboard!</string>
+    <string name="share_chooser_title">Share Storefront Link</string>
+
+    <!-- Settings & Language Screen / Dialog -->
+    <string name="settings_title">Settings &amp; Preferences</string>
+    <string name="language_title">App Language</string>
+    <string name="language_subtitle">Choose your preferred display language</string>
+    <string name="language_system_default">System Default</string>
+    <string name="language_en">English</string>
+    <string name="language_ar">العربية (Arabic)</string>
+    <string name="language_zh">中文 (Chinese Simplified)</string>
+    <string name="language_ur">اردو (Urdu)</string>
+    <string name="language_hi">हिंदी (Hindi)</string>
+    <string name="theme_title">Appearance &amp; Theme</string>
+    <string name="theme_dark_mode">Dark Mode</string>
+    <string name="theme_dynamic_color">Dynamic Colors (Material You)</string>
+    <string name="about_app_title">About Wasl Market</string>
+    <string name="about_app_version">Version 1.14 (Build 14)</string>
+    <string name="about_app_desc">Wasl Market is the ultra-fast storefront and smart link-in-bio builder for retail and specialty stores.</string>
+
+    <!-- Location & Toast Messages -->
+    <string name="toast_location_permission_needed">Please allow location permission to auto-detect</string>
+    <string name="toast_location_permission_denied">Location permission denied</string>
+    <string name="toast_location_detected_success">📍 Current location detected &amp; saved!</string>
+    <string name="toast_location_detect_failed">Could not detect location. You can pick it on Map</string>
+    <string name="toast_location_gps_failed">Could not get GPS location. Please check GPS settings</string>
+    <string name="toast_map_picker_guide">Select your shop location, copy link &amp; paste here</string>
+    <string name="toast_whatsapp_error">Could not open WhatsApp</string>
+    <string name="toast_maps_error">Could not open Google Maps</string>
+    <string name="toast_location_copied">Location link copied 📋</string>
+
+    <!-- Map & Badge Components -->
+    <string name="badge_verified_saudi_store">Verified Store 🇸🇦</string>
+    <string name="badge_live_gps">Live GPS</string>
+    <string name="store_location_label">Store Physical Location</string>
+    <string name="btn_open_google_maps">Open in Google Maps</string>
+    <string name="btn_directions">Directions</string>
+    <string name="map_label_location">Store Location</string>
+    <string name="map_btn_open_google_maps">Open in Google Maps</string>
+    <string name="map_btn_get_directions">Get Directions</string>
+    <string name="map_verified_address">Verified Map Coordinates</string>
 </resources>

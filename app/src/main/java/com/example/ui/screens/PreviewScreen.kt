@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Share
@@ -40,16 +39,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.R
 import com.example.ui.WaslUiState
 import com.example.ui.components.SaudiVerifiedBadge
 import com.example.ui.components.ShopLocationPreviewCard
@@ -58,12 +57,9 @@ import com.example.ui.components.WaslBigActionButton
 import com.example.ui.theme.WaslBgCream
 import com.example.ui.theme.WaslBorderBeige
 import com.example.ui.theme.WaslBorderDark
-import com.example.ui.theme.WaslMapsBlue
-import com.example.ui.theme.WaslMapsContainer
 import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
 import com.example.ui.theme.WaslSaudiGreen
-import com.example.ui.theme.WaslSaudiGreenLight
 import com.example.ui.theme.WaslSurfaceBeige
 import com.example.ui.theme.WaslSurfaceCard
 import com.example.ui.theme.WaslSurfaceWhite
@@ -71,7 +67,6 @@ import com.example.ui.theme.WaslTextPrimary
 import com.example.ui.theme.WaslTextSecondary
 import com.example.ui.theme.WaslTextTertiary
 import com.example.ui.theme.WaslWhatsAppContainer
-import com.example.ui.theme.WaslWhatsAppGreen
 
 @Composable
 fun PreviewScreen(
@@ -86,7 +81,6 @@ fun PreviewScreen(
 ) {
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-    val isArabic = uiState.isArabicLayout
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,7 +116,7 @@ fun PreviewScreen(
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = if (isArabic) "معاينة حية للمتجر" else "Live Storefront Preview",
+                        text = stringResource(R.string.preview_live_badge),
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
                         color = WaslTextPrimary
@@ -142,7 +136,7 @@ fun PreviewScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.QrCode2,
-                        contentDescription = "Share as QR",
+                        contentDescription = stringResource(R.string.btn_share_as_qr),
                         tint = WaslSandGold,
                         modifier = Modifier.size(20.dp)
                     )
@@ -159,7 +153,7 @@ fun PreviewScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
-                        contentDescription = "Share Storefront Link",
+                        contentDescription = stringResource(R.string.btn_share_link),
                         tint = WaslPrimaryCharcoal,
                         modifier = Modifier.size(18.dp)
                     )
@@ -176,7 +170,7 @@ fun PreviewScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Profile",
+                        contentDescription = stringResource(R.string.tab_edit_form),
                         tint = WaslPrimaryCharcoal,
                         modifier = Modifier.size(18.dp)
                     )
@@ -220,7 +214,7 @@ fun PreviewScreen(
 
                 // Shop Names
                 Text(
-                    text = uiState.shopNameArabic.ifBlank { "متجر وصل" },
+                    text = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } },
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = WaslTextPrimary,
@@ -228,7 +222,7 @@ fun PreviewScreen(
                     modifier = Modifier.testTag("preview_shop_name_arabic")
                 )
 
-                if (uiState.shopName.isNotBlank()) {
+                if (uiState.shopName.isNotBlank() && uiState.shopNameArabic.isNotBlank()) {
                     Spacer(modifier = Modifier.height(2.dp))
                     Text(
                         text = uiState.shopName,
@@ -247,14 +241,14 @@ fun PreviewScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    SaudiVerifiedBadge(isArabic = isArabic)
+                    SaudiVerifiedBadge(isArabic = false)
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
                         shape = RoundedCornerShape(16.dp),
                         color = WaslSurfaceBeige
                     ) {
                         Text(
-                            text = uiState.city.ifBlank { "المملكة العربية السعودية" },
+                            text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
                             style = MaterialTheme.typography.labelSmall,
                             color = WaslTextSecondary,
                             fontWeight = FontWeight.Medium,
@@ -302,10 +296,10 @@ fun PreviewScreen(
                     icon = Icons.Default.Storefront,
                     iconColor = WaslSaudiGreen,
                     iconBgColor = WaslWhatsAppContainer,
-                    titleArabic = "تواصل عبر واتساب",
-                    titleEnglish = "WhatsApp Chat",
+                    titleArabic = stringResource(R.string.btn_whatsapp_chat),
+                    titleEnglish = "WhatsApp",
                     subtitle = whatsappSubtitle,
-                    badgeText = "رد فوري",
+                    badgeText = stringResource(R.string.btn_whatsapp_instant_reply),
                     testTag = "button_preview_whatsapp",
                     onClick = { onOpenWhatsApp(context) }
                 )
@@ -317,7 +311,7 @@ fun PreviewScreen(
                     shopName = uiState.shopNameArabic.ifBlank { uiState.shopName },
                     city = uiState.city,
                     locationUrl = uiState.locationUrl,
-                    isArabic = isArabic,
+                    isArabic = false,
                     onOpenGoogleMaps = onOpenGoogleMaps,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -330,9 +324,9 @@ fun PreviewScreen(
                     icon = Icons.Default.RestaurantMenu,
                     iconColor = WaslSandGold,
                     iconBgColor = WaslSurfaceBeige,
-                    titleArabic = "قائمة المنتجات والأسعار",
-                    titleEnglish = "View Menu & Prices",
-                    subtitle = if (isArabic) "$menuLinesCount أصناف متاحة للطلب" else "$menuLinesCount items available",
+                    titleArabic = stringResource(R.string.btn_view_menu),
+                    titleEnglish = "Menu & Catalog",
+                    subtitle = stringResource(R.string.menu_items_available, menuLinesCount),
                     testTag = "button_preview_menu",
                     onClick = onShowMenu
                 )
@@ -345,7 +339,7 @@ fun PreviewScreen(
                     color = WaslSurfaceBeige.copy(alpha = 0.6f)
                 ) {
                     Text(
-                        text = if (isArabic) "✨ صفحة متجر مدعومة بواسطة وصل | Wasl" else "✨ Powered by Wasl Storefront",
+                        text = stringResource(R.string.preview_powered_by),
                         style = MaterialTheme.typography.labelSmall,
                         color = WaslTextTertiary,
                         modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
@@ -397,13 +391,13 @@ fun PreviewScreen(
 
                         Column {
                             Text(
-                                text = if (isArabic) "رمز الاستجابة السريعة (QR)" else "Storefront QR Code",
+                                text = stringResource(R.string.qr_card_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = WaslTextPrimary
                             )
                             Text(
-                                text = if (isArabic) "شارك صفحتك كرمز QR أو بوستر جاهز للطباعة" else "Share as QR code or printable poster",
+                                text = stringResource(R.string.qr_card_subtitle),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = WaslTextSecondary
                             )
@@ -438,7 +432,7 @@ fun PreviewScreen(
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = if (isArabic) "مشاركة كرمز QR" else "Share as QR",
+                            text = stringResource(R.string.btn_share_as_qr),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
@@ -471,7 +465,7 @@ fun PreviewScreen(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (isArabic) "العودة لتعديل بيانات المتجر" else "Back to Edit Shop Form",
+                text = stringResource(R.string.btn_back_to_edit),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold
             )
