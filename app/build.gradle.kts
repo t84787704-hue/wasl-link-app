@@ -17,14 +17,14 @@ android {
     applicationId = "com.wasl.saudishop"
     minSdk = 24
     targetSdk = 35
-    versionCode = 16
-    versionName = "1.16"
+    versionCode = 14
+    versionName = "1.14"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   signingConfigs {
-    create("persistentSigning") {
+    getByName("debug") {
       storeFile = file("${rootDir}/debug.keystore")
       storePassword = "android"
       keyAlias = "androiddebugkey"
@@ -37,10 +37,10 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("persistentSigning")
+      signingConfig = signingConfigs.getByName("debug")
     }
     debug {
-      signingConfig = signingConfigs.getByName("persistentSigning")
+      signingConfig = signingConfigs.getByName("debug")
     }
   }
   compileOptions {
