@@ -49,6 +49,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wasl.saudishop.R
+import com.example.data.CountryCodeHelper
 import com.example.ui.WaslUiState
 import com.example.ui.components.ShopLocationPreviewCard
 import com.example.ui.components.ShopLogoAvatar
@@ -264,13 +265,12 @@ fun PreviewScreen(
                 // --- 3 BIG BUTTONS ---
 
                 // Button 1: WhatsApp Button that opens WhatsApp
-                val formattedPhone = if (uiState.whatsappNumber.isBlank()) {
-                    "+966 5X XXX XXXX"
-                } else if (uiState.whatsappNumber.startsWith("966")) {
-                    "+${uiState.whatsappNumber}"
-                } else {
-                    "+966 ${uiState.whatsappNumber}"
-                }
+                val defaultCC = uiState.whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+                val formattedPhone = CountryCodeHelper.formatDisplayInternational(
+                    countryCode = uiState.whatsappCountryCode,
+                    number = uiState.whatsappNumber,
+                    fallbackDefault = "+$defaultCC 5X XXX XXXX"
+                )
                 val whatsappSubtitle = if (uiState.defaultGreeting.isNotBlank()) {
                     "$formattedPhone • 💬 \"${uiState.defaultGreeting.take(28)}...\""
                 } else {

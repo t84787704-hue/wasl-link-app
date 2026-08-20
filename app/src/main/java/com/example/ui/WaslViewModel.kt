@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import com.wasl.saudishop.R
 import com.example.data.AppDatabase
 import com.example.data.AppPreferences
+import com.example.data.CountryCodeHelper
 import com.example.data.CurrencyHelper
 import com.example.data.ShopProfile
 import com.example.data.ShopRepository
@@ -41,6 +42,7 @@ import kotlinx.coroutines.withContext
 data class WaslUiState(
     val shopName: String = "",
     val whatsappNumber: String = "",
+    val whatsappCountryCode: String = "966",
     val defaultGreeting: String = "",
     val locationUrl: String = "",
     val menuItemsText: String = "",
@@ -88,6 +90,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                     it.copy(
                         shopName = savedProfile.shopName,
                         whatsappNumber = savedProfile.whatsappNumber,
+                        whatsappCountryCode = savedProfile.whatsappCountryCode.ifBlank { "966" },
                         defaultGreeting = savedProfile.defaultGreeting,
                         locationUrl = savedProfile.locationUrl,
                         menuItemsText = savedProfile.menuItemsText,
@@ -114,6 +117,11 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     fun onWhatsappNumberChange(value: String) {
         val cleaned = value.filter { it.isDigit() }
         _uiState.update { it.copy(whatsappNumber = cleaned, isSaveSuccess = false) }
+    }
+
+    fun onWhatsappCountryCodeChange(code: String) {
+        val cleanCode = code.replace("+", "").trim()
+        _uiState.update { it.copy(whatsappCountryCode = cleanCode, isSaveSuccess = false) }
     }
 
     fun onDefaultGreetingChange(value: String) {
@@ -180,6 +188,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 id = 1,
                 shopName = state.shopName.ifBlank { "Wasl Market" },
                 whatsappNumber = state.whatsappNumber,
+                whatsappCountryCode = state.whatsappCountryCode.ifBlank { "966" },
                 defaultGreeting = state.defaultGreeting,
                 locationUrl = state.locationUrl,
                 menuItemsText = state.menuItemsText,
@@ -328,24 +337,19 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getCleanPhoneNumber(): String {
-        val digits = _uiState.value.whatsappNumber.replace("+", "").replace(" ", "").filter { it.isDigit() }
-        return when {
-            digits.startsWith("966") -> digits.removePrefix("966")
-            digits.startsWith("0") -> digits.removePrefix("0")
-            else -> digits
-        }
+        return CountryCodeHelper.cleanLocalNumber(_uiState.value.whatsappNumber, _uiState.value.whatsappCountryCode)
     }
 
     fun getWhatsAppNumberFull(): String {
-        val cleanPhone = getCleanPhoneNumber()
-        return if (cleanPhone.isNotBlank()) "966$cleanPhone" else ""
+        return CountryCodeHelper.formatFullInternational(_uiState.value.whatsappCountryCode, _uiState.value.whatsappNumber)
     }
 
     // Generates wa.me link with encoded custom default greeting
     fun getWhatsAppLinkWithGreeting(): String {
         val state = _uiState.value
         val phoneFull = getWhatsAppNumberFull()
-        val formattedNumber = if (phoneFull.isNotBlank()) phoneFull else "966591257059"
+        val defaultCC = state.whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+        val formattedNumber = if (phoneFull.isNotBlank()) phoneFull else "${defaultCC}591257059"
         val greetingText = state.defaultGreeting.trim()
         val encodedGreeting = if (greetingText.isNotBlank()) Uri.encode(greetingText) else ""
         return if (encodedGreeting.isNotBlank()) {
@@ -376,8 +380,13 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getFormattedPhoneDisplay(): String {
-        val cleanPhone = getCleanPhoneNumber()
-        return if (cleanPhone.isNotBlank()) "+966 $cleanPhone" else "+966 59 125 7059"
+        val state = _uiState.value
+        val defaultCC = state.whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+        return CountryCodeHelper.formatDisplayInternational(
+            countryCode = state.whatsappCountryCode,
+            number = state.whatsappNumber,
+            fallbackDefault = "+$defaultCC 59 125 7059"
+        )
     }
 
     fun getLocationDisplay(): String {

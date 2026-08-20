@@ -130,6 +130,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                             uiState = uiState,
                             onShopNameChange = viewModel::onShopNameChange,
                             onWhatsappChange = viewModel::onWhatsappNumberChange,
+                            onWhatsappCountryCodeChange = viewModel::onWhatsappCountryCodeChange,
                             onCategoryChange = viewModel::onCategoryChange,
                             onCityChange = viewModel::onCityChange,
                             onCurrencyChange = viewModel::onCurrencyChange,
@@ -192,6 +193,7 @@ fun WaslApp(viewModel: WaslViewModel) {
             MenuBottomSheet(
                 shopName = uiState.shopName,
                 whatsappNumber = uiState.whatsappNumber,
+                whatsappCountryCode = uiState.whatsappCountryCode,
                 menuText = uiState.menuItemsText,
                 selectedCurrency = uiState.selectedCurrency,
                 isArabic = false,

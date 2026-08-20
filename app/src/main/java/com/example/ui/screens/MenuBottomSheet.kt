@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.CountryCodeHelper
 import com.example.data.CurrencyHelper
 import com.wasl.saudishop.R
 import com.example.ui.theme.WaslSaudiGreen
@@ -66,6 +67,7 @@ data class MenuItemParsed(
 fun MenuBottomSheet(
     shopName: String,
     whatsappNumber: String,
+    whatsappCountryCode: String = "966",
     menuText: String,
     selectedCurrency: String = "SAR",
     isArabic: Boolean = false,
@@ -193,6 +195,7 @@ fun MenuBottomSheet(
                             onOrderClick = {
                                 orderItemViaWhatsApp(
                                     context = context,
+                                    whatsappCountryCode = whatsappCountryCode,
                                     whatsappNumber = whatsappNumber,
                                     itemTitle = item.title,
                                     price = item.price,
@@ -209,8 +212,9 @@ fun MenuBottomSheet(
             // Direct WhatsApp Order CTA Button
             Button(
                 onClick = {
-                    val rawNumber = whatsappNumber.trim()
-                    val formatted = if (rawNumber.startsWith("966")) rawNumber else "966$rawNumber"
+                    val fullNumber = CountryCodeHelper.formatFullInternational(whatsappCountryCode, whatsappNumber)
+                    val defaultCC = whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+                    val formatted = if (fullNumber.isNotBlank()) fullNumber else "${defaultCC}591257059"
                     val text = "Hello, I would like to order from the menu"
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(text)}"))
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -364,13 +368,15 @@ fun parseMenuItems(raw: String, currencyCode: String = "SAR"): List<MenuItemPars
 
 private fun orderItemViaWhatsApp(
     context: Context,
+    whatsappCountryCode: String,
     whatsappNumber: String,
     itemTitle: String,
     price: String?,
     shopName: String
 ) {
-    val rawNumber = whatsappNumber.trim()
-    val formatted = if (rawNumber.startsWith("966")) rawNumber else "966$rawNumber"
+    val fullNumber = CountryCodeHelper.formatFullInternational(whatsappCountryCode, whatsappNumber)
+    val defaultCC = whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+    val formatted = if (fullNumber.isNotBlank()) fullNumber else "${defaultCC}591257059"
     val priceSuffix = if (!price.isNullOrBlank()) " ($price)" else ""
     val greeting = "Hello, I would like to order $itemTitle$priceSuffix from $shopName."
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(greeting)}"))

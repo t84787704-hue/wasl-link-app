@@ -49,4 +49,33 @@ class ExampleUnitTest {
     assertEquals("Cappuccino", parsedUsd[1].title)
     assertEquals("$ 20", parsedUsd[1].price)
   }
+
+  @Test
+  fun countryCodeHelper_formatting_and_cleaning_areCorrect() {
+    // Saudi Arabia (+966)
+    assertEquals("501234567", com.example.data.CountryCodeHelper.cleanLocalNumber("0501234567", "966"))
+    assertEquals("501234567", com.example.data.CountryCodeHelper.cleanLocalNumber("966501234567", "966"))
+    assertEquals("966501234567", com.example.data.CountryCodeHelper.formatFullInternational("966", "0501234567"))
+    assertEquals("+966 501234567", com.example.data.CountryCodeHelper.formatDisplayInternational("966", "501234567"))
+
+    // Pakistan (+92)
+    assertEquals("3012345678", com.example.data.CountryCodeHelper.cleanLocalNumber("03012345678", "92"))
+    assertEquals("923012345678", com.example.data.CountryCodeHelper.formatFullInternational("92", "03012345678"))
+    assertEquals("+92 3012345678", com.example.data.CountryCodeHelper.formatDisplayInternational("92", "3012345678"))
+
+    // India (+91)
+    assertEquals("9876543210", com.example.data.CountryCodeHelper.cleanLocalNumber("9876543210", "91"))
+    assertEquals("919876543210", com.example.data.CountryCodeHelper.formatFullInternational("91", "9876543210"))
+    assertEquals("+91 9876543210", com.example.data.CountryCodeHelper.formatDisplayInternational("91", "9876543210"))
+
+    // China (+86)
+    assertEquals("8613812345678", com.example.data.CountryCodeHelper.formatFullInternational("86", "13812345678"))
+
+    // Search tests
+    val pakSearch = com.example.data.CountryCodeHelper.searchCountries("pakistan")
+    assertTrue(pakSearch.any { it.code == "92" })
+
+    val codeSearch = com.example.data.CountryCodeHelper.searchCountries("+91")
+    assertTrue(codeSearch.any { it.code == "91" })
+  }
 }

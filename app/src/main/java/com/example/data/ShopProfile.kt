@@ -15,5 +15,6 @@ data class ShopProfile(
     val city: String = "",
     val defaultGreeting: String = "",
     val selectedCurrency: String = "SAR",
+    val whatsappCountryCode: String = "966",
     val updatedAt: Long = System.currentTimeMillis()
 )

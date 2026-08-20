@@ -21,8 +21,9 @@
     <string name="field_shop_name_en_hint">اكتب اسم متجرك هنا - مثال: قهوة النسيم</string>
 
     <string name="field_whatsapp_title">WhatsApp *</string>
-    <string name="field_whatsapp_subtitle">رقم الواتساب السعودي للتواصل</string>
-    <string name="field_whatsapp_hint">5X XXX XXXX - Enter here</string>
+    <string name="field_whatsapp_subtitle">رقم الواتساب - لجميع الدول (مثال: 501234567)</string>
+    <string name="field_whatsapp_hint">أدخل رقم الواتساب بدون صفر في البداية</string>
+    <string name="field_country_code_search">بحث عن الدولة أو المفتاح...</string>
 
     <string name="field_category_title">التصنيف</string>
     <string name="field_category_subtitle">تصنيف ونشاط متجرك التجاري</string>

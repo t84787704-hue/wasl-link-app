@@ -20,9 +20,10 @@
     <string name="field_shop_name_en_subtitle">یہ آپ کی دکان کے عنوان کے طور پر ظاہر ہوگا</string>
     <string name="field_shop_name_en_hint">اپنی دکان کا نام لکھیں - مثلاً: Al-Naseem Coffee</string>
 
-    <string name="field_whatsapp_title">واٹس ایپ نمبر</string>
-    <string name="field_whatsapp_subtitle">سعودی واٹس ایپ نمبر (9 ہندسے)</string>
-    <string name="field_whatsapp_hint">501234567</string>
+    <string name="field_whatsapp_title">واٹس ایپ نمبر *</string>
+    <string name="field_whatsapp_subtitle">کسی بھی ملک کا واٹس ایپ نمبر (مثلاً 3012345678)</string>
+    <string name="field_whatsapp_hint">صفر کے بغیر واٹس ایپ نمبر درج کریں</string>
+    <string name="field_country_code_search">ملک یا کوڈ تلاش کریں...</string>
 
     <string name="field_currency_title">کرنسی *</string>
     <string name="field_currency_subtitle">قیمتوں اور مینو کے لیے کرنسی منتخب کریں</string>

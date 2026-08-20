@@ -55,6 +55,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wasl.saudishop.R
+import com.example.data.CountryCodeHelper
 import com.example.ui.WaslUiState
 import com.example.ui.components.SaudiVerifiedBadge
 import com.example.ui.components.ShopLogoAvatar
@@ -73,14 +74,9 @@ fun QrBottomSheet(
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val cleanWhatsapp = uiState.whatsappNumber.replace("+", "").replace(" ", "").filter { it.isDigit() }.let { digits ->
-        when {
-            digits.startsWith("966") -> digits.removePrefix("966")
-            digits.startsWith("0") -> digits.removePrefix("0")
-            else -> digits
-        }
-    }
-    val formattedWhatsapp = if (cleanWhatsapp.isNotBlank()) "966$cleanWhatsapp" else "966591257059"
+    val fullNumber = CountryCodeHelper.formatFullInternational(uiState.whatsappCountryCode, uiState.whatsappNumber)
+    val defaultCC = uiState.whatsappCountryCode.ifBlank { CountryCodeHelper.DEFAULT_COUNTRY_CODE }
+    val formattedWhatsapp = if (fullNumber.isNotBlank()) fullNumber else "${defaultCC}591257059"
     val greetingText = uiState.defaultGreeting.trim()
     val encodedGreeting = if (greetingText.isNotBlank()) Uri.encode(greetingText) else ""
     val waLinkWithGreeting = if (encodedGreeting.isNotBlank()) {

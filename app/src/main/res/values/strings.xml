@@ -21,8 +21,9 @@
     <string name="field_shop_name_en_hint">Enter your shop name here - e.g. My Coffee Shop</string>
 
     <string name="field_whatsapp_title">WhatsApp *</string>
-    <string name="field_whatsapp_subtitle">Saudi WhatsApp number</string>
-    <string name="field_whatsapp_hint">5X XXX XXXX - Enter here</string>
+    <string name="field_whatsapp_subtitle">WhatsApp number - any country (e.g. 501234567)</string>
+    <string name="field_whatsapp_hint">Enter WhatsApp number without 0</string>
+    <string name="field_country_code_search">Search country or code...</string>
 
     <string name="field_category_title">Category</string>
     <string name="field_category_subtitle">Your shop business category</string>

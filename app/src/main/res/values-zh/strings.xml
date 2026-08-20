@@ -20,9 +20,10 @@
     <string name="field_shop_name_en_subtitle">将作为您店铺的主标题显示</string>
     <string name="field_shop_name_en_hint">输入店铺名称 - 例如：Al-Naseem Coffee</string>
 
-    <string name="field_whatsapp_title">WhatsApp 订购号码</string>
-    <string name="field_whatsapp_subtitle">沙特 WhatsApp 手机号 (9位数字)</string>
-    <string name="field_whatsapp_hint">501234567</string>
+    <string name="field_whatsapp_title">WhatsApp 订购号码 *</string>
+    <string name="field_whatsapp_subtitle">支持各国 WhatsApp 手机号 (例如: 13812345678)</string>
+    <string name="field_whatsapp_hint">请输入手机号（不含开头的0）</string>
+    <string name="field_country_code_search">搜索国家或区号...</string>
 
     <string name="field_currency_title">货币 (Currency) *</string>
     <string name="field_currency_subtitle">选择菜单与商品价格显示的货币</string>

@@ -20,9 +20,10 @@
     <string name="field_shop_name_en_subtitle">यह आपकी दुकान के शीर्षक के रूप में दिखेगा</string>
     <string name="field_shop_name_en_hint">अपनी दुकान का नाम दर्ज करें - उदा: Al-Naseem Coffee</string>
 
-    <string name="field_whatsapp_title">व्हाट्सएप नंबर</string>
-    <string name="field_whatsapp_subtitle">सऊदी व्हाट्सएप नंबर (9 अंक)</string>
-    <string name="field_whatsapp_hint">501234567</string>
+    <string name="field_whatsapp_title">व्हाट्सएप नंबर *</string>
+    <string name="field_whatsapp_subtitle">किसी भी देश का व्हाट्सएप नंबर (उदा: 9876543210)</string>
+    <string name="field_whatsapp_hint">बिना 0 के व्हाट्सएप नंबर दर्ज करें</string>
+    <string name="field_country_code_search">देश या कोड खोजें...</string>
 
     <string name="field_currency_title">मुद्रा (Currency) *</string>
     <string name="field_currency_subtitle">मूल्य और मेनू के लिए मुद्रा चुनें</string>

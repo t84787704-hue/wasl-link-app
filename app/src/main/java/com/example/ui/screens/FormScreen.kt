@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +33,7 @@ import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
 import androidx.compose.material.icons.filled.FormatQuote
@@ -42,6 +45,7 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
@@ -52,6 +56,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -77,7 +82,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.wasl.saudishop.R
+import com.example.data.CountryCodeHelper
+import com.example.data.CountryCodeOption
 import com.example.data.CurrencyHelper
 import com.example.ui.WaslUiState
 import com.example.ui.theme.WaslBgCream
@@ -102,6 +111,7 @@ fun FormScreen(
     uiState: WaslUiState,
     onShopNameChange: (String) -> Unit,
     onWhatsappChange: (String) -> Unit,
+    onWhatsappCountryCodeChange: (String) -> Unit,
     onCategoryChange: (String) -> Unit,
     onCityChange: (String) -> Unit,
     onCurrencyChange: (String) -> Unit,
@@ -118,6 +128,11 @@ fun FormScreen(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
+    var showCountryDialog by remember { mutableStateOf(false) }
+    var countrySearchQuery by remember { mutableStateOf("") }
+    val currentCountry = remember(uiState.whatsappCountryCode) {
+        CountryCodeHelper.getCountryOption(uiState.whatsappCountryCode)
+    }
 
     Column(
         modifier = modifier.fillMaxSize()
@@ -305,7 +320,7 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Field 2: WhatsApp Number
+            // Field 2: WhatsApp Number with International Country Code
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
@@ -314,8 +329,8 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = "WhatsApp *",
-                        subtitle = "Saudi WhatsApp number (e.g. 501234567)",
+                        title = stringResource(R.string.field_whatsapp_title),
+                        subtitle = stringResource(R.string.field_whatsapp_subtitle),
                         icon = Icons.Default.Phone
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -323,21 +338,36 @@ fun FormScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        // Country Code Selector Button
                         Surface(
                             shape = RoundedCornerShape(14.dp),
                             color = WaslSaudiGreenLight,
                             border = BorderStroke(1.dp, WaslSaudiGreen.copy(alpha = 0.4f)),
-                            modifier = Modifier.height(56.dp)
+                            modifier = Modifier
+                                .height(56.dp)
+                                .clickable { showCountryDialog = true }
+                                .testTag("country_code_selector")
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             ) {
                                 Text(
-                                    text = "+966",
+                                    text = currentCountry.flag,
+                                    fontSize = 18.sp
+                                )
+                                Text(
+                                    text = currentCountry.dialCode,
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = WaslSaudiGreen
+                                )
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Select country code",
+                                    tint = WaslSaudiGreen,
+                                    modifier = Modifier.size(18.dp)
                                 )
                             }
                         }
@@ -347,7 +377,14 @@ fun FormScreen(
                         OutlinedTextField(
                             value = uiState.whatsappNumber,
                             onValueChange = onWhatsappChange,
-                            placeholder = { Text("5X XXX XXXX - Enter here", color = Color.Gray.copy(alpha = 0.6f)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.field_whatsapp_hint),
+                                    color = Color.Gray.copy(alpha = 0.6f),
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             singleLine = true,
                             shape = RoundedCornerShape(14.dp),
@@ -356,6 +393,180 @@ fun FormScreen(
                                 .weight(1f)
                                 .testTag("input_whatsapp_number")
                         )
+                    }
+
+                    if (uiState.whatsappNumber.isNotBlank()) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = "WhatsApp Link: wa.me/${CountryCodeHelper.formatFullInternational(uiState.whatsappCountryCode, uiState.whatsappNumber)}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = WaslSaudiGreen,
+                            fontWeight = FontWeight.Medium,
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
+                    }
+                }
+            }
+
+            // Searchable Country Code Selection Dialog
+            if (showCountryDialog) {
+                val filteredCountries = remember(countrySearchQuery) {
+                    CountryCodeHelper.searchCountries(countrySearchQuery)
+                }
+
+                Dialog(
+                    onDismissRequest = {
+                        showCountryDialog = false
+                        countrySearchQuery = ""
+                    },
+                    properties = DialogProperties(usePlatformDefaultWidth = false)
+                ) {
+                    Surface(
+                        shape = RoundedCornerShape(24.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 6.dp,
+                        modifier = Modifier
+                            .fillMaxWidth(0.92f)
+                            .padding(vertical = 24.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp)
+                        ) {
+                            // Dialog Header
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.field_whatsapp_title),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "Select Country Code / اختر رمز الدولة",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        showCountryDialog = false
+                                        countrySearchQuery = ""
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Close",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Search bar
+                            OutlinedTextField(
+                                value = countrySearchQuery,
+                                onValueChange = { countrySearchQuery = it },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(R.string.field_country_code_search),
+                                        fontSize = 14.sp
+                                    )
+                                },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                },
+                                trailingIcon = {
+                                    if (countrySearchQuery.isNotBlank()) {
+                                        IconButton(onClick = { countrySearchQuery = "" }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Close,
+                                                contentDescription = "Clear search",
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                    }
+                                },
+                                singleLine = true,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = outlinedFieldColors(),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Countries List
+                            LazyColumn(
+                                verticalArrangement = Arrangement.spacedBy(4.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = 380.dp)
+                            ) {
+                                items(filteredCountries) { item ->
+                                    val isSelected = item.code == uiState.whatsappCountryCode.replace("+", "").trim()
+                                    Surface(
+                                        shape = RoundedCornerShape(12.dp),
+                                        color = if (isSelected) WaslSaudiGreenLight else Color.Transparent,
+                                        border = if (isSelected) BorderStroke(1.dp, WaslSaudiGreen) else null,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                onWhatsappCountryCodeChange(item.code)
+                                                countrySearchQuery = ""
+                                                showCountryDialog = false
+                                            }
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+                                        ) {
+                                            Text(
+                                                text = item.flag,
+                                                fontSize = 22.sp,
+                                                modifier = Modifier.padding(end = 12.dp)
+                                            )
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Text(
+                                                    text = item.countryName,
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                                    color = if (isSelected) WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                                )
+                                                Text(
+                                                    text = "${item.countryName} • ${item.dialCode}",
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                            Text(
+                                                text = item.dialCode,
+                                                style = MaterialTheme.typography.labelLarge,
+                                                fontWeight = FontWeight.Bold,
+                                                color = if (isSelected) WaslSaudiGreen else MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            if (isSelected) {
+                                                Spacer(modifier = Modifier.width(8.dp))
+                                                Icon(
+                                                    imageVector = Icons.Default.Check,
+                                                    contentDescription = null,
+                                                    tint = WaslSaudiGreen,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
