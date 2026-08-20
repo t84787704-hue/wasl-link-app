@@ -16,17 +16,25 @@
     <string name="template_perfumes">Perfumes</string>
 
     <!-- Form Field Labels & Placeholders -->
-    <string name="field_shop_name_en_title">Shop Name (English / Standard)</string>
-    <string name="field_shop_name_en_subtitle">English or standard brand name</string>
-    <string name="field_shop_name_en_hint">e.g. Al-Naseem Specialty Coffee</string>
+    <string name="field_shop_name_en_title">Shop Name (English) *</string>
+    <string name="field_shop_name_en_subtitle">This will show as your store title</string>
+    <string name="field_shop_name_en_hint">Enter your shop name here - e.g. My Coffee Shop</string>
 
-    <string name="field_shop_name_ar_title">Arabic Shop Name</string>
+    <string name="field_shop_name_ar_title">Shop Name (Arabic)</string>
     <string name="field_shop_name_ar_subtitle">Arabic display name for your storefront</string>
-    <string name="field_shop_name_ar_hint">e.g. محمصة وقهوة النسيم</string>
+    <string name="field_shop_name_ar_hint">اكتب اسم متجرك هنا - مثال: قهوة النسيم</string>
 
-    <string name="field_whatsapp_title">WhatsApp Number</string>
-    <string name="field_whatsapp_subtitle">Saudi WhatsApp number (9 digits)</string>
-    <string name="field_whatsapp_hint">501234567</string>
+    <string name="field_whatsapp_title">WhatsApp *</string>
+    <string name="field_whatsapp_subtitle">Saudi WhatsApp number</string>
+    <string name="field_whatsapp_hint">5X XXX XXXX - Enter here</string>
+
+    <string name="field_category_title">Category</string>
+    <string name="field_category_subtitle">Your shop business category</string>
+    <string name="field_category_hint">Select category here - e.g. Cafe, Bakery</string>
+
+    <string name="field_city_title">Location / City</string>
+    <string name="field_city_subtitle">City or region in Saudi Arabia</string>
+    <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
 
     <string name="field_greeting_title">Default WhatsApp Greeting</string>
     <string name="field_greeting_subtitle">Pre-filled text when customer taps WhatsApp</string>
@@ -39,15 +47,17 @@
 
     <string name="field_location_title">Google Maps Location Link</string>
     <string name="field_location_subtitle">Google Maps URL or GPS coordinates</string>
-    <string name="field_location_hint">https://maps.google.com/?q=24.7136,46.6753</string>
+    <string name="field_location_hint">Enter map link - e.g. https://maps.google.com/?q=...</string>
 
     <string name="btn_use_current_location">Use My Current Location</string>
     <string name="btn_detecting_location">Detecting location…</string>
     <string name="btn_pick_on_map">Pick on Map</string>
 
     <string name="field_menu_title">Menu Items &amp; Prices</string>
-    <string name="field_menu_subtitle">Enter each item with price per line</string>
-    <string name="field_menu_hint">• Flat White - 18 SAR\n• Cortado - 16 SAR\n• Saffron Cake - 28 SAR</string>
+    <string name="field_menu_subtitle">Enter each item with price per line or tap Add Item</string>
+    <string name="field_menu_hint">e.g. Flat White - 18 SAR</string>
+    <string name="btn_add_item_here">+ Add Item Here</string>
+    <string name="preview_empty_prompt">Fill the form above to see preview here</string>
 
     <string name="field_emblem_title">Shop Emblem Icon</string>
     <string name="save_success_banner">Shop details saved successfully to phone!</string>

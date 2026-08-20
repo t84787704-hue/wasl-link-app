@@ -213,8 +213,9 @@ fun PreviewScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Shop Names
+                val displayNameArabic = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } }
                 Text(
-                    text = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } },
+                    text = displayNameArabic,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = WaslTextPrimary,
@@ -282,7 +283,9 @@ fun PreviewScreen(
                 // --- 3 BIG BUTTONS ---
 
                 // Button 1: WhatsApp Button that opens WhatsApp
-                val formattedPhone = if (uiState.whatsappNumber.startsWith("966")) {
+                val formattedPhone = if (uiState.whatsappNumber.isBlank()) {
+                    "+966 5X XXX XXXX"
+                } else if (uiState.whatsappNumber.startsWith("966")) {
                     "+${uiState.whatsappNumber}"
                 } else {
                     "+966 ${uiState.whatsappNumber}"
@@ -308,8 +311,8 @@ fun PreviewScreen(
 
                 // Component 2: Interactive Shop Map Location Preview Card with Google Maps Launcher
                 ShopLocationPreviewCard(
-                    shopName = uiState.shopNameArabic.ifBlank { uiState.shopName },
-                    city = uiState.city,
+                    shopName = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } },
+                    city = uiState.city.ifBlank { "Saudi Arabia" },
                     locationUrl = uiState.locationUrl,
                     isArabic = false,
                     onOpenGoogleMaps = onOpenGoogleMaps,
@@ -320,13 +323,18 @@ fun PreviewScreen(
 
                 // Button 3: Menu Button that shows menu list
                 val menuLinesCount = uiState.menuItemsText.lines().filter { it.isNotBlank() }.size
+                val menuSubtitle = if (menuLinesCount > 0) {
+                    stringResource(R.string.menu_items_available, menuLinesCount)
+                } else {
+                    stringResource(R.string.btn_view_menu)
+                }
                 WaslBigActionButton(
                     icon = Icons.Default.RestaurantMenu,
                     iconColor = WaslSandGold,
                     iconBgColor = WaslSurfaceBeige,
                     titleArabic = stringResource(R.string.btn_view_menu),
                     titleEnglish = "Menu & Catalog",
-                    subtitle = stringResource(R.string.menu_items_available, menuLinesCount),
+                    subtitle = menuSubtitle,
                     testTag = "button_preview_menu",
                     onClick = onShowMenu
                 )

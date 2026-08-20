@@ -91,6 +91,8 @@ fun FormScreen(
     onShopNameChange: (String) -> Unit,
     onShopNameArabicChange: (String) -> Unit,
     onWhatsappChange: (String) -> Unit,
+    onCategoryChange: (String) -> Unit,
+    onCityChange: (String) -> Unit,
     onDefaultGreetingChange: (String) -> Unit,
     onLocationUrlChange: (String) -> Unit,
     onMenuItemsChange: (String) -> Unit,
@@ -265,15 +267,15 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = stringResource(R.string.field_shop_name_en_title),
-                        subtitle = stringResource(R.string.field_shop_name_en_subtitle),
+                        title = "Shop Name (English) *",
+                        subtitle = "This will show as your store title",
                         icon = Icons.Default.Storefront
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.shopName,
                         onValueChange = onShopNameChange,
-                        placeholder = { Text(stringResource(R.string.field_shop_name_en_hint), color = WaslTextSecondary.copy(alpha = 0.6f)) },
+                        placeholder = { Text("Enter your shop name here - e.g. My Coffee Shop", color = Color.Gray.copy(alpha = 0.6f)) },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -295,15 +297,15 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = stringResource(R.string.field_shop_name_ar_title),
-                        subtitle = stringResource(R.string.field_shop_name_ar_subtitle),
+                        title = "Shop Name (Arabic)",
+                        subtitle = "Arabic display name for your storefront",
                         icon = Icons.Default.Edit
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.shopNameArabic,
                         onValueChange = onShopNameArabicChange,
-                        placeholder = { Text(stringResource(R.string.field_shop_name_ar_hint), color = WaslTextSecondary.copy(alpha = 0.6f)) },
+                        placeholder = { Text("اكتب اسم متجرك هنا - مثال: قهوة النسيم", color = Color.Gray.copy(alpha = 0.6f)) },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -325,8 +327,8 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = stringResource(R.string.field_whatsapp_title),
-                        subtitle = stringResource(R.string.field_whatsapp_subtitle),
+                        title = "WhatsApp *",
+                        subtitle = "Saudi WhatsApp number (e.g. 501234567)",
                         icon = Icons.Default.Phone
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -345,7 +347,7 @@ fun FormScreen(
                                 modifier = Modifier.padding(horizontal = 12.dp)
                             ) {
                                 Text(
-                                    text = "🇸🇦 +966",
+                                    text = "+966",
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = WaslSaudiGreen
@@ -358,7 +360,7 @@ fun FormScreen(
                         OutlinedTextField(
                             value = uiState.whatsappNumber,
                             onValueChange = onWhatsappChange,
-                            placeholder = { Text(stringResource(R.string.field_whatsapp_hint), color = WaslTextSecondary.copy(alpha = 0.6f)) },
+                            placeholder = { Text("5X XXX XXXX - Enter here", color = Color.Gray.copy(alpha = 0.6f)) },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             singleLine = true,
                             shape = RoundedCornerShape(14.dp),
@@ -373,7 +375,67 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Field 4: Default Greeting Message
+            // Field 4: Category
+            Card(
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
+                border = BorderStroke(1.dp, WaslBorderBeige),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(18.dp)) {
+                    FormFieldLabel(
+                        title = "Category",
+                        subtitle = "Select category or enter type of store",
+                        icon = Icons.Default.Storefront
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = uiState.category,
+                        onValueChange = onCategoryChange,
+                        placeholder = { Text("Select category here - e.g. Cafe, Bakery", color = Color.Gray.copy(alpha = 0.6f)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        colors = outlinedFieldColors(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_category")
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Field 5: Location / City
+            Card(
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
+                border = BorderStroke(1.dp, WaslBorderBeige),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(18.dp)) {
+                    FormFieldLabel(
+                        title = "Location / City",
+                        subtitle = "City or region for your store",
+                        icon = Icons.Default.LocationOn
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = uiState.city,
+                        onValueChange = onCityChange,
+                        placeholder = { Text("Enter city here - e.g. Riyadh", color = Color.Gray.copy(alpha = 0.6f)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(14.dp),
+                        colors = outlinedFieldColors(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("input_city")
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Field 6: Default Greeting Message
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
@@ -390,7 +452,7 @@ fun FormScreen(
                     OutlinedTextField(
                         value = uiState.defaultGreeting,
                         onValueChange = onDefaultGreetingChange,
-                        placeholder = { Text(stringResource(R.string.field_greeting_hint), color = WaslTextSecondary.copy(alpha = 0.6f)) },
+                        placeholder = { Text("e.g. Hello, I would like to order and inquire...", color = Color.Gray.copy(alpha = 0.6f)) },
                         minLines = 2,
                         maxLines = 4,
                         shape = RoundedCornerShape(14.dp),
@@ -454,7 +516,7 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Field 5: Location URL + Auto-GPS Detection
+            // Field 7: Location URL + Auto-GPS Detection
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
@@ -471,7 +533,7 @@ fun FormScreen(
                     OutlinedTextField(
                         value = uiState.locationUrl,
                         onValueChange = onLocationUrlChange,
-                        placeholder = { Text(stringResource(R.string.field_location_hint), color = WaslTextSecondary.copy(alpha = 0.6f)) },
+                        placeholder = { Text("https://maps.google.com/?q=...", color = Color.Gray.copy(alpha = 0.6f)) },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -565,7 +627,7 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Field 6: Menu Items & Pricing
+            // Field 8: Menu Items & Pricing + "+ Add Item Here" Button
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
@@ -573,22 +635,31 @@ fun FormScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
-                    FormFieldLabel(
-                        title = stringResource(R.string.field_menu_title),
-                        subtitle = stringResource(R.string.field_menu_subtitle),
-                        icon = Icons.Default.RestaurantMenu
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        FormFieldLabel(
+                            title = stringResource(R.string.field_menu_title),
+                            subtitle = stringResource(R.string.field_menu_subtitle),
+                            icon = Icons.Default.RestaurantMenu,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(8.dp))
+
                     OutlinedTextField(
                         value = uiState.menuItemsText,
                         onValueChange = onMenuItemsChange,
                         placeholder = {
                             Text(
                                 stringResource(R.string.field_menu_hint),
-                                color = WaslTextSecondary.copy(alpha = 0.6f)
+                                color = Color.Gray.copy(alpha = 0.6f)
                             )
                         },
-                        minLines = 4,
+                        minLines = 3,
                         maxLines = 10,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -596,6 +667,35 @@ fun FormScreen(
                             .fillMaxWidth()
                             .testTag("input_menu_items")
                     )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // + Add Item Here Button
+                    OutlinedButton(
+                        onClick = {
+                            val newItem = if (uiState.menuItemsText.isBlank()) {
+                                "• Item Name - 20 SAR"
+                            } else {
+                                "\n• Item Name - 20 SAR"
+                            }
+                            onMenuItemsChange(uiState.menuItemsText + newItem)
+                        },
+                        shape = RoundedCornerShape(14.dp),
+                        border = BorderStroke(1.dp, WaslSaudiGreen),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = WaslSaudiGreen
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(44.dp)
+                            .testTag("button_add_item_here")
+                    ) {
+                        Text(
+                            text = stringResource(R.string.btn_add_item_here),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
@@ -777,10 +877,12 @@ fun FormScreen(
 private fun FormFieldLabel(
     title: String,
     subtitle: String,
-    icon: ImageVector
+    icon: ImageVector,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
     ) {
         Icon(
             imageVector = icon,
