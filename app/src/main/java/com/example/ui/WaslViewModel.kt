@@ -285,25 +285,9 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Direct WhatsApp Launcher Action
+    // Direct WhatsApp Launcher Action - Opens WhatsApp with pre-filled greeting in type bar
     fun openWhatsApp(context: Context) {
-        val state = _uiState.value
-        val rawNumber = state.whatsappNumber.trim()
-        val formattedNumber = if (rawNumber.startsWith("966")) {
-            rawNumber
-        } else if (rawNumber.startsWith("0")) {
-            "966" + rawNumber.substring(1)
-        } else {
-            "966$rawNumber"
-        }
-
-        val greetingText = if (state.defaultGreeting.isNotBlank()) {
-            state.defaultGreeting
-        } else {
-            context.getString(R.string.field_greeting_hint)
-        }
-        val encodedGreeting = Uri.encode(greetingText)
-        val url = "https://wa.me/$formattedNumber?text=$encodedGreeting"
+        val url = getWhatsAppLinkWithGreeting()
 
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
@@ -346,7 +330,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getCleanPhoneNumber(): String {
-        val digits = _uiState.value.whatsappNumber.replace(Regex("[^0-9]"), "")
+        val digits = _uiState.value.whatsappNumber.replace("+", "").replace(" ", "").filter { it.isDigit() }
         return when {
             digits.startsWith("966") -> digits.removePrefix("966")
             digits.startsWith("0") -> digits.removePrefix("0")
@@ -354,10 +338,27 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getWhatsAppLink(): String {
+    fun getWhatsAppNumberFull(): String {
         val cleanPhone = getCleanPhoneNumber()
-        val formattedNumber = if (cleanPhone.isNotBlank()) "966$cleanPhone" else "966500000000"
-        return "https://wa.me/$formattedNumber"
+        return if (cleanPhone.isNotBlank()) "966$cleanPhone" else ""
+    }
+
+    // Generates wa.me link with encoded custom default greeting
+    fun getWhatsAppLinkWithGreeting(): String {
+        val state = _uiState.value
+        val phoneFull = getWhatsAppNumberFull()
+        val formattedNumber = if (phoneFull.isNotBlank()) phoneFull else "966591257059"
+        val greetingText = state.defaultGreeting.trim()
+        val encodedGreeting = if (greetingText.isNotBlank()) Uri.encode(greetingText) else ""
+        return if (encodedGreeting.isNotBlank()) {
+            "https://wa.me/$formattedNumber?text=$encodedGreeting"
+        } else {
+            "https://wa.me/$formattedNumber"
+        }
+    }
+
+    fun getWhatsAppLink(): String {
+        return getWhatsAppLinkWithGreeting()
     }
 
     fun getMapsLink(): String {
@@ -378,7 +379,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getFormattedPhoneDisplay(): String {
         val cleanPhone = getCleanPhoneNumber()
-        return if (cleanPhone.isNotBlank()) "+966 $cleanPhone" else "+966 50 000 0000"
+        return if (cleanPhone.isNotBlank()) "+966 $cleanPhone" else "+966 59 125 7059"
     }
 
     fun getLocationDisplay(): String {
@@ -397,7 +398,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         return if (state.city.isNotBlank()) state.city else "Location available on QR"
     }
 
-    // Final Share Message: Plain +966 phone (no preview card) + Menu Items & Prices + Clickable Maps URL
+    // Final Share Message: Shop Info + Menu + WhatsApp Link (with pre-filled greeting) + Google Maps Link
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
@@ -412,7 +413,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         val header = if (city.isNotBlank()) "📍 $shopName - $city" else "📍 $shopName"
-        val phoneDisplay = getFormattedPhoneDisplay()
+        val waLinkWithGreeting = getWhatsAppLinkWithGreeting()
         val mapsLink = getMapsLink()
 
         val menuRaw = state.menuItemsText.trim()
@@ -428,7 +429,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             if (menuSection.isNotBlank()) {
                 append(menuSection)
             }
-            appendLine("💬 WhatsApp: $phoneDisplay")
+            appendLine("💬 WhatsApp: $waLinkWithGreeting")
             appendLine("🗺️ Location: $mapsLink")
             appendLine()
             append("✨ Created via Wasl Market | وصل")

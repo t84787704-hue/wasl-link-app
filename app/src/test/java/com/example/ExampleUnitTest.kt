@@ -22,11 +22,11 @@ class ExampleUnitTest {
 
   @Test
   fun whatsAppUrlWithDefaultGreeting_isProperlyEncoded() {
-    val phone = "501234567"
-    val greeting = "Hello, I would like to order..."
-    val encoded = java.net.URLEncoder.encode(greeting, "UTF-8")
+    val phone = "591257059"
+    val greeting = "Hello, I'd like to order from the menu"
+    val encoded = java.net.URLEncoder.encode(greeting, "UTF-8").replace("+", "%20")
     val url = "https://wa.me/966$phone?text=$encoded"
-    assertTrue(url.startsWith("https://wa.me/966501234567?text=Hello"))
+    assertTrue(url.startsWith("https://wa.me/966591257059?text=Hello"))
     assertTrue(url.contains("order"))
   }
 }

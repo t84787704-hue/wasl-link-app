@@ -73,15 +73,21 @@ fun QrBottomSheet(
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val cleanWhatsapp = uiState.whatsappNumber.replace(Regex("[^0-9]"), "").let { digits ->
+    val cleanWhatsapp = uiState.whatsappNumber.replace("+", "").replace(" ", "").filter { it.isDigit() }.let { digits ->
         when {
             digits.startsWith("966") -> digits.removePrefix("966")
             digits.startsWith("0") -> digits.removePrefix("0")
             else -> digits
         }
     }
-    val formattedWhatsapp = if (cleanWhatsapp.isNotBlank()) "966$cleanWhatsapp" else "966500000000"
-    val whatsappLink = "https://wa.me/$formattedWhatsapp"
+    val formattedWhatsapp = if (cleanWhatsapp.isNotBlank()) "966$cleanWhatsapp" else "966591257059"
+    val greetingText = uiState.defaultGreeting.trim()
+    val encodedGreeting = if (greetingText.isNotBlank()) Uri.encode(greetingText) else ""
+    val waLinkWithGreeting = if (encodedGreeting.isNotBlank()) {
+        "https://wa.me/$formattedWhatsapp?text=$encodedGreeting"
+    } else {
+        "https://wa.me/$formattedWhatsapp"
+    }
 
     val mapsLink = uiState.locationUrl.trim().let { rawUrl ->
         val coordsMatch = Regex("([0-9.-]+)\\s*[,\\s]\\s*([0-9.-]+)").find(rawUrl)
@@ -97,28 +103,8 @@ fun QrBottomSheet(
         }
     }
 
-    val phoneDisplay = if (cleanWhatsapp.isNotBlank()) "+966 $cleanWhatsapp" else "+966 50 000 0000"
-    val locationDisplay = remember(uiState.locationUrl, uiState.city) {
-        val raw = uiState.locationUrl.trim()
-        val latMatch = Regex("query=([0-9.-]+),([0-9.-]+)").find(raw)
-        if (latMatch != null) {
-            val (lat, lng) = latMatch.destructured
-            "$lat, $lng"
-        } else {
-            val coordsMatch = Regex("([0-9.-]+),\\s*([0-9.-]+)").find(raw)
-            if (coordsMatch != null) {
-                val (lat, lng) = coordsMatch.destructured
-                "$lat, $lng"
-            } else if (uiState.city.isNotBlank()) {
-                uiState.city
-            } else {
-                "Location available on QR"
-            }
-        }
-    }
-
-    val qrBitmap: Bitmap? = remember(whatsappLink) {
-        QrCodeGenerator.generateQrBitmap(whatsappLink, 600)
+    val qrBitmap: Bitmap? = remember(waLinkWithGreeting) {
+        QrCodeGenerator.generateQrBitmap(waLinkWithGreeting, 600)
     }
 
     val nameEn = uiState.shopName.trim()
@@ -145,7 +131,7 @@ fun QrBottomSheet(
         if (menuSection.isNotBlank()) {
             append(menuSection)
         }
-        appendLine("💬 WhatsApp: $phoneDisplay")
+        appendLine("💬 WhatsApp: $waLinkWithGreeting")
         appendLine("🗺️ Location: $mapsLink")
         appendLine()
         append("✨ Created via Wasl Market | وصل")
@@ -333,7 +319,7 @@ fun QrBottomSheet(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                         ) {
                             Text(
-                                text = whatsappLink,
+                                text = waLinkWithGreeting,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
@@ -342,7 +328,7 @@ fun QrBottomSheet(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             IconButton(
-                                onClick = { QrCodeGenerator.copyToClipboard(context, whatsappLink) },
+                                onClick = { QrCodeGenerator.copyToClipboard(context, waLinkWithGreeting) },
                                 modifier = Modifier.size(30.dp)
                             ) {
                                 Icon(
@@ -369,7 +355,7 @@ fun QrBottomSheet(
                         category = uiState.category,
                         city = uiState.city,
                         logoEmoji = uiState.logoEmoji,
-                        qrContent = whatsappLink
+                        qrContent = waLinkWithGreeting
                     )
                     if (brandedCard != null) {
                         QrCodeGenerator.shareQrImage(context, brandedCard, shareText)
@@ -451,7 +437,7 @@ fun QrBottomSheet(
 
                 // Copy Link Button
                 OutlinedButton(
-                    onClick = { QrCodeGenerator.copyToClipboard(context, whatsappLink) },
+                    onClick = { QrCodeGenerator.copyToClipboard(context, waLinkWithGreeting) },
                     shape = RoundedCornerShape(14.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier
