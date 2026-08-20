@@ -8,6 +8,104 @@ package com.example.data
  */
 object TranslationHelper {
 
+    val translations: Map<String, Map<String, String>> = mapOf(
+        "en" to mapOf(
+            "editForm" to "Edit Form",
+            "preview" to "Preview",
+            "settings" to "Settings",
+            "shopName" to "Shop Name",
+            "shopCategory" to "Shop Category",
+            "locationCity" to "Location / City",
+            "googleMapsLink" to "Google Maps Location Link",
+            "menuTitle" to "Menu Items & Prices",
+            "menuHint" to "Type each item with price",
+            "saveShop" to "Save Shop",
+            "previewLink" to "Preview Link",
+            "whatsAppChat" to "WhatsApp Chat",
+            "viewMenu" to "View Menu & Prices",
+            "openInGoogle" to "Open in Google Maps",
+            "directions" to "Get Directions",
+            "storeLocation" to "Store Location"
+        ),
+        "ar" to mapOf(
+            "editForm" to "تعديل النموذج",
+            "preview" to "معاينة المتجر",
+            "settings" to "الإعدادات",
+            "shopName" to "اسم المتجر",
+            "shopCategory" to "تصنيف المتجر",
+            "locationCity" to "الموقع / المدينة",
+            "googleMapsLink" to "رابط خرائط جوجل",
+            "menuTitle" to "قائمة المنتجات والأسعار",
+            "menuHint" to "اكتب كل منتج مع السعر",
+            "saveShop" to "حفظ المتجر",
+            "previewLink" to "معاينة الرابط",
+            "whatsAppChat" to "محادثة واتساب",
+            "viewMenu" to "عرض القائمة والأسعار",
+            "openInGoogle" to "فتح في خرائط جوجل",
+            "directions" to "الاتجاهات",
+            "storeLocation" to "موقع المتجر"
+        ),
+        "ur" to mapOf(
+            "editForm" to "فارم ترمیم کریں",
+            "preview" to "پیش نظارہ",
+            "settings" to "ترتیبات",
+            "shopName" to "دکان کا نام",
+            "shopCategory" to "دکان کی قسم",
+            "locationCity" to "شہر / مقام",
+            "googleMapsLink" to "گوگل نقشہ لنک",
+            "menuTitle" to "مینو آئٹمز اور قیمتیں",
+            "menuHint" to "ہر آئٹم قیمت کے ساتھ لکھیں",
+            "saveShop" to "دکان محفوظ کریں",
+            "previewLink" to "لنک دیکھیں",
+            "whatsAppChat" to "واٹس ایپ چیٹ",
+            "viewMenu" to "مینو اور قیمتیں دیکھیں",
+            "openInGoogle" to "گوگل میپس میں کھولیں",
+            "directions" to "راستہ دیکھیں",
+            "storeLocation" to "دکان کا مقام"
+        ),
+        "hi" to mapOf(
+            "editForm" to "फॉर्म संपादित करें",
+            "preview" to "पूर्वावलोकन",
+            "settings" to "सेटिंग्स",
+            "shopName" to "दुकान का नाम",
+            "shopCategory" to "दुकान श्रेणी",
+            "locationCity" to "स्थान / शहर",
+            "googleMapsLink" to "Google मानचित्र लिंक",
+            "menuTitle" to "मेनू आइटम और कीमतें",
+            "menuHint" to "प्रत्येक आइटम को कीमत के साथ लिखें",
+            "saveShop" to "दुकान सहेजें",
+            "previewLink" to "लिंक देखें",
+            "whatsAppChat" to "व्हाट्सएप चैट",
+            "viewMenu" to "मेनू और कीमतें देखें",
+            "openInGoogle" to "Google में खोलें",
+            "directions" to "दिशा-निर्देश",
+            "storeLocation" to "स्टोर का भौतिक स्थान"
+        ),
+        "zh" to mapOf(
+            "editForm" to "编辑表格",
+            "preview" to "预览",
+            "settings" to "设置",
+            "shopName" to "商店名称",
+            "shopCategory" to "商店类别",
+            "locationCity" to "位置 / 城市",
+            "googleMapsLink" to "Google 地图位置链接",
+            "menuTitle" to "菜单项和价格",
+            "menuHint" to "输入每件商品及价格",
+            "saveShop" to "保存商店",
+            "previewLink" to "预览链接",
+            "whatsAppChat" to "WhatsApp 聊天",
+            "viewMenu" to "查看菜单和价格",
+            "openInGoogle" to "在 Google 地图中打开",
+            "directions" to "获取路线",
+            "storeLocation" to "商店实体位置"
+        )
+    )
+
+    fun getTranslation(key: String, lang: String): String {
+        val effective = getEffectiveLanguage(lang)
+        return translations[effective]?.get(key) ?: translations["en"]?.get(key) ?: key
+    }
+
     /**
      * Resolves the effective language code ("en", "ar", "ur", "zh", "hi")
      * from the selected language setting. If "system", falls back to "en" or "ar" depending on device default.

@@ -356,6 +356,8 @@ fun WaslTopAppBar(
                                 text = when (selectedLanguageCode) {
                                     "ar" -> "العربية"
                                     "ur" -> "اردو"
+                                    "hi" -> "हिन्दी"
+                                    "zh" -> "中文"
                                     else -> "EN"
                                 },
                                 style = MaterialTheme.typography.labelSmall,
@@ -407,6 +409,32 @@ fun WaslTopAppBar(
                             onClick = {
                                 showLanguageDropdown = false
                                 activity?.let { onLanguageSelected("ur", it) }
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "🇮🇳 हिन्दी (Hindi)",
+                                    fontWeight = if (selectedLanguageCode == "hi") FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedLanguageCode == "hi") WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            onClick = {
+                                showLanguageDropdown = false
+                                activity?.let { onLanguageSelected("hi", it) }
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "🇨🇳 中文 (Chinese)",
+                                    fontWeight = if (selectedLanguageCode == "zh") FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedLanguageCode == "zh") WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            onClick = {
+                                showLanguageDropdown = false
+                                activity?.let { onLanguageSelected("zh", it) }
                             }
                         )
                     }
