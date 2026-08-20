@@ -345,23 +345,45 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Share Storefront Link
+    // Share Storefront Link - Formatted to prevent generic WhatsApp preview cards
     fun shareStoreLink(context: Context) {
         val state = _uiState.value
-        val greetingText = if (state.defaultGreeting.isNotBlank()) {
-            state.defaultGreeting
+        val shopNameEn = state.shopName.ifBlank { "Wasl Store" }
+        val shopNameAr = state.shopNameArabic.ifBlank { "" }
+        val titleLine = if (shopNameAr.isNotBlank()) {
+            "📍 $shopNameEn ($shopNameAr)"
         } else {
-            "Hello, I would like to order and inquire from ${state.shopName}."
+            "📍 $shopNameEn"
         }
-        val encodedGreeting = Uri.encode(greetingText)
+
+        val metaList = listOf(state.category, state.city).filter { it.isNotBlank() }
+        val metaLine = if (metaList.isNotEmpty()) metaList.joinToString(" • ") else "المملكة العربية السعودية • Saudi Arabia"
+
+        val cleanPhone = state.whatsappNumber.replace(Regex("[^0-9]"), "")
+        val formattedPhone = when {
+            cleanPhone.startsWith("966") -> cleanPhone
+            cleanPhone.isNotBlank() -> "966$cleanPhone"
+            else -> ""
+        }
+
+        val waSection = if (formattedPhone.isNotBlank()) {
+            "\n💬 رابط المتجر والتواصل عبر واتساب:\nwa.me/$formattedPhone"
+        } else {
+            ""
+        }
+
+        val mapSection = if (state.locationUrl.isNotBlank()) {
+            "\n🗺️ الموقع على خرائط جوجل:\n${state.locationUrl}"
+        } else {
+            ""
+        }
+
         val shareText = """
-            📍 ${state.shopNameArabic} (${state.shopName})
-            ${state.category} - ${state.city}
-            
-            💬 WhatsApp: https://wa.me/966${state.whatsappNumber}?text=$encodedGreeting
-            🗺️ Map: ${state.locationUrl}
-            
-            ✨ Created via Wasl Market
+$titleLine
+$metaLine
+$waSection$mapSection
+
+تم إنشاء الرابط عبر تطبيق وصل ✨ (Wasl)
         """.trimIndent()
 
         val sendIntent = Intent().apply {
