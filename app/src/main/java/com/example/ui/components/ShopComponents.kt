@@ -90,14 +90,21 @@ fun WaslBigActionButton(
     icon: ImageVector,
     iconColor: Color,
     iconBgColor: Color,
-    titleArabic: String,
-    titleEnglish: String,
+    title: String,
+    titleArabic: String? = null,
+    titleEnglish: String? = null,
     subtitle: String,
     badgeText: String? = null,
     testTag: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val displayTitle = when {
+        titleArabic != null && titleEnglish == null -> titleArabic
+        titleArabic != null && titleEnglish != null -> titleArabic
+        else -> title
+    }
+    val secondaryTitle = if (titleEnglish != null && titleArabic != null && titleEnglish != titleArabic) null else null
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(24.dp),
@@ -146,7 +153,7 @@ fun WaslBigActionButton(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = titleArabic,
+                        text = displayTitle,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = WaslTextPrimary,
@@ -169,13 +176,6 @@ fun WaslBigActionButton(
                         }
                     }
                 }
-
-                Text(
-                    text = titleEnglish,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Medium,
-                    color = WaslSandGold
-                )
 
                 if (subtitle.isNotBlank()) {
                     Spacer(modifier = Modifier.height(2.dp))

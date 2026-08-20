@@ -3,6 +3,7 @@ package com.example.ui
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +30,8 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -36,6 +39,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -61,6 +68,7 @@ import com.example.ui.screens.PreviewScreen
 import com.example.ui.screens.QrBottomSheet
 import com.example.ui.screens.SettingsScreen
 import com.example.ui.theme.WaslGoldLight
+import com.example.ui.theme.WaslSaudiGreen
 
 @Composable
 fun WaslApp(viewModel: WaslViewModel) {
@@ -87,6 +95,10 @@ fun WaslApp(viewModel: WaslViewModel) {
         topBar = {
             WaslTopAppBar(
                 isDarkMode = uiState.isDarkMode,
+                selectedLanguageCode = uiState.selectedLanguageCode,
+                onLanguageSelected = { langCode, activity ->
+                    viewModel.selectLanguage(langCode, activity)
+                },
                 onOpenLanguageSettings = { viewModel.setActiveTab(2) },
                 onToggleDarkMode = { viewModel.toggleDarkMode() },
                 onOpenQr = { viewModel.setShowQrSheet(true) }
@@ -196,6 +208,7 @@ fun WaslApp(viewModel: WaslViewModel) {
                 whatsappCountryCode = uiState.whatsappCountryCode,
                 menuText = uiState.menuItemsText,
                 selectedCurrency = uiState.selectedCurrency,
+                selectedLanguageCode = uiState.selectedLanguageCode,
                 isArabic = false,
                 onDismiss = { viewModel.setShowMenuSheet(false) }
             )
@@ -215,10 +228,16 @@ fun WaslApp(viewModel: WaslViewModel) {
 @Composable
 fun WaslTopAppBar(
     isDarkMode: Boolean,
+    selectedLanguageCode: String,
+    onLanguageSelected: (String, Activity) -> Unit,
     onOpenLanguageSettings: () -> Unit,
     onToggleDarkMode: () -> Unit,
     onOpenQr: () -> Unit
 ) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    var showLanguageDropdown by remember { mutableStateOf(false) }
+
     Surface(
         color = MaterialTheme.colorScheme.background,
         modifier = Modifier.fillMaxWidth()
@@ -311,32 +330,84 @@ fun WaslTopAppBar(
                     }
                 }
 
-                // Language Switcher / Settings Button
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surface,
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .clickable(onClick = onOpenLanguageSettings)
-                        .testTag("button_open_language")
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                // Quick Language Switcher Globe Button
+                Box {
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .clickable { showLanguageDropdown = true }
+                            .testTag("button_open_language")
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Language,
-                            contentDescription = stringResource(R.string.language_title),
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.size(15.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Language,
+                                contentDescription = stringResource(R.string.language_title),
+                                tint = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(15.dp)
+                            )
+                            Spacer(modifier = Modifier.width(3.dp))
+                            Text(
+                                text = when (selectedLanguageCode) {
+                                    "ar" -> "العربية"
+                                    "ur" -> "اردو"
+                                    else -> "EN"
+                                },
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    }
+
+                    DropdownMenu(
+                        expanded = showLanguageDropdown,
+                        onDismissRequest = { showLanguageDropdown = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "🇬🇧 English",
+                                    fontWeight = if (selectedLanguageCode == "en") FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedLanguageCode == "en") WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            onClick = {
+                                showLanguageDropdown = false
+                                activity?.let { onLanguageSelected("en", it) }
+                            }
                         )
-                        Spacer(modifier = Modifier.width(3.dp))
-                        Text(
-                            text = "🌐",
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "🇸🇦 العربية (Arabic)",
+                                    fontWeight = if (selectedLanguageCode == "ar") FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedLanguageCode == "ar") WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            onClick = {
+                                showLanguageDropdown = false
+                                activity?.let { onLanguageSelected("ar", it) }
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = "🇵🇰 اردو (Urdu)",
+                                    fontWeight = if (selectedLanguageCode == "ur") FontWeight.Bold else FontWeight.Normal,
+                                    color = if (selectedLanguageCode == "ur") WaslSaudiGreen else MaterialTheme.colorScheme.onSurface
+                                )
+                            },
+                            onClick = {
+                                showLanguageDropdown = false
+                                activity?.let { onLanguageSelected("ur", it) }
+                            }
                         )
                     }
                 }

@@ -447,7 +447,7 @@ fun FormScreen(
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = "Select Country Code / اختر رمز الدولة",
+                                        text = stringResource(R.string.field_country_code_search),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -582,15 +582,15 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = "Category",
-                        subtitle = "Select category or enter type of store",
+                        title = stringResource(R.string.field_category_title),
+                        subtitle = stringResource(R.string.field_category_subtitle),
                         icon = Icons.Default.Storefront
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.category,
                         onValueChange = onCategoryChange,
-                        placeholder = { Text("Select category here - e.g. Cafe, Bakery", color = Color.Gray.copy(alpha = 0.6f)) },
+                        placeholder = { Text(stringResource(R.string.field_category_hint), color = Color.Gray.copy(alpha = 0.6f)) },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -612,15 +612,15 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = "Location / City",
-                        subtitle = "City or region for your store",
+                        title = stringResource(R.string.field_city_title),
+                        subtitle = stringResource(R.string.field_city_subtitle),
                         icon = Icons.Default.LocationOn
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.city,
                         onValueChange = onCityChange,
-                        placeholder = { Text("Enter city here - e.g. Riyadh", color = Color.Gray.copy(alpha = 0.6f)) },
+                        placeholder = { Text(stringResource(R.string.field_city_hint), color = Color.Gray.copy(alpha = 0.6f)) },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -1004,12 +1004,18 @@ fun FormScreen(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     // + Add Item Here Button
+                    val effectiveLang = com.example.data.TranslationHelper.getEffectiveLanguage(uiState.selectedLanguageCode)
+                    val sampleItem = when (effectiveLang) {
+                        "ar" -> "• اسم المنتج - 20 ر.س"
+                        "ur" -> "• پروڈکٹ کا نام - 20 ریال"
+                        else -> "• Item Name - 20 SAR"
+                    }
                     OutlinedButton(
                         onClick = {
                             val newItem = if (uiState.menuItemsText.isBlank()) {
-                                "• Item Name - 20 SAR"
+                                sampleItem
                             } else {
-                                "\n• Item Name - 20 SAR"
+                                "\n$sampleItem"
                             }
                             onMenuItemsChange(uiState.menuItemsText + newItem)
                         },

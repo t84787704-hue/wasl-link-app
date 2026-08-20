@@ -214,7 +214,11 @@ fun PreviewScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Shop Name
-                val displayName = uiState.shopName.ifBlank { "Wasl Market" }
+                val effectiveLang = com.example.data.TranslationHelper.getEffectiveLanguage(uiState.selectedLanguageCode)
+                val displayName = com.example.data.TranslationHelper.filterBilingualText(
+                    uiState.shopName.ifBlank { "Wasl Market" },
+                    effectiveLang
+                )
                 Text(
                     text = displayName,
                     style = MaterialTheme.typography.headlineMedium,
@@ -227,12 +231,16 @@ fun PreviewScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // City & Category
+                val displayCity = com.example.data.TranslationHelper.filterBilingualText(
+                    uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
+                    effectiveLang
+                )
                 Surface(
                     shape = RoundedCornerShape(16.dp),
                     color = WaslSurfaceBeige
                 ) {
                     Text(
-                        text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
+                        text = displayCity,
                         style = MaterialTheme.typography.labelSmall,
                         color = WaslTextSecondary,
                         fontWeight = FontWeight.Medium,
@@ -241,9 +249,13 @@ fun PreviewScreen(
                 }
 
                 if (uiState.category.isNotBlank()) {
+                    val displayCategory = com.example.data.TranslationHelper.filterBilingualText(
+                        uiState.category,
+                        effectiveLang
+                    )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = uiState.category,
+                        text = displayCategory,
                         style = MaterialTheme.typography.bodySmall,
                         color = WaslTextSecondary,
                         textAlign = TextAlign.Center
@@ -280,8 +292,7 @@ fun PreviewScreen(
                     icon = Icons.Default.Storefront,
                     iconColor = WaslSaudiGreen,
                     iconBgColor = WaslWhatsAppContainer,
-                    titleArabic = stringResource(R.string.btn_whatsapp_chat),
-                    titleEnglish = "WhatsApp",
+                    title = stringResource(R.string.btn_whatsapp_chat),
                     subtitle = whatsappSubtitle,
                     badgeText = null,
                     testTag = "button_preview_whatsapp",
@@ -313,15 +324,14 @@ fun PreviewScreen(
                     icon = Icons.Default.RestaurantMenu,
                     iconColor = WaslSandGold,
                     iconBgColor = WaslSurfaceBeige,
-                    titleArabic = stringResource(R.string.btn_view_menu),
-                    titleEnglish = "Menu & Catalog",
+                    title = stringResource(R.string.btn_view_menu),
                     subtitle = menuSubtitle,
                     testTag = "button_preview_menu",
                     onClick = onShowMenu
                 )
 
                 // Inline Menu List under shop buttons if menu items are entered
-                val parsedItems = parseMenuItems(uiState.menuItemsText, uiState.selectedCurrency)
+                val parsedItems = parseMenuItems(uiState.menuItemsText, uiState.selectedCurrency, uiState.selectedLanguageCode)
                 if (parsedItems.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Card(

@@ -27,18 +27,18 @@
 
     <string name="field_category_title">التصنيف</string>
     <string name="field_category_subtitle">تصنيف ونشاط متجرك التجاري</string>
-    <string name="field_category_hint">Select category here - e.g. Cafe, Bakery</string>
+    <string name="field_category_hint">اختر التصنيف هنا - مثال: مقهى، مخبز</string>
 
     <string name="field_city_title">الموقع / المدينة</string>
     <string name="field_city_subtitle">المدينة في المملكة العربية السعودية</string>
-    <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
+    <string name="field_city_hint">اكتب المدينة هنا - مثال: الرياض</string>
 
     <string name="field_currency_title">العملة *</string>
     <string name="field_currency_subtitle">اختر عملة عرض الأسعار والمنتجات</string>
 
-    <string name="field_greeting_title">رسالة الترحيب الافتراضية / WhatsApp Greeting</string>
+    <string name="field_greeting_title">رسالة الترحيب الافتراضية للواتساب</string>
     <string name="field_greeting_subtitle">النص التلقائي عند نقر العميل على زر الواتساب</string>
-    <string name="field_greeting_hint">اكتب بأي لغة - العربية، English، اردو - مثال: السلام عليكم، أريد الطلب / Hello, I\'d like to order</string>
+    <string name="field_greeting_hint">اكتب رسالة الترحيب - مثال: السلام عليكم، أود الطلب من القائمة</string>
 
     <string name="greeting_suggestion_order">☕ السلام عليكم، أود الطلب من القائمة</string>
     <string name="greeting_suggestion_delivery">📦 مرحباً، أود الاستفسار عن التوصيل والأسعار</string>
@@ -49,7 +49,7 @@
 
     <string name="field_location_title">رابط موقع المتجر (خرائط Google)</string>
     <string name="field_location_subtitle">رابط خرائط جوجل أو إحداثيات GPS</string>
-    <string name="field_location_hint">Enter map link - e.g. https://maps.google.com/?q=...</string>
+    <string name="field_location_hint">رابط الخريطة - مثال: https://maps.google.com/?q=...</string>
 
     <string name="btn_use_current_location">استخدام موقعي الحالي</string>
     <string name="btn_detecting_location">جاري تحديد الموقع…</string>

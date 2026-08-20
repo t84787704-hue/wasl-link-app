@@ -204,91 +204,22 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loadSampleTemplate(type: String) {
-        when (type) {
-            "cafe" -> {
-                _uiState.update {
-                    it.copy(
-                        shopName = "Al-Naseem Specialty Coffee",
-                        whatsappNumber = "501234567",
-                        defaultGreeting = "السلام عليكم، أود طلب قهوة ومخبوزات من قائمة اليوم ☕",
-                        locationUrl = "https://maps.google.com/?q=Riyadh+Al-Olaya",
-                        logoEmoji = "☕",
-                        category = "مقهى ومخبوزات • Specialty Cafe",
-                        city = "الرياض • Riyadh",
-                        menuItemsText = """
-                            • فلات وايت | Flat White - 18 ر.س
-                            • كورتادو | Cortado - 16 ر.س
-                            • سبانش لاتيه بارد | Iced Spanish Latte - 22 ر.س
-                            • قهوة اليوم V60 | V60 Drip Coffee - 20 ر.س
-                            • كيكة التمر بالكراميل | Date Caramel Cake - 26 ر.س
-                            • كرواسون الجبن والزعتر | Thyme & Cheese Croissant - 15 ر.س
-                        """.trimIndent(),
-                        isSaveSuccess = false
-                    )
-                }
-            }
-            "bakery" -> {
-                _uiState.update {
-                    it.copy(
-                        shopName = "Loom Artisanal Bakery",
-                        whatsappNumber = "559876543",
-                        defaultGreeting = "مرحباً، أود حجز مخبوزات طازجة من مخبز لوم 🥐",
-                        locationUrl = "https://maps.google.com/?q=Jeddah+Rawdah",
-                        logoEmoji = "🥐",
-                        category = "مخبوزات وحلويات • Bakery & Pastries",
-                        city = "جدة • Jeddah",
-                        menuItemsText = """
-                            • خبز الساوردو الريفي | Country Sourdough Loaf - 24 ر.س
-                            • دنش التوت والكراميل | Berry Danish - 18 ر.س
-                            • كوكيز الشوكولاتة البلجيكية | Belgian Choc Cookie - 14 ر.س
-                            • كيكة البابكا بالشوكولاتة | Chocolate Babka - 38 ر.س
-                            • فطيرة التفاح بالقرفة | Apple Cinnamon Tart - 22 ر.س
-                        """.trimIndent(),
-                        isSaveSuccess = false
-                    )
-                }
-            }
-            "boutique" -> {
-                _uiState.update {
-                    it.copy(
-                        shopName = "Dar Al-Zain Abayas",
-                        whatsappNumber = "543210987",
-                        defaultGreeting = "السلام عليكم، أود الاستفسار عن المقاسات والطلب من تشكيلة العبايات 👗",
-                        locationUrl = "https://maps.google.com/?q=Khobar+Corniche",
-                        logoEmoji = "👗",
-                        category = "أزياء وعبايات • Fashion Boutique",
-                        city = "الخبر • Khobar",
-                        menuItemsText = """
-                            • عباية كريب ياباني كلاسيك | Classic Japanese Crepe - 380 ر.س
-                            • عباية لينين صيفية مطرزة | Embroidered Linen Abaya - 420 ر.س
-                            • طرحة حرير كوري فاخر | Luxury Korean Silk Shayla - 85 ر.س
-                            • قفطان مناسبات راقي | Elegant Occasion Kaftan - 650 ر.س
-                        """.trimIndent(),
-                        isSaveSuccess = false
-                    )
-                }
-            }
-            "perfume" -> {
-                _uiState.update {
-                    it.copy(
-                        shopName = "Tayeb Al-Murjan Perfumes",
-                        whatsappNumber = "567890123",
-                        defaultGreeting = "أهلاً بك، أود الاستفسار وطلب دهن العود والعطور الملكية 🌸",
-                        locationUrl = "https://maps.google.com/?q=Dammam+Ash-Shati",
-                        logoEmoji = "🌸",
-                        category = "عطور وبخور • Luxury Perfumes",
-                        city = "الدمام • Dammam",
-                        menuItemsText = """
-                            • عود كمبودي معتق سوبر | Aged Cambodian Oud - 290 ر.س
-                            • عطر مسك الختام الملكي (100 مل) | Royal Misk 100ml - 185 ر.س
-                            • بخور رقائق لاوسي طبيعي | Natural Laotian Chips - 340 ر.س
-                            • عطر هيل ولافندر نيش (50 مل) | Cardamom Lavender - 240 ر.س
-                            • مخلط العروس الفاخر | Luxury Bridal Blend - 150 ر.س
-                        """.trimIndent(),
-                        isSaveSuccess = false
-                    )
-                }
-            }
+        val effectiveLang = com.example.data.TranslationHelper.getEffectiveLanguage(_uiState.value.selectedLanguageCode)
+        val preset = com.example.data.TranslationHelper.getPreset(type, effectiveLang)
+        _uiState.update {
+            it.copy(
+                shopName = preset.shopName,
+                whatsappNumber = preset.whatsappNumber,
+                whatsappCountryCode = preset.whatsappCountryCode,
+                defaultGreeting = preset.defaultGreeting,
+                locationUrl = preset.locationUrl,
+                logoEmoji = preset.logoEmoji,
+                category = preset.category,
+                city = preset.city,
+                selectedCurrency = preset.currency,
+                menuItemsText = preset.menuItemsText,
+                isSaveSuccess = false
+            )
         }
     }
 

@@ -25,6 +25,14 @@
     <string name="field_whatsapp_hint">صفر کے بغیر واٹس ایپ نمبر درج کریں</string>
     <string name="field_country_code_search">ملک یا کوڈ تلاش کریں...</string>
 
+    <string name="field_category_title">دکان کی قسم / کیٹیگری</string>
+    <string name="field_category_subtitle">آپ کی دکان یا کاروبار کی نوعیت</string>
+    <string name="field_category_hint">کیٹیگری منتخب کریں - مثلاً: کیفے، بیکری</string>
+
+    <string name="field_city_title">شہر / لوکیشن</string>
+    <string name="field_city_subtitle">شہر یا علاقہ جہاں دکان واقع ہے</string>
+    <string name="field_city_hint">شہر درج کریں - مثلاً: ریاض</string>
+
     <string name="field_currency_title">کرنسی *</string>
     <string name="field_currency_subtitle">قیمتوں اور مینو کے لیے کرنسی منتخب کریں</string>
 

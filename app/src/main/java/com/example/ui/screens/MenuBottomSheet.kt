@@ -70,14 +70,15 @@ fun MenuBottomSheet(
     whatsappCountryCode: String = "966",
     menuText: String,
     selectedCurrency: String = "SAR",
+    selectedLanguageCode: String = "system",
     isArabic: Boolean = false,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val menuItems = remember(menuText, selectedCurrency) {
-        parseMenuItems(menuText, selectedCurrency)
+    val menuItems = remember(menuText, selectedCurrency, selectedLanguageCode) {
+        parseMenuItems(menuText, selectedCurrency, selectedLanguageCode)
     }
 
     ModalBottomSheet(
@@ -320,7 +321,8 @@ fun MenuItemCard(
     }
 }
 
-fun parseMenuItems(raw: String, currencyCode: String = "SAR"): List<MenuItemParsed> {
+fun parseMenuItems(raw: String, currencyCode: String = "SAR", languageCode: String = "en"): List<MenuItemParsed> {
+    val effectiveLang = com.example.data.TranslationHelper.getEffectiveLanguage(languageCode)
     return raw.lines()
         .map { it.trim() }
         .filter { it.isNotBlank() }
@@ -333,34 +335,42 @@ fun parseMenuItems(raw: String, currencyCode: String = "SAR"): List<MenuItemPars
             when {
                 cleaned.contains(" - ") -> {
                     val parts = cleaned.split(" - ", limit = 2)
+                    val rawTitle = parts[0].trim()
+                    val filteredTitle = com.example.data.TranslationHelper.displayMenuItem(rawTitle, effectiveLang)
                     MenuItemParsed(
                         rawText = line,
-                        title = parts[0].trim(),
+                        title = filteredTitle,
                         price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
                     )
                 }
                 cleaned.contains(" — ") -> {
                     val parts = cleaned.split(" — ", limit = 2)
+                    val rawTitle = parts[0].trim()
+                    val filteredTitle = com.example.data.TranslationHelper.displayMenuItem(rawTitle, effectiveLang)
                     MenuItemParsed(
                         rawText = line,
-                        title = parts[0].trim(),
+                        title = filteredTitle,
                         price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
                     )
                 }
                 cleaned.contains(":") -> {
                     val parts = cleaned.split(":", limit = 2)
+                    val rawTitle = parts[0].trim()
+                    val filteredTitle = com.example.data.TranslationHelper.displayMenuItem(rawTitle, effectiveLang)
                     MenuItemParsed(
                         rawText = line,
-                        title = parts[0].trim(),
+                        title = filteredTitle,
                         price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
                     )
                 }
                 cleaned.matches(Regex("^[0-9]+(\\s*([A-Za-z﷼₹$€£₺৳]+|ر\\.س|SR))?$", RegexOption.IGNORE_CASE)) -> {
                     val priceFormatted = CurrencyHelper.formatPrice(cleaned, currencyCode)
-                    MenuItemParsed(rawText = line, title = "Item", price = priceFormatted)
+                    val defaultTitle = if (effectiveLang == "ar") "عنصر" else if (effectiveLang == "ur") "آئٹم" else "Item"
+                    MenuItemParsed(rawText = line, title = defaultTitle, price = priceFormatted)
                 }
                 else -> {
-                    MenuItemParsed(rawText = line, title = cleaned, price = null)
+                    val filteredTitle = com.example.data.TranslationHelper.displayMenuItem(cleaned, effectiveLang)
+                    MenuItemParsed(rawText = line, title = filteredTitle, price = null)
                 }
             }
         }
