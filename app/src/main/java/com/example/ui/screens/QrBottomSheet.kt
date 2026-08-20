@@ -128,13 +128,10 @@ fun QrBottomSheet(
     }
 
     val shareText = buildString {
-        appendLine("📍 $shopName")
-        if (city.isNotBlank()) {
-            appendLine("• $city")
-        }
+        appendLine(if (city.isNotBlank()) "📍 $shopName - $city" else "📍 $shopName")
         appendLine()
         appendLine("💬 WhatsApp: $phoneDisplay")
-        appendLine("🗺️ Location: $locationDisplay (Tap QR to open)")
+        appendLine("🗺️ Location: $mapsLink")
         appendLine()
         append("✨ Created via Wasl Market | وصل")
     }

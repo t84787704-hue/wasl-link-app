@@ -392,7 +392,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         return if (state.city.isNotBlank()) state.city else "Location available on QR"
     }
 
-    // Clean Share Message - Plain text only, NO https urls to prevent WhatsApp preview card
+    // Final Share Message: Plain +966 phone (auto-clickable in WhatsApp without preview card) + Clickable Maps URL
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
@@ -406,17 +406,15 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             else -> "My Store"
         }
 
+        val header = if (city.isNotBlank()) "📍 $shopName - $city" else "📍 $shopName"
         val phoneDisplay = getFormattedPhoneDisplay()
-        val locationDisplay = getLocationDisplay()
+        val mapsLink = getMapsLink()
 
         return buildString {
-            appendLine("📍 $shopName")
-            if (city.isNotBlank()) {
-                appendLine("• $city")
-            }
+            appendLine(header)
             appendLine()
             appendLine("💬 WhatsApp: $phoneDisplay")
-            appendLine("🗺️ Location: $locationDisplay (Tap QR to open)")
+            appendLine("🗺️ Location: $mapsLink")
             appendLine()
             append("✨ Created via Wasl Market | وصل")
         }
