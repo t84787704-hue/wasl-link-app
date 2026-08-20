@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wasl.saudishop.R
 import com.example.ui.WaslUiState
-import com.example.ui.components.SaudiVerifiedBadge
 import com.example.ui.components.ShopLocationPreviewCard
 import com.example.ui.components.ShopLogoAvatar
 import com.example.ui.components.WaslBigActionButton
@@ -226,25 +225,18 @@ fun PreviewScreen(
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Saudi Verified Badge & City
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                // City & Category
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = WaslSurfaceBeige
                 ) {
-                    SaudiVerifiedBadge(isArabic = false)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        color = WaslSurfaceBeige
-                    ) {
-                        Text(
-                            text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = WaslTextSecondary,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
-                        )
-                    }
+                    Text(
+                        text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = WaslTextSecondary,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+                    )
                 }
 
                 if (uiState.category.isNotBlank()) {
@@ -291,7 +283,7 @@ fun PreviewScreen(
                     titleArabic = stringResource(R.string.btn_whatsapp_chat),
                     titleEnglish = "WhatsApp",
                     subtitle = whatsappSubtitle,
-                    badgeText = stringResource(R.string.btn_whatsapp_instant_reply),
+                    badgeText = null,
                     testTag = "button_preview_whatsapp",
                     onClick = { onOpenWhatsApp(context) }
                 )
