@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.R
+import com.wasl.saudishop.R
 import com.example.data.AppDatabase
 import com.example.data.AppPreferences
 import com.example.data.ShopProfile

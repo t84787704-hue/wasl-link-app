@@ -103,7 +103,7 @@
     <string name="theme_dark_mode">الوضع الليلي (الداكن)</string>
     <string name="theme_dynamic_color">الألوان التفاعلية (Material You)</string>
     <string name="about_app_title">حول متجر وصل</string>
-    <string name="about_app_version">الإصدار 2.0 (بناء 16)</string>
+    <string name="about_app_version">الإصدار 2.0 (بناء 17)</string>
     <string name="about_app_desc">وصل ماركت هو صانع واجهات المتاجر والروابط الذكية السريع للمتاجر المتخصصة والتجزئة.</string>
 
     <!-- Location & Toast Messages -->

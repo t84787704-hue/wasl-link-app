@@ -49,7 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.R
+import com.wasl.saudishop.R
 import com.example.ui.WaslUiState
 import com.example.ui.theme.WaslBorderBeige
 import com.example.ui.theme.WaslSandGold

@@ -10,14 +10,14 @@ plugins {
 }
 
 android {
-  namespace = "com.example"
+  namespace = "com.wasl.saudishop"
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
     applicationId = "com.wasl.saudishop"
     minSdk = 24
     targetSdk = 35
-    versionCode = 16
+    versionCode = 17
     versionName = "2.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

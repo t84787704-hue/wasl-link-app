@@ -53,7 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.R
+import com.wasl.saudishop.R
 import com.example.ui.WaslUiState
 import com.example.ui.components.SaudiVerifiedBadge
 import com.example.ui.components.ShopLogoAvatar

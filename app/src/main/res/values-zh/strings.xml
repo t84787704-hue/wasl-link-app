@@ -103,7 +103,7 @@
     <string name="theme_dark_mode">深色模式</string>
     <string name="theme_dynamic_color">动态配色 (Material You)</string>
     <string name="about_app_title">关于 Wasl Market</string>
-    <string name="about_app_version">版本 2.0 (内部构建 16)</string>
+    <string name="about_app_version">版本 2.0 (内部构建 17)</string>
     <string name="about_app_desc">Wasl Market 是一款专为中小零售商与特色小店打造的高效数字化门面与智能主页生成工具。</string>
 
     <!-- Location & Toast Messages -->

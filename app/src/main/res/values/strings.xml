@@ -103,7 +103,7 @@
     <string name="theme_dark_mode">Dark Mode</string>
     <string name="theme_dynamic_color">Dynamic Colors (Material You)</string>
     <string name="about_app_title">About Wasl Market</string>
-    <string name="about_app_version">Version 2.0 (Build 16)</string>
+    <string name="about_app_version">Version 2.0 (Build 17)</string>
     <string name="about_app_desc">Wasl Market is the ultra-fast storefront and smart link-in-bio builder for retail and specialty stores.</string>
 
     <!-- Location & Toast Messages -->
