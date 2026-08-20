@@ -16,13 +16,9 @@
     <string name="template_perfumes">خوشبو اور عود</string>
 
     <!-- Form Field Labels & Placeholders -->
-    <string name="field_shop_name_en_title">دکان کا نام (انگریزی / معیاری)</string>
-    <string name="field_shop_name_en_subtitle">برانڈ کا انگریزی یا بین الاقوامی نام</string>
-    <string name="field_shop_name_en_hint">مثلاً: Al-Naseem Specialty Coffee</string>
-
-    <string name="field_shop_name_ar_title">دکان کا عربی نام</string>
-    <string name="field_shop_name_ar_subtitle">دکان کے صفحے پر نظر آنے والا عربی نام</string>
-    <string name="field_shop_name_ar_hint">مثلاً: محمصة وقهوة النسيم</string>
+    <string name="field_shop_name_en_title">دکان کا نام *</string>
+    <string name="field_shop_name_en_subtitle">یہ آپ کی دکان کے عنوان کے طور پر ظاہر ہوگا</string>
+    <string name="field_shop_name_en_hint">اپنی دکان کا نام لکھیں - مثلاً: Al-Naseem Coffee</string>
 
     <string name="field_whatsapp_title">واٹس ایپ نمبر</string>
     <string name="field_whatsapp_subtitle">سعودی واٹس ایپ نمبر (9 ہندسے)</string>

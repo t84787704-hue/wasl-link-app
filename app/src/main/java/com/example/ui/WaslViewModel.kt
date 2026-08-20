@@ -38,7 +38,6 @@ import kotlinx.coroutines.withContext
 
 data class WaslUiState(
     val shopName: String = "",
-    val shopNameArabic: String = "",
     val whatsappNumber: String = "",
     val defaultGreeting: String = "",
     val locationUrl: String = "",
@@ -85,7 +84,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = savedProfile.shopName,
-                        shopNameArabic = savedProfile.shopNameArabic,
                         whatsappNumber = savedProfile.whatsappNumber,
                         defaultGreeting = savedProfile.defaultGreeting,
                         locationUrl = savedProfile.locationUrl,
@@ -107,10 +105,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
     fun onShopNameChange(value: String) {
         _uiState.update { it.copy(shopName = value, isSaveSuccess = false) }
-    }
-
-    fun onShopNameArabicChange(value: String) {
-        _uiState.update { it.copy(shopNameArabic = value, isSaveSuccess = false) }
     }
 
     fun onWhatsappNumberChange(value: String) {
@@ -177,7 +171,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             val profile = ShopProfile(
                 id = 1,
                 shopName = state.shopName.ifBlank { "Wasl Market" },
-                shopNameArabic = state.shopNameArabic.ifBlank { "متجر وصل" },
                 whatsappNumber = state.whatsappNumber,
                 defaultGreeting = state.defaultGreeting,
                 locationUrl = state.locationUrl,
@@ -198,7 +191,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = "Al-Naseem Specialty Coffee",
-                        shopNameArabic = "محمصة وقهوة النسيم المختصة",
                         whatsappNumber = "501234567",
                         defaultGreeting = "السلام عليكم، أود طلب قهوة ومخبوزات من قائمة اليوم ☕",
                         locationUrl = "https://maps.google.com/?q=Riyadh+Al-Olaya",
@@ -221,7 +213,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = "Loom Artisanal Bakery",
-                        shopNameArabic = "مخبز لوم الحرفي",
                         whatsappNumber = "559876543",
                         defaultGreeting = "مرحباً، أود حجز مخبوزات طازجة من مخبز لوم 🥐",
                         locationUrl = "https://maps.google.com/?q=Jeddah+Rawdah",
@@ -243,7 +234,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = "Dar Al-Zain Abayas",
-                        shopNameArabic = "دار الزين للعبايات والأزياء",
                         whatsappNumber = "543210987",
                         defaultGreeting = "السلام عليكم، أود الاستفسار عن المقاسات والطلب من تشكيلة العبايات 👗",
                         locationUrl = "https://maps.google.com/?q=Khobar+Corniche",
@@ -264,7 +254,6 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 _uiState.update {
                     it.copy(
                         shopName = "Tayeb Al-Murjan Perfumes",
-                        shopNameArabic = "مرجان للعود والعطور الفاخرة",
                         whatsappNumber = "567890123",
                         defaultGreeting = "أهلاً بك، أود الاستفسار وطلب دهن العود والعطور الملكية 🌸",
                         locationUrl = "https://maps.google.com/?q=Dammam+Ash-Shati",
@@ -402,15 +391,9 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
-        val nameAr = state.shopNameArabic.trim()
         val city = state.city.trim()
 
-        val shopName = when {
-            nameEn.isNotBlank() && nameAr.isNotBlank() -> "$nameEn ($nameAr)"
-            nameEn.isNotBlank() -> nameEn
-            nameAr.isNotBlank() -> nameAr
-            else -> "My Store"
-        }
+        val shopName = nameEn.ifBlank { "My Store" }
 
         val header = if (city.isNotBlank()) "📍 $shopName - $city" else "📍 $shopName"
         val waLinkWithGreeting = getWhatsAppLinkWithGreeting()

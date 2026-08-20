@@ -16,13 +16,9 @@
     <string name="template_perfumes">عطور</string>
 
     <!-- Form Field Labels & Placeholders -->
-    <string name="field_shop_name_en_title">Shop Name (English) *</string>
-    <string name="field_shop_name_en_subtitle">This will show as your store title</string>
-    <string name="field_shop_name_en_hint">Enter your shop name here - e.g. My Coffee Shop</string>
-
-    <string name="field_shop_name_ar_title">اسم المتجر بالعربي</string>
-    <string name="field_shop_name_ar_subtitle">الاسم العربي المعروض في واجهة متجرك</string>
-    <string name="field_shop_name_ar_hint">اكتب اسم متجرك هنا - مثال: قهوة النسيم</string>
+    <string name="field_shop_name_en_title">اسم المتجر *</string>
+    <string name="field_shop_name_en_subtitle">الاسم المعروض كعنوان لمتجرك</string>
+    <string name="field_shop_name_en_hint">اكتب اسم متجرك هنا - مثال: قهوة النسيم</string>
 
     <string name="field_whatsapp_title">WhatsApp *</string>
     <string name="field_whatsapp_subtitle">رقم الواتساب السعودي للتواصل</string>

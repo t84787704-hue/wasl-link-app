@@ -108,15 +108,9 @@ fun QrBottomSheet(
     }
 
     val nameEn = uiState.shopName.trim()
-    val nameAr = uiState.shopNameArabic.trim()
     val city = uiState.city.trim()
 
-    val shopName = when {
-        nameEn.isNotBlank() && nameAr.isNotBlank() -> "$nameEn ($nameAr)"
-        nameEn.isNotBlank() -> nameEn
-        nameAr.isNotBlank() -> nameAr
-        else -> "My Store"
-    }
+    val shopName = nameEn.ifBlank { "My Store" }
 
     val menuRaw = uiState.menuItemsText.trim()
     val menuSection = if (menuRaw.isNotBlank()) {
@@ -233,22 +227,12 @@ fun QrBottomSheet(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { stringResource(R.string.app_name) } },
+                        text = uiState.shopName.ifBlank { stringResource(R.string.app_name) },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
-
-                    if (uiState.shopName.isNotBlank()) {
-                        Text(
-                            text = uiState.shopName,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.secondary,
-                            textAlign = TextAlign.Center
-                        )
-                    }
 
                     Spacer(modifier = Modifier.height(6.dp))
 
@@ -350,8 +334,7 @@ fun QrBottomSheet(
                 onClick = {
                     val brandedCard = QrCodeGenerator.generateBrandedStoreCard(
                         context = context,
-                        shopNameArabic = uiState.shopNameArabic,
-                        shopNameEnglish = uiState.shopName,
+                        shopName = uiState.shopName,
                         category = uiState.category,
                         city = uiState.city,
                         logoEmoji = uiState.logoEmoji,

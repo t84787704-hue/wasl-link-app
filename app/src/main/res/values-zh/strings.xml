@@ -16,13 +16,9 @@
     <string name="template_perfumes">高端香氛</string>
 
     <!-- Form Field Labels & Placeholders -->
-    <string name="field_shop_name_en_title">店铺名称 (英文 / 标准)</string>
-    <string name="field_shop_name_en_subtitle">英文或国际品牌名称</string>
-    <string name="field_shop_name_en_hint">例如：Al-Naseem Specialty Coffee</string>
-
-    <string name="field_shop_name_ar_title">店铺阿拉伯语名称</string>
-    <string name="field_shop_name_ar_subtitle">在店铺门面展示的阿拉伯语名称</string>
-    <string name="field_shop_name_ar_hint">例如：محمصة وقهوة النسيم</string>
+    <string name="field_shop_name_en_title">店铺名称 *</string>
+    <string name="field_shop_name_en_subtitle">将作为您店铺的主标题显示</string>
+    <string name="field_shop_name_en_hint">输入店铺名称 - 例如：Al-Naseem Coffee</string>
 
     <string name="field_whatsapp_title">WhatsApp 订购号码</string>
     <string name="field_whatsapp_subtitle">沙特 WhatsApp 手机号 (9位数字)</string>

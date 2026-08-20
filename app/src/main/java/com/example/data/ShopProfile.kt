@@ -7,7 +7,6 @@ import androidx.room.PrimaryKey
 data class ShopProfile(
     @PrimaryKey val id: Int = 1,
     val shopName: String = "",
-    val shopNameArabic: String = "",
     val whatsappNumber: String = "",
     val locationUrl: String = "",
     val menuItemsText: String = "",

@@ -16,13 +16,9 @@
     <string name="template_perfumes">इत्र और सुगंध</string>
 
     <!-- Form Field Labels & Placeholders -->
-    <string name="field_shop_name_en_title">दुकान का नाम (अंग्रेज़ी / मानक)</string>
-    <string name="field_shop_name_en_subtitle">ब्रांड का अंग्रेज़ी या अंतरराष्ट्रीय नाम</string>
-    <string name="field_shop_name_en_hint">उदा: Al-Naseem Specialty Coffee</string>
-
-    <string name="field_shop_name_ar_title">दुकान का अरबी नाम</string>
-    <string name="field_shop_name_ar_subtitle">स्टोरफ्रंट पर दिखने वाला अरबी नाम</string>
-    <string name="field_shop_name_ar_hint">उदा: محمصة وقهوة النسيم</string>
+    <string name="field_shop_name_en_title">दुकान का नाम *</string>
+    <string name="field_shop_name_en_subtitle">यह आपकी दुकान के शीर्षक के रूप में दिखेगा</string>
+    <string name="field_shop_name_en_hint">अपनी दुकान का नाम दर्ज करें - उदा: Al-Naseem Coffee</string>
 
     <string name="field_whatsapp_title">व्हाट्सएप नंबर</string>
     <string name="field_whatsapp_subtitle">सऊदी व्हाट्सएप नंबर (9 अंक)</string>

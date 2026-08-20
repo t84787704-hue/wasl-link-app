@@ -62,7 +62,6 @@ data class MenuItemParsed(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuBottomSheet(
-    shopNameArabic: String,
     shopName: String,
     whatsappNumber: String,
     menuText: String,
@@ -119,7 +118,7 @@ fun MenuBottomSheet(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = shopNameArabic.ifBlank { shopName.ifBlank { stringResource(R.string.app_name) } },
+                            text = shopName.ifBlank { stringResource(R.string.app_name) },
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.secondary
                         )
@@ -191,7 +190,7 @@ fun MenuBottomSheet(
                                     context = context,
                                     whatsappNumber = whatsappNumber,
                                     itemTitle = item.title,
-                                    shopName = shopNameArabic.ifBlank { shopName }
+                                    shopName = shopName
                                 )
                             }
                         )

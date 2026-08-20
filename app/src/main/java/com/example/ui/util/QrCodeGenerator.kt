@@ -58,8 +58,7 @@ object QrCodeGenerator {
      */
     fun generateBrandedStoreCard(
         context: Context,
-        shopNameArabic: String,
-        shopNameEnglish: String,
+        shopName: String,
         category: String,
         city: String,
         logoEmoji: String,
@@ -110,26 +109,31 @@ object QrCodeGenerator {
         }
         canvas.drawText(logoEmoji.ifBlank { "☕" }, cardWidth / 2f, 140f, emojiPaint)
 
-        // Arabic Shop Name
-        val nameArPaint = Paint().apply {
+        // Shop Name
+        val namePaint = Paint().apply {
             color = android.graphics.Color.parseColor("#1B1A17")
             textSize = 40f
             isFakeBoldText = true
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
-        val displayAr = shopNameArabic.ifBlank { "متجر وصل" }
-        canvas.drawText(displayAr, cardWidth / 2f, 210f, nameArPaint)
+        val displayName = shopName.ifBlank { "Wasl Market" }
+        canvas.drawText(displayName, cardWidth / 2f, 210f, namePaint)
 
-        // English Shop Name / Category
+        // Category & City subtitle
         val subPaint = Paint().apply {
             color = android.graphics.Color.parseColor("#666056")
             textSize = 26f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
-        val displayEn = if (shopNameEnglish.isNotBlank()) "$shopNameEnglish • $city" else city
-        canvas.drawText(displayEn, cardWidth / 2f, 255f, subPaint)
+        val displaySub = when {
+            category.isNotBlank() && city.isNotBlank() -> "$category • $city"
+            category.isNotBlank() -> category
+            city.isNotBlank() -> city
+            else -> "Saudi Arabia"
+        }
+        canvas.drawText(displaySub, cardWidth / 2f, 255f, subPaint)
 
         // Draw QR Code
         val qrLeft = (cardWidth - qrBitmap.width) / 2f

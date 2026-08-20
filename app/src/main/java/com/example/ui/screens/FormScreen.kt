@@ -90,7 +90,6 @@ val emojiOptions = listOf("☕", "🥐", "👗", "🌸", "🍔", "🍰", "🌿",
 fun FormScreen(
     uiState: WaslUiState,
     onShopNameChange: (String) -> Unit,
-    onShopNameArabicChange: (String) -> Unit,
     onWhatsappChange: (String) -> Unit,
     onCategoryChange: (String) -> Unit,
     onCityChange: (String) -> Unit,
@@ -259,7 +258,7 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(18.dp))
 
-            // Field 1: English Shop Name
+            // Field 1: Shop Name
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
@@ -268,15 +267,20 @@ fun FormScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     FormFieldLabel(
-                        title = "Shop Name (English) *",
-                        subtitle = "This will show as your store title",
+                        title = stringResource(R.string.field_shop_name_en_title),
+                        subtitle = stringResource(R.string.field_shop_name_en_subtitle),
                         icon = Icons.Default.Storefront
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = uiState.shopName,
                         onValueChange = onShopNameChange,
-                        placeholder = { Text("Enter your shop name here - e.g. My Coffee Shop", color = Color.Gray.copy(alpha = 0.6f)) },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.field_shop_name_en_hint),
+                                color = Color.Gray.copy(alpha = 0.6f)
+                            )
+                        },
                         singleLine = true,
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
@@ -289,37 +293,7 @@ fun FormScreen(
 
             Spacer(modifier = Modifier.height(14.dp))
 
-            // Field 2: Arabic Shop Name
-            Card(
-                shape = RoundedCornerShape(22.dp),
-                colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
-                border = BorderStroke(1.dp, WaslBorderBeige),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(18.dp)) {
-                    FormFieldLabel(
-                        title = "Shop Name (Arabic)",
-                        subtitle = "Arabic display name for your storefront",
-                        icon = Icons.Default.Edit
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = uiState.shopNameArabic,
-                        onValueChange = onShopNameArabicChange,
-                        placeholder = { Text("اكتب اسم متجرك هنا - مثال: قهوة النسيم", color = Color.Gray.copy(alpha = 0.6f)) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(14.dp),
-                        colors = outlinedFieldColors(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .testTag("input_shop_name_arabic")
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(14.dp))
-
-            // Field 3: WhatsApp Number
+            // Field 2: WhatsApp Number
             Card(
                 shape = RoundedCornerShape(22.dp),
                 colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),

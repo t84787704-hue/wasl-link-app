@@ -213,28 +213,16 @@ fun PreviewScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Shop Names
-                val displayNameArabic = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } }
+                // Shop Name
+                val displayName = uiState.shopName.ifBlank { "Wasl Market" }
                 Text(
-                    text = displayNameArabic,
+                    text = displayName,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
                     color = WaslTextPrimary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.testTag("preview_shop_name_arabic")
+                    modifier = Modifier.testTag("preview_shop_name")
                 )
-
-                if (uiState.shopName.isNotBlank() && uiState.shopNameArabic.isNotBlank()) {
-                    Spacer(modifier = Modifier.height(2.dp))
-                    Text(
-                        text = uiState.shopName,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Medium,
-                        color = WaslSandGold,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.testTag("preview_shop_name")
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -312,7 +300,7 @@ fun PreviewScreen(
 
                 // Component 2: Interactive Shop Map Location Preview Card with Google Maps Launcher
                 ShopLocationPreviewCard(
-                    shopName = uiState.shopNameArabic.ifBlank { uiState.shopName.ifBlank { "Wasl Market" } },
+                    shopName = uiState.shopName.ifBlank { "Wasl Market" },
                     city = uiState.city.ifBlank { "Saudi Arabia" },
                     locationUrl = uiState.locationUrl,
                     isArabic = false,

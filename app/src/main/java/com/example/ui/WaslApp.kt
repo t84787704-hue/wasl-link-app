@@ -129,7 +129,6 @@ fun WaslApp(viewModel: WaslViewModel) {
                         0 -> FormScreen(
                             uiState = uiState,
                             onShopNameChange = viewModel::onShopNameChange,
-                            onShopNameArabicChange = viewModel::onShopNameArabicChange,
                             onWhatsappChange = viewModel::onWhatsappNumberChange,
                             onCategoryChange = viewModel::onCategoryChange,
                             onCityChange = viewModel::onCityChange,
@@ -190,7 +189,6 @@ fun WaslApp(viewModel: WaslViewModel) {
         // Menu Bottom Sheet Modal
         if (uiState.showMenuSheet) {
             MenuBottomSheet(
-                shopNameArabic = uiState.shopNameArabic,
                 shopName = uiState.shopName,
                 whatsappNumber = uiState.whatsappNumber,
                 menuText = uiState.menuItemsText,
