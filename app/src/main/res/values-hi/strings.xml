@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Wasl Market</string>
-    <string name="app_tagline">सऊदी दुकानों का डिजिटल लिंक हब</string>
-    <string name="wasl_brand_arabic">وَصْل</string>
-    <string name="wasl_brand_sub">• वास्ल मार्केट (Wasl Market)</string>
 
     <!-- Navigation & Tabs -->
     <string name="tab_edit_form">दुकान विवरण</string>
@@ -106,7 +103,7 @@
     <string name="theme_dark_mode">डार्क मोड (गहरा थीम)</string>
     <string name="theme_dynamic_color">डायनामिक रंग (Material You)</string>
     <string name="about_app_title">Wasl Market के बारे में</string>
-    <string name="about_app_version">संस्करण 1.14 (बिल्ड 14)</string>
+    <string name="about_app_version">संस्करण 2.0 (बिल्ड 16)</string>
     <string name="about_app_desc">Wasl Market खुदरा और विशेष दुकानों के लिए सबसे तेज़ डिजिटल स्टोरफ्रंट और बायो-लिंक निर्माता है।</string>
 
     <!-- Location & Toast Messages -->
