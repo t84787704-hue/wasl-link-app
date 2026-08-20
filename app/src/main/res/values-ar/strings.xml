@@ -55,7 +55,7 @@
 
     <string name="field_menu_title">قائمة المنتجات والأسعار (المنيو)</string>
     <string name="field_menu_subtitle">أدخل كل منتج مع السعر في سطر منفصل أو اضغط إضافة عنصر</string>
-    <string name="field_menu_hint">مثال: فلات وايت - 18 ر.س</string>
+    <string name="field_menu_hint">مثال:\nلاتيه - 18 ر.س\nكابتشينو - 20 ر.س\nكرواسون - 15 ر.س</string>
     <string name="btn_add_item_here">+ Add Item Here</string>
     <string name="preview_empty_prompt">Fill the form above to see preview here</string>
 

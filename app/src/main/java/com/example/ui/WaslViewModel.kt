@@ -363,11 +363,16 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     fun getMapsLink(): String {
         val state = _uiState.value
         val rawUrl = state.locationUrl.trim()
+        val coordsMatch = Regex("([0-9.-]+)\\s*[,\\s]\\s*([0-9.-]+)").find(rawUrl)
         return when {
             rawUrl.startsWith("http://") || rawUrl.startsWith("https://") -> rawUrl
+            coordsMatch != null -> {
+                val (lat, lng) = coordsMatch.destructured
+                "https://www.google.com/maps/search/?api=1&query=$lat,$lng"
+            }
             rawUrl.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(rawUrl)}"
             state.city.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(state.city + ", Saudi Arabia")}"
-            else -> "https://www.google.com/maps/search/?api=1&query=Riyadh,Saudi+Arabia"
+            else -> "https://www.google.com/maps/search/?api=1&query=24.56418,46.87677"
         }
     }
 
@@ -392,7 +397,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         return if (state.city.isNotBlank()) state.city else "Location available on QR"
     }
 
-    // Final Share Message: Plain +966 phone (auto-clickable in WhatsApp without preview card) + Clickable Maps URL
+    // Final Share Message: Plain +966 phone (no preview card) + Menu Items & Prices + Clickable Maps URL
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
@@ -410,9 +415,19 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         val phoneDisplay = getFormattedPhoneDisplay()
         val mapsLink = getMapsLink()
 
+        val menuRaw = state.menuItemsText.trim()
+        val menuSection = if (menuRaw.isNotBlank()) {
+            "🍽️ Menu & Prices:\n$menuRaw\n\n"
+        } else {
+            ""
+        }
+
         return buildString {
             appendLine(header)
             appendLine()
+            if (menuSection.isNotBlank()) {
+                append(menuSection)
+            }
             appendLine("💬 WhatsApp: $phoneDisplay")
             appendLine("🗺️ Location: $mapsLink")
             appendLine()

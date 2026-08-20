@@ -60,6 +60,7 @@ import com.example.ui.theme.WaslBorderDark
 import com.example.ui.theme.WaslPrimaryCharcoal
 import com.example.ui.theme.WaslSandGold
 import com.example.ui.theme.WaslSaudiGreen
+import com.example.ui.theme.WaslSaudiGreenLight
 import com.example.ui.theme.WaslSurfaceBeige
 import com.example.ui.theme.WaslSurfaceCard
 import com.example.ui.theme.WaslSurfaceWhite
@@ -338,6 +339,94 @@ fun PreviewScreen(
                     testTag = "button_preview_menu",
                     onClick = onShowMenu
                 )
+
+                // Inline Menu List under shop buttons if menu items are entered
+                val parsedItems = parseMenuItems(uiState.menuItemsText)
+                if (parsedItems.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Card(
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
+                        border = BorderStroke(1.dp, WaslBorderBeige),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("preview_menu_list_card")
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(
+                                        imageVector = Icons.Default.RestaurantMenu,
+                                        contentDescription = null,
+                                        tint = WaslSandGold,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = stringResource(R.string.field_menu_title),
+                                        style = MaterialTheme.typography.titleSmall,
+                                        fontWeight = FontWeight.Bold,
+                                        color = WaslTextPrimary
+                                    )
+                                }
+                                Surface(
+                                    shape = RoundedCornerShape(8.dp),
+                                    color = WaslSurfaceBeige
+                                ) {
+                                    Text(
+                                        text = "${parsedItems.size} items",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = WaslTextSecondary,
+                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(10.dp))
+
+                            parsedItems.forEachIndexed { index, item ->
+                                if (index > 0) {
+                                    androidx.compose.material3.HorizontalDivider(
+                                        color = WaslBorderBeige.copy(alpha = 0.6f),
+                                        modifier = Modifier.padding(vertical = 6.dp)
+                                    )
+                                }
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        text = item.title,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Medium,
+                                        color = WaslTextPrimary,
+                                        modifier = Modifier.weight(1f)
+                                    )
+                                    if (item.price != null) {
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Surface(
+                                            shape = RoundedCornerShape(8.dp),
+                                            color = WaslSaudiGreenLight
+                                        ) {
+                                            Text(
+                                                text = item.price,
+                                                style = MaterialTheme.typography.labelSmall,
+                                                fontWeight = FontWeight.Bold,
+                                                color = WaslSaudiGreen,
+                                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(28.dp))
 

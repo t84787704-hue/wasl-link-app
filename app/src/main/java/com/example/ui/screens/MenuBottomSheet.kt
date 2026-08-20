@@ -311,7 +311,7 @@ fun MenuItemCard(
     }
 }
 
-private fun parseMenuItems(raw: String): List<MenuItemParsed> {
+fun parseMenuItems(raw: String): List<MenuItemParsed> {
     return raw.lines()
         .map { it.trim() }
         .filter { it.isNotBlank() }
@@ -321,15 +321,26 @@ private fun parseMenuItems(raw: String): List<MenuItemParsed> {
                 cleaned = cleaned.substring(1).trim()
             }
 
-            // Extract price if format contains '-' or '—'
-            if (cleaned.contains(" - ")) {
-                val parts = cleaned.split(" - ", limit = 2)
-                MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
-            } else if (cleaned.contains(" — ")) {
-                val parts = cleaned.split(" — ", limit = 2)
-                MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
-            } else {
-                MenuItemParsed(rawText = line, title = cleaned, price = null)
+            when {
+                cleaned.contains(" - ") -> {
+                    val parts = cleaned.split(" - ", limit = 2)
+                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                }
+                cleaned.contains(" — ") -> {
+                    val parts = cleaned.split(" — ", limit = 2)
+                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                }
+                cleaned.contains(":") -> {
+                    val parts = cleaned.split(":", limit = 2)
+                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                }
+                cleaned.matches(Regex("^[0-9]+(\\s*(SAR|ر\\.س|SR))?$", RegexOption.IGNORE_CASE)) -> {
+                    val priceStr = if (!cleaned.contains("SAR", ignoreCase = true) && !cleaned.contains("ر.س") && !cleaned.contains("SR", ignoreCase = true)) "$cleaned SAR" else cleaned
+                    MenuItemParsed(rawText = line, title = "Item", price = priceStr)
+                }
+                else -> {
+                    MenuItemParsed(rawText = line, title = cleaned, price = null)
+                }
             }
         }
 }

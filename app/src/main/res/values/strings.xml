@@ -55,7 +55,7 @@
 
     <string name="field_menu_title">Menu Items &amp; Prices</string>
     <string name="field_menu_subtitle">Enter each item with price per line or tap Add Item</string>
-    <string name="field_menu_hint">e.g. Flat White - 18 SAR</string>
+    <string name="field_menu_hint">Example:\nLatte - 18 SAR\nCappuccino - 20 SAR\nCroissant - 15 SAR</string>
     <string name="btn_add_item_here">+ Add Item Here</string>
     <string name="preview_empty_prompt">Fill the form above to see preview here</string>
 

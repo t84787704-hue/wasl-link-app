@@ -84,11 +84,16 @@ fun QrBottomSheet(
     val whatsappLink = "https://wa.me/$formattedWhatsapp"
 
     val mapsLink = uiState.locationUrl.trim().let { rawUrl ->
+        val coordsMatch = Regex("([0-9.-]+)\\s*[,\\s]\\s*([0-9.-]+)").find(rawUrl)
         when {
             rawUrl.startsWith("http://") || rawUrl.startsWith("https://") -> rawUrl
+            coordsMatch != null -> {
+                val (lat, lng) = coordsMatch.destructured
+                "https://www.google.com/maps/search/?api=1&query=$lat,$lng"
+            }
             rawUrl.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(rawUrl)}"
             uiState.city.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(uiState.city + ", Saudi Arabia")}"
-            else -> "https://www.google.com/maps/search/?api=1&query=Riyadh,Saudi+Arabia"
+            else -> "https://www.google.com/maps/search/?api=1&query=24.56418,46.87677"
         }
     }
 
@@ -127,9 +132,19 @@ fun QrBottomSheet(
         else -> "My Store"
     }
 
+    val menuRaw = uiState.menuItemsText.trim()
+    val menuSection = if (menuRaw.isNotBlank()) {
+        "🍽️ Menu & Prices:\n$menuRaw\n\n"
+    } else {
+        ""
+    }
+
     val shareText = buildString {
         appendLine(if (city.isNotBlank()) "📍 $shopName - $city" else "📍 $shopName")
         appendLine()
+        if (menuSection.isNotBlank()) {
+            append(menuSection)
+        }
         appendLine("💬 WhatsApp: $phoneDisplay")
         appendLine("🗺️ Location: $mapsLink")
         appendLine()
