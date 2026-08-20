@@ -34,6 +34,8 @@
 
     <string name="greeting_suggestion_order">☕ 您好，我想订购菜单上的商品</string>
     <string name="greeting_suggestion_delivery">📦 您好，请问支持配送吗？费用是多少？</string>
+    <string name="greeting_suggestion_order_text">您好，我想订购菜单上的商品</string>
+    <string name="greeting_suggestion_delivery_text">您好，我想咨询配送费用与商品价格</string>
     <string name="greeting_suggestion_hours">📍 您好，请问今天的营业时间是？</string>
     <string name="greeting_suggestion_stock">✨ 您好，我想咨询最新现货库存</string>
 

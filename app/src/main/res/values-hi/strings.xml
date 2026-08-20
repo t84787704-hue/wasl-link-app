@@ -34,6 +34,8 @@
 
     <string name="greeting_suggestion_order">☕ नमस्ते, मैं मेनू से ऑर्डर करना चाहता हूँ</string>
     <string name="greeting_suggestion_delivery">📦 नमस्ते, डिलीवरी शुल्क और समय की जानकारी चाहिए</string>
+    <string name="greeting_suggestion_order_text">नमस्ते, मैं मेनू से ऑर्डर करना चाहता हूँ</string>
+    <string name="greeting_suggestion_delivery_text">नमस्ते, मुझे डिलीवरी शुल्क और समय की जानकारी चाहिए</string>
     <string name="greeting_suggestion_hours">📍 नमस्ते, दुकान खुलने का समय क्या है?</string>
     <string name="greeting_suggestion_stock">✨ मुझे उपलब्ध स्टॉक और सामान के बारे में जानना है</string>
 

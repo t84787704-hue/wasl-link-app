@@ -34,6 +34,8 @@
 
     <string name="greeting_suggestion_order">☕ السلام علیکم، مجھے مینو سے آرڈر دینا ہے</string>
     <string name="greeting_suggestion_delivery">📦 آداب، ہوم ڈلیوری کی فیس اور تفصیلات کیا ہیں؟</string>
+    <string name="greeting_suggestion_order_text">السلام علیکم، مجھے مینو سے آرڈر دینا ہے</string>
+    <string name="greeting_suggestion_delivery_text">آداب، ہوم ڈلیوری کی فیس اور تفصیلات کیا ہیں؟</string>
     <string name="greeting_suggestion_hours">📍 السلام علیکم، دکان کے کھلنے کے اوقات کیا ہیں؟</string>
     <string name="greeting_suggestion_stock">✨ مجھے دستیاب اشیاء اور اسٹاک کے بارے میں جاننا ہے</string>
 

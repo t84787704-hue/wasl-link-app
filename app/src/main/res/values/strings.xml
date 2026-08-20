@@ -36,12 +36,14 @@
     <string name="field_city_subtitle">City or region in Saudi Arabia</string>
     <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
 
-    <string name="field_greeting_title">Default WhatsApp Greeting</string>
+    <string name="field_greeting_title">Default WhatsApp Greeting / رسالة واتساب</string>
     <string name="field_greeting_subtitle">Pre-filled text when customer taps WhatsApp</string>
-    <string name="field_greeting_hint">e.g. Hello, I would like to order and inquire...</string>
+    <string name="field_greeting_hint">Type in any language - English, العربية, اردو - e.g. Hello, I\'d like to order / السلام عليكم، أريد الطلب</string>
 
     <string name="greeting_suggestion_order">☕ I\'d like to order from the menu</string>
     <string name="greeting_suggestion_delivery">📦 Inquire about delivery</string>
+    <string name="greeting_suggestion_order_text">Hello, I\'d like to order from the menu</string>
+    <string name="greeting_suggestion_delivery_text">Hello, I would like to inquire about delivery and prices</string>
     <string name="greeting_suggestion_hours">📍 Ask about opening hours</string>
     <string name="greeting_suggestion_stock">✨ Inquire about available items</string>
 

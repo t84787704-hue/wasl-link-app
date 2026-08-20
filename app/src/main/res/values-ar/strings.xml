@@ -36,12 +36,14 @@
     <string name="field_city_subtitle">المدينة في المملكة العربية السعودية</string>
     <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
 
-    <string name="field_greeting_title">رسالة الترحيب الافتراضية</string>
+    <string name="field_greeting_title">رسالة الترحيب الافتراضية / WhatsApp Greeting</string>
     <string name="field_greeting_subtitle">النص التلقائي عند نقر العميل على زر الواتساب</string>
-    <string name="field_greeting_hint">مثال: السلام عليكم، أود الطلب والاستفسار من متجركم...</string>
+    <string name="field_greeting_hint">اكتب بأي لغة - العربية، English، اردو - مثال: السلام عليكم، أريد الطلب / Hello, I\'d like to order</string>
 
     <string name="greeting_suggestion_order">☕ السلام عليكم، أود الطلب من القائمة</string>
     <string name="greeting_suggestion_delivery">📦 مرحباً، أود الاستفسار عن التوصيل والأسعار</string>
+    <string name="greeting_suggestion_order_text">السلام عليكم، أود الطلب من القائمة</string>
+    <string name="greeting_suggestion_delivery_text">مرحباً، أود الاستفسار عن التوصيل والأسعار</string>
     <string name="greeting_suggestion_hours">📍 السلام عليكم، ما هي ساعات العمل لديكم؟</string>
     <string name="greeting_suggestion_stock">✨ أود الاستفسار عن توفر المنتجات لديكم</string>
 

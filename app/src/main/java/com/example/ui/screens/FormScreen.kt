@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -443,6 +444,9 @@ fun FormScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
+                    val orderSuggestionText = stringResource(R.string.greeting_suggestion_order_text)
+                    val deliverySuggestionText = stringResource(R.string.greeting_suggestion_delivery_text)
+
                     FormFieldLabel(
                         title = stringResource(R.string.field_greeting_title),
                         subtitle = stringResource(R.string.field_greeting_subtitle),
@@ -452,9 +456,20 @@ fun FormScreen(
                     OutlinedTextField(
                         value = uiState.defaultGreeting,
                         onValueChange = onDefaultGreetingChange,
-                        placeholder = { Text("e.g. Hello, I would like to order and inquire...", color = Color.Gray.copy(alpha = 0.6f)) },
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.field_greeting_hint),
+                                color = Color.Gray.copy(alpha = 0.6f),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        },
                         minLines = 2,
                         maxLines = 4,
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Default,
+                            autoCorrectEnabled = true
+                        ),
                         shape = RoundedCornerShape(14.dp),
                         colors = outlinedFieldColors(),
                         modifier = Modifier
@@ -464,7 +479,7 @@ fun FormScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    // Suggested quick greeting chips
+                    // Suggested quick greeting chips (Multilingual based on current app language)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         modifier = Modifier.fillMaxWidth()
@@ -476,7 +491,7 @@ fun FormScreen(
                                 .weight(1f)
                                 .clip(RoundedCornerShape(10.dp))
                                 .clickable {
-                                    onDefaultGreetingChange("السلام عليكم، أود الطلب من القائمة")
+                                    onDefaultGreetingChange(orderSuggestionText)
                                 }
                         ) {
                             Text(
@@ -497,7 +512,7 @@ fun FormScreen(
                                 .weight(1f)
                                 .clip(RoundedCornerShape(10.dp))
                                 .clickable {
-                                    onDefaultGreetingChange("مرحباً، أود الاستفسار عن التوصيل والأسعار")
+                                    onDefaultGreetingChange(deliverySuggestionText)
                                 }
                         ) {
                             Text(
