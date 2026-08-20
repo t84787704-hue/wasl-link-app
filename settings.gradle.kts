@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "Wasl"
+rootProject.name = "Wasl Market"
 
 include(":app")
