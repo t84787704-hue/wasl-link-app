@@ -24,6 +24,9 @@
     <string name="field_whatsapp_subtitle">سعودی واٹس ایپ نمبر (9 ہندسے)</string>
     <string name="field_whatsapp_hint">501234567</string>
 
+    <string name="field_currency_title">کرنسی *</string>
+    <string name="field_currency_subtitle">قیمتوں اور مینو کے لیے کرنسی منتخب کریں</string>
+
     <string name="field_greeting_title">پہلے سے طے شدہ واٹس ایپ پیغام</string>
     <string name="field_greeting_subtitle">جب کسٹمر رابطہ کرے تو یہ پیغام خود بخود لکھا ہوا آئے گا</string>
     <string name="field_greeting_hint">مثلاً: السلام علیکم، مجھے آپ کی دکان سے آرڈر کرنا ہے...</string>

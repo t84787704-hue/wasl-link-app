@@ -321,7 +321,7 @@ fun PreviewScreen(
                 )
 
                 // Inline Menu List under shop buttons if menu items are entered
-                val parsedItems = parseMenuItems(uiState.menuItemsText)
+                val parsedItems = parseMenuItems(uiState.menuItemsText, uiState.selectedCurrency)
                 if (parsedItems.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(16.dp))
                     Card(

@@ -21,12 +21,32 @@ class ExampleUnitTest {
   }
 
   @Test
-  fun whatsAppUrlWithDefaultGreeting_isProperlyEncoded() {
-    val phone = "591257059"
-    val greeting = "Hello, I'd like to order from the menu"
-    val encoded = java.net.URLEncoder.encode(greeting, "UTF-8").replace("+", "%20")
-    val url = "https://wa.me/966$phone?text=$encoded"
-    assertTrue(url.startsWith("https://wa.me/966591257059?text=Hello"))
-    assertTrue(url.contains("order"))
+  fun currencySymbols_and_formatting_areCorrect() {
+    assertEquals("﷼", com.example.data.CurrencyHelper.getCurrencySymbol("SAR"))
+    assertEquals("$", com.example.data.CurrencyHelper.getCurrencySymbol("USD"))
+    assertEquals("Rs", com.example.data.CurrencyHelper.getCurrencySymbol("PKR"))
+    assertEquals("₹", com.example.data.CurrencyHelper.getCurrencySymbol("INR"))
+    assertEquals("¥", com.example.data.CurrencyHelper.getCurrencySymbol("CNY"))
+    assertEquals("€", com.example.data.CurrencyHelper.getCurrencySymbol("EUR"))
+    assertEquals("£", com.example.data.CurrencyHelper.getCurrencySymbol("GBP"))
+    assertEquals("AED", com.example.data.CurrencyHelper.getCurrencySymbol("AED"))
+    assertEquals("₺", com.example.data.CurrencyHelper.getCurrencySymbol("TRY"))
+    assertEquals("৳", com.example.data.CurrencyHelper.getCurrencySymbol("BDT"))
+
+    assertEquals("$ 18", com.example.data.CurrencyHelper.formatPrice("18", "USD"))
+    assertEquals("Rs 250", com.example.data.CurrencyHelper.formatPrice("250", "PKR"))
+    assertEquals("₹ 120", com.example.data.CurrencyHelper.formatPrice("120", "INR"))
+    assertEquals("﷼ 18", com.example.data.CurrencyHelper.formatPrice("18 SAR", "SAR"))
+  }
+
+  @Test
+  fun parseMenuItems_formatsPricesWithSelectedCurrency() {
+    val rawMenu = "• Latte - 18\n• Cappuccino - 20 SAR"
+    val parsedUsd = com.example.ui.screens.parseMenuItems(rawMenu, "USD")
+    assertEquals(2, parsedUsd.size)
+    assertEquals("Latte", parsedUsd[0].title)
+    assertEquals("$ 18", parsedUsd[0].price)
+    assertEquals("Cappuccino", parsedUsd[1].title)
+    assertEquals("$ 20", parsedUsd[1].price)
   }
 }

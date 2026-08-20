@@ -26,7 +26,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEmotions
@@ -35,6 +38,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.NearMe
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RestaurantMenu
 import androidx.compose.material.icons.filled.Save
@@ -45,6 +49,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -53,6 +59,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,6 +78,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wasl.saudishop.R
+import com.example.data.CurrencyHelper
 import com.example.ui.WaslUiState
 import com.example.ui.theme.WaslBgCream
 import com.example.ui.theme.WaslBorderBeige
@@ -93,6 +104,7 @@ fun FormScreen(
     onWhatsappChange: (String) -> Unit,
     onCategoryChange: (String) -> Unit,
     onCityChange: (String) -> Unit,
+    onCurrencyChange: (String) -> Unit,
     onDefaultGreetingChange: (String) -> Unit,
     onLocationUrlChange: (String) -> Unit,
     onMenuItemsChange: (String) -> Unit,
@@ -405,6 +417,127 @@ fun FormScreen(
                             .fillMaxWidth()
                             .testTag("input_city")
                     )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Field: Currency Selection
+            var currencyExpanded by remember { mutableStateOf(false) }
+            val currentCurrency = CurrencyHelper.getCurrencyOption(uiState.selectedCurrency)
+
+            Card(
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = WaslSurfaceWhite),
+                border = BorderStroke(1.dp, WaslBorderBeige),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(modifier = Modifier.padding(18.dp)) {
+                    FormFieldLabel(
+                        title = stringResource(R.string.field_currency_title),
+                        subtitle = stringResource(R.string.field_currency_subtitle),
+                        icon = Icons.Default.Payments
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Surface(
+                            shape = RoundedCornerShape(14.dp),
+                            color = WaslSurfaceBeige,
+                            border = BorderStroke(1.dp, WaslBorderBeige),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { currencyExpanded = true }
+                                .testTag("currency_dropdown_trigger")
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 14.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    if (currentCurrency.flag.isNotBlank()) {
+                                        Text(text = currentCurrency.flag, fontSize = 20.sp)
+                                        Spacer(modifier = Modifier.width(10.dp))
+                                    }
+                                    Column {
+                                        Text(
+                                            text = "${currentCurrency.code} ${currentCurrency.symbol}",
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            color = WaslTextPrimary
+                                        )
+                                        Text(
+                                            text = currentCurrency.nameEn,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = WaslTextSecondary
+                                        )
+                                    }
+                                }
+                                Icon(
+                                    imageVector = if (currencyExpanded) Icons.Default.ArrowDropUp else Icons.Default.ArrowDropDown,
+                                    contentDescription = "Select Currency",
+                                    tint = WaslTextSecondary
+                                )
+                            }
+                        }
+
+                        DropdownMenu(
+                            expanded = currencyExpanded,
+                            onDismissRequest = { currencyExpanded = false },
+                            modifier = Modifier
+                                .fillMaxWidth(0.88f)
+                                .background(WaslSurfaceWhite)
+                                .testTag("currency_dropdown_menu")
+                        ) {
+                            CurrencyHelper.supportedCurrencies.forEach { option ->
+                                val isSelected = option.code.equals(uiState.selectedCurrency, ignoreCase = true)
+                                DropdownMenuItem(
+                                    text = {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                            modifier = Modifier.fillMaxWidth()
+                                        ) {
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                if (option.flag.isNotBlank()) {
+                                                    Text(text = option.flag, fontSize = 18.sp)
+                                                    Spacer(modifier = Modifier.width(10.dp))
+                                                }
+                                                Column {
+                                                    Text(
+                                                        text = "${option.code} ${option.symbol}",
+                                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                                        color = if (isSelected) WaslSaudiGreen else WaslTextPrimary
+                                                    )
+                                                    Text(
+                                                        text = option.nameEn,
+                                                        style = MaterialTheme.typography.bodySmall,
+                                                        color = WaslTextSecondary
+                                                    )
+                                                }
+                                            }
+                                            if (isSelected) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Check,
+                                                    contentDescription = "Selected",
+                                                    tint = WaslSaudiGreen,
+                                                    modifier = Modifier.size(18.dp)
+                                                )
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        onCurrencyChange(option.code)
+                                        currencyExpanded = false
+                                    },
+                                    modifier = Modifier.testTag("currency_option_${option.code}")
+                                )
+                            }
+                        }
+                    }
                 }
             }
 

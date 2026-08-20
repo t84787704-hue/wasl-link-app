@@ -24,6 +24,9 @@
     <string name="field_whatsapp_subtitle">सऊदी व्हाट्सएप नंबर (9 अंक)</string>
     <string name="field_whatsapp_hint">501234567</string>
 
+    <string name="field_currency_title">मुद्रा (Currency) *</string>
+    <string name="field_currency_subtitle">मूल्य और मेनू के लिए मुद्रा चुनें</string>
+
     <string name="field_greeting_title">डिफ़ॉल्ट व्हाट्सएप संदेश</string>
     <string name="field_greeting_subtitle">ग्राहक जब व्हाट्सएप दबाएगा तो यह संदेश पहले से लिखा होगा</string>
     <string name="field_greeting_hint">उदा: नमस्ते, मैं आपकी दुकान से ऑर्डर और पूछताछ करना चाहता हूँ...</string>

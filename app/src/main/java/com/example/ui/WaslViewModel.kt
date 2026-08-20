@@ -16,8 +16,10 @@ import androidx.lifecycle.viewModelScope
 import com.wasl.saudishop.R
 import com.example.data.AppDatabase
 import com.example.data.AppPreferences
+import com.example.data.CurrencyHelper
 import com.example.data.ShopProfile
 import com.example.data.ShopRepository
+import com.example.ui.screens.parseMenuItems
 import com.example.ui.util.LocaleHelper
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
@@ -45,6 +47,7 @@ data class WaslUiState(
     val logoEmoji: String = "☕",
     val category: String = "",
     val city: String = "",
+    val selectedCurrency: String = "SAR",
     val activeTab: Int = 0, // 0 = Form, 1 = Preview, 2 = Settings
     val selectedLanguageCode: String = "system",
     val isArabicLayout: Boolean = true,
@@ -91,6 +94,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                         logoEmoji = savedProfile.logoEmoji,
                         category = savedProfile.category,
                         city = savedProfile.city,
+                        selectedCurrency = savedProfile.selectedCurrency.ifBlank { "SAR" },
                         isLoading = false
                     )
                 }
@@ -136,6 +140,10 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         _uiState.update { it.copy(city = city, isSaveSuccess = false) }
     }
 
+    fun onCurrencyChange(currency: String) {
+        _uiState.update { it.copy(selectedCurrency = currency, isSaveSuccess = false) }
+    }
+
     fun setActiveTab(tabIndex: Int) {
         _uiState.update { it.copy(activeTab = tabIndex) }
     }
@@ -178,6 +186,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 logoEmoji = state.logoEmoji,
                 category = state.category,
                 city = state.city,
+                selectedCurrency = state.selectedCurrency,
                 updatedAt = System.currentTimeMillis()
             )
             repository.saveProfile(profile)
@@ -401,7 +410,15 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
         val menuRaw = state.menuItemsText.trim()
         val menuSection = if (menuRaw.isNotBlank()) {
-            "🍽️ Menu & Prices:\n$menuRaw\n\n"
+            val parsedItems = parseMenuItems(menuRaw, state.selectedCurrency)
+            if (parsedItems.isNotEmpty()) {
+                val formattedLines = parsedItems.joinToString("\n") { item ->
+                    if (item.price != null) "• ${item.title} - ${item.price}" else "• ${item.title}"
+                }
+                "🍽️ Menu & Prices:\n$formattedLines\n\n"
+            } else {
+                "🍽️ Menu & Prices:\n$menuRaw\n\n"
+            }
         } else {
             ""
         }

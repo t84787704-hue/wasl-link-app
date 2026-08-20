@@ -38,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.CurrencyHelper
 import com.wasl.saudishop.R
 import com.example.ui.theme.WaslSaudiGreen
 import com.example.ui.theme.WaslSaudiGreenLight
@@ -65,13 +67,16 @@ fun MenuBottomSheet(
     shopName: String,
     whatsappNumber: String,
     menuText: String,
+    selectedCurrency: String = "SAR",
     isArabic: Boolean = false,
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val menuItems = parseMenuItems(menuText)
+    val menuItems = remember(menuText, selectedCurrency) {
+        parseMenuItems(menuText, selectedCurrency)
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -190,6 +195,7 @@ fun MenuBottomSheet(
                                     context = context,
                                     whatsappNumber = whatsappNumber,
                                     itemTitle = item.title,
+                                    price = item.price,
                                     shopName = shopName
                                 )
                             }
@@ -310,7 +316,7 @@ fun MenuItemCard(
     }
 }
 
-fun parseMenuItems(raw: String): List<MenuItemParsed> {
+fun parseMenuItems(raw: String, currencyCode: String = "SAR"): List<MenuItemParsed> {
     return raw.lines()
         .map { it.trim() }
         .filter { it.isNotBlank() }
@@ -323,19 +329,31 @@ fun parseMenuItems(raw: String): List<MenuItemParsed> {
             when {
                 cleaned.contains(" - ") -> {
                     val parts = cleaned.split(" - ", limit = 2)
-                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                    MenuItemParsed(
+                        rawText = line,
+                        title = parts[0].trim(),
+                        price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
+                    )
                 }
                 cleaned.contains(" — ") -> {
                     val parts = cleaned.split(" — ", limit = 2)
-                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                    MenuItemParsed(
+                        rawText = line,
+                        title = parts[0].trim(),
+                        price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
+                    )
                 }
                 cleaned.contains(":") -> {
                     val parts = cleaned.split(":", limit = 2)
-                    MenuItemParsed(rawText = line, title = parts[0].trim(), price = parts[1].trim())
+                    MenuItemParsed(
+                        rawText = line,
+                        title = parts[0].trim(),
+                        price = CurrencyHelper.formatPrice(parts[1].trim(), currencyCode)
+                    )
                 }
-                cleaned.matches(Regex("^[0-9]+(\\s*(SAR|ر\\.س|SR))?$", RegexOption.IGNORE_CASE)) -> {
-                    val priceStr = if (!cleaned.contains("SAR", ignoreCase = true) && !cleaned.contains("ر.س") && !cleaned.contains("SR", ignoreCase = true)) "$cleaned SAR" else cleaned
-                    MenuItemParsed(rawText = line, title = "Item", price = priceStr)
+                cleaned.matches(Regex("^[0-9]+(\\s*([A-Za-z﷼₹$€£₺৳]+|ر\\.س|SR))?$", RegexOption.IGNORE_CASE)) -> {
+                    val priceFormatted = CurrencyHelper.formatPrice(cleaned, currencyCode)
+                    MenuItemParsed(rawText = line, title = "Item", price = priceFormatted)
                 }
                 else -> {
                     MenuItemParsed(rawText = line, title = cleaned, price = null)
@@ -348,11 +366,13 @@ private fun orderItemViaWhatsApp(
     context: Context,
     whatsappNumber: String,
     itemTitle: String,
+    price: String?,
     shopName: String
 ) {
     val rawNumber = whatsappNumber.trim()
     val formatted = if (rawNumber.startsWith("966")) rawNumber else "966$rawNumber"
-    val greeting = "Hello, I would like to order ($itemTitle) from $shopName."
+    val priceSuffix = if (!price.isNullOrBlank()) " ($price)" else ""
+    val greeting = "Hello, I would like to order $itemTitle$priceSuffix from $shopName."
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$formatted?text=${Uri.encode(greeting)}"))
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     try {

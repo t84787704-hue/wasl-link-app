@@ -32,6 +32,9 @@
     <string name="field_city_subtitle">المدينة في المملكة العربية السعودية</string>
     <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
 
+    <string name="field_currency_title">العملة *</string>
+    <string name="field_currency_subtitle">اختر عملة عرض الأسعار والمنتجات</string>
+
     <string name="field_greeting_title">رسالة الترحيب الافتراضية / WhatsApp Greeting</string>
     <string name="field_greeting_subtitle">النص التلقائي عند نقر العميل على زر الواتساب</string>
     <string name="field_greeting_hint">اكتب بأي لغة - العربية، English، اردو - مثال: السلام عليكم، أريد الطلب / Hello, I\'d like to order</string>

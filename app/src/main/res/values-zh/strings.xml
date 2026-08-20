@@ -24,6 +24,9 @@
     <string name="field_whatsapp_subtitle">沙特 WhatsApp 手机号 (9位数字)</string>
     <string name="field_whatsapp_hint">501234567</string>
 
+    <string name="field_currency_title">货币 (Currency) *</string>
+    <string name="field_currency_subtitle">选择菜单与商品价格显示的货币</string>
+
     <string name="field_greeting_title">默认 WhatsApp 问候语</string>
     <string name="field_greeting_subtitle">顾客点击联系时自动预填的消息</string>
     <string name="field_greeting_hint">例如：您好！我想咨询并从贵店下单...</string>

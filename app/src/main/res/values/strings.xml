@@ -32,6 +32,9 @@
     <string name="field_city_subtitle">City or region in Saudi Arabia</string>
     <string name="field_city_hint">Enter city here - e.g. Riyadh</string>
 
+    <string name="field_currency_title">Currency *</string>
+    <string name="field_currency_subtitle">Select display currency for pricing and menu</string>
+
     <string name="field_greeting_title">Default WhatsApp Greeting / رسالة واتساب</string>
     <string name="field_greeting_subtitle">Pre-filled text when customer taps WhatsApp</string>
     <string name="field_greeting_hint">Type in any language - English, العربية, اردو - e.g. Hello, I\'d like to order / السلام عليكم، أريد الطلب</string>

@@ -14,5 +14,6 @@ data class ShopProfile(
     val category: String = "",
     val city: String = "",
     val defaultGreeting: String = "",
+    val selectedCurrency: String = "SAR",
     val updatedAt: Long = System.currentTimeMillis()
 )
