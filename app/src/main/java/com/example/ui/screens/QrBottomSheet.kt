@@ -92,6 +92,26 @@ fun QrBottomSheet(
         }
     }
 
+    val phoneDisplay = if (cleanWhatsapp.isNotBlank()) "+966 $cleanWhatsapp" else "+966 50 000 0000"
+    val locationDisplay = remember(uiState.locationUrl, uiState.city) {
+        val raw = uiState.locationUrl.trim()
+        val latMatch = Regex("query=([0-9.-]+),([0-9.-]+)").find(raw)
+        if (latMatch != null) {
+            val (lat, lng) = latMatch.destructured
+            "$lat, $lng"
+        } else {
+            val coordsMatch = Regex("([0-9.-]+),\\s*([0-9.-]+)").find(raw)
+            if (coordsMatch != null) {
+                val (lat, lng) = coordsMatch.destructured
+                "$lat, $lng"
+            } else if (uiState.city.isNotBlank()) {
+                uiState.city
+            } else {
+                "Location available on QR"
+            }
+        }
+    }
+
     val qrBitmap: Bitmap? = remember(whatsappLink) {
         QrCodeGenerator.generateQrBitmap(whatsappLink, 600)
     }
@@ -113,8 +133,8 @@ fun QrBottomSheet(
             appendLine("• $city")
         }
         appendLine()
-        appendLine("💬 WhatsApp: $whatsappLink")
-        appendLine("🗺️ Location: $mapsLink")
+        appendLine("💬 WhatsApp: $phoneDisplay")
+        appendLine("🗺️ Location: $locationDisplay (Tap QR to open)")
         appendLine()
         append("✨ Created via Wasl Market | وصل")
     }

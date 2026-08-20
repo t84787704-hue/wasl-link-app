@@ -371,7 +371,28 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Share Message with 2 WORKING links with https:// prefix
+    fun getFormattedPhoneDisplay(): String {
+        val cleanPhone = getCleanPhoneNumber()
+        return if (cleanPhone.isNotBlank()) "+966 $cleanPhone" else "+966 50 000 0000"
+    }
+
+    fun getLocationDisplay(): String {
+        val state = _uiState.value
+        val raw = state.locationUrl.trim()
+        val latMatch = Regex("query=([0-9.-]+),([0-9.-]+)").find(raw)
+        if (latMatch != null) {
+            val (lat, lng) = latMatch.destructured
+            return "$lat, $lng"
+        }
+        val coordsMatch = Regex("([0-9.-]+),\\s*([0-9.-]+)").find(raw)
+        if (coordsMatch != null) {
+            val (lat, lng) = coordsMatch.destructured
+            return "$lat, $lng"
+        }
+        return if (state.city.isNotBlank()) state.city else "Location available on QR"
+    }
+
+    // Clean Share Message - Plain text only, NO https urls to prevent WhatsApp preview card
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
@@ -385,8 +406,8 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             else -> "My Store"
         }
 
-        val whatsappLink = getWhatsAppLink()
-        val mapsLink = getMapsLink()
+        val phoneDisplay = getFormattedPhoneDisplay()
+        val locationDisplay = getLocationDisplay()
 
         return buildString {
             appendLine("📍 $shopName")
@@ -394,8 +415,8 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
                 appendLine("• $city")
             }
             appendLine()
-            appendLine("💬 WhatsApp: $whatsappLink")
-            appendLine("🗺️ Location: $mapsLink")
+            appendLine("💬 WhatsApp: $phoneDisplay")
+            appendLine("🗺️ Location: $locationDisplay (Tap QR to open)")
             appendLine()
             append("✨ Created via Wasl Market | وصل")
         }
