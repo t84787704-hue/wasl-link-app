@@ -29,6 +29,12 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
+import android.location.Address
+import android.location.Geocoder
+import android.provider.Settings
+import android.os.Build
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 data class WaslUiState(
     val shopName: String = "",
@@ -388,6 +394,26 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
             return
         }
 
+        // Check if GPS / Location services are enabled on the device
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        val isGpsEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER) == true
+        val isNetworkEnabled = locationManager?.isProviderEnabled(LocationManager.NETWORK_PROVIDER) == true
+
+        if (!isGpsEnabled && !isNetworkEnabled) {
+            Toast.makeText(
+                context,
+                "Please turn on GPS / Location Services",
+                Toast.LENGTH_LONG
+            ).show()
+            try {
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                context.startActivity(intent)
+            } catch (_: Exception) {}
+            return
+        }
+
         _uiState.update { it.copy(isDetectingLocation = true) }
 
         try {
@@ -456,7 +482,7 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
     private fun applyDetectedLocation(context: Context, latitude: Double, longitude: Double) {
         val formattedLat = String.format(Locale.US, "%.5f", latitude)
         val formattedLng = String.format(Locale.US, "%.5f", longitude)
-        val locationUrl = "https://maps.google.com/?q=$formattedLat,$formattedLng"
+        val locationUrl = "https://www.google.com/maps/search/?api=1&query=$formattedLat,$formattedLng"
 
         _uiState.update {
             it.copy(
@@ -467,11 +493,49 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
 
         saveProfile()
 
+        // Reverse geocode in background to auto-suggest City if empty
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val geocoder = Geocoder(context, Locale.getDefault())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(latitude, longitude, 1) { addresses ->
+                        val address = addresses.firstOrNull()
+                        val detectedCityName = address?.locality ?: address?.subAdminArea ?: address?.adminArea
+                        if (!detectedCityName.isNullOrBlank() && _uiState.value.city.isBlank()) {
+                            _uiState.update { it.copy(city = detectedCityName) }
+                            saveProfile()
+                        }
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    val addresses = geocoder.getFromLocation(latitude, longitude, 1)
+                    val address = addresses?.firstOrNull()
+                    val detectedCityName = address?.locality ?: address?.subAdminArea ?: address?.adminArea
+                    if (!detectedCityName.isNullOrBlank() && _uiState.value.city.isBlank()) {
+                        _uiState.update { it.copy(city = detectedCityName) }
+                        saveProfile()
+                    }
+                }
+            } catch (_: Exception) {
+                // Geocoding optional
+            }
+        }
+
         Toast.makeText(
             context,
-            context.getString(R.string.toast_location_detected_success),
+            "Location detected: $formattedLat, $formattedLng",
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    fun openAppSettings(context: Context) {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                data = Uri.fromParts("package", context.packageName, null)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            context.startActivity(intent)
+        } catch (_: Exception) {}
     }
 
     fun openMapPicker(context: Context) {

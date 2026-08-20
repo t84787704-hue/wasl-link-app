@@ -31,6 +31,7 @@ class GreetingScreenshotTest {
           onOpenGoogleMaps = {},
           onShowMenu = {},
           onShareStore = {},
+          onShareQr = {},
           onEditFormClick = {}
         )
       }

@@ -47,6 +47,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wasl.saudishop.R
 import com.example.ui.screens.FormScreen
@@ -60,6 +66,22 @@ import com.example.ui.theme.WaslGoldLight
 fun WaslApp(viewModel: WaslViewModel) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+        val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (fineGranted || coarseGranted) {
+            viewModel.detectCurrentLocation(context)
+        } else {
+            Toast.makeText(
+                context,
+                context.getString(R.string.toast_location_permission_denied),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -122,7 +144,27 @@ fun WaslApp(viewModel: WaslViewModel) {
                                 viewModel.setActiveTab(1)
                             },
                             onShareQr = { viewModel.setShowQrSheet(true) },
-                            onDetectLocationClick = { viewModel.detectCurrentLocation(context) },
+                            onDetectLocationClick = {
+                                val hasFine = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.ACCESS_FINE_LOCATION
+                                ) == PackageManager.PERMISSION_GRANTED
+                                val hasCoarse = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                ) == PackageManager.PERMISSION_GRANTED
+
+                                if (hasFine || hasCoarse) {
+                                    viewModel.detectCurrentLocation(context)
+                                } else {
+                                    locationPermissionLauncher.launch(
+                                        arrayOf(
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION
+                                        )
+                                    )
+                                }
+                            },
                             onOpenMapPicker = { viewModel.openMapPicker(context) }
                         )
                         1 -> PreviewScreen(
