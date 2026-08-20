@@ -345,57 +345,63 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Store Slug and Short Link Generator
-    fun getStoreSlug(): String {
+    fun getCleanPhoneNumber(): String {
+        val digits = _uiState.value.whatsappNumber.replace(Regex("[^0-9]"), "")
+        return when {
+            digits.startsWith("966") -> digits.removePrefix("966")
+            digits.startsWith("0") -> digits.removePrefix("0")
+            else -> digits
+        }
+    }
+
+    fun getWhatsAppLink(): String {
+        val cleanPhone = getCleanPhoneNumber()
+        val formattedNumber = if (cleanPhone.isNotBlank()) "966$cleanPhone" else "966500000000"
+        return "https://wa.me/$formattedNumber"
+    }
+
+    fun getMapsLink(): String {
         val state = _uiState.value
-        val nameClean = state.shopName.trim()
-            .replace(Regex("[^a-zA-Z0-9]"), "")
-            .lowercase()
-        if (nameClean.isNotBlank()) return nameClean
-        val phoneDigits = state.whatsappNumber.replace(Regex("[^0-9]"), "")
-        if (phoneDigits.isNotBlank()) return "store${phoneDigits.takeLast(4)}"
-        return "store"
+        val rawUrl = state.locationUrl.trim()
+        return when {
+            rawUrl.startsWith("http://") || rawUrl.startsWith("https://") -> rawUrl
+            rawUrl.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(rawUrl)}"
+            state.city.isNotBlank() -> "https://www.google.com/maps/search/?api=1&query=${Uri.encode(state.city + ", Saudi Arabia")}"
+            else -> "https://www.google.com/maps/search/?api=1&query=Riyadh,Saudi+Arabia"
+        }
     }
 
-    fun getShortStoreLink(): String {
-        return "wasl.sa/${getStoreSlug()}"
-    }
-
-    fun getStorefrontUrl(): String {
-        return "https://wasl.sa/${getStoreSlug()}"
-    }
-
-    // Clean Share Message with Single Short Storefront Link
+    // Share Message with 2 WORKING links with https:// prefix
     fun getShareMessage(): String {
         val state = _uiState.value
         val nameEn = state.shopName.trim()
         val nameAr = state.shopNameArabic.trim()
         val city = state.city.trim()
-        val shortStoreLink = getShortStoreLink()
 
-        val titleLine = when {
-            nameEn.isNotBlank() && nameAr.isNotBlank() -> "📍 $nameEn ($nameAr)"
-            nameEn.isNotBlank() -> "📍 $nameEn"
-            nameAr.isNotBlank() -> "📍 $nameAr"
-            else -> "📍 My Store"
+        val shopName = when {
+            nameEn.isNotBlank() && nameAr.isNotBlank() -> "$nameEn ($nameAr)"
+            nameEn.isNotBlank() -> nameEn
+            nameAr.isNotBlank() -> nameAr
+            else -> "My Store"
         }
 
-        val cityLine = if (city.isNotBlank()) "• $city" else ""
+        val whatsappLink = getWhatsAppLink()
+        val mapsLink = getMapsLink()
 
         return buildString {
-            appendLine(titleLine)
-            if (cityLine.isNotBlank()) {
-                appendLine(cityLine)
+            appendLine("📍 $shopName")
+            if (city.isNotBlank()) {
+                appendLine("• $city")
             }
             appendLine()
-            appendLine("Tap to view store, chat on WhatsApp & get location:")
-            appendLine(shortStoreLink)
+            appendLine("💬 WhatsApp: $whatsappLink")
+            appendLine("🗺️ Location: $mapsLink")
             appendLine()
             append("✨ Created via Wasl Market | وصل")
         }
     }
 
-    // Share Storefront Link - Formatted with single short link
+    // Share Storefront Link - Formatted with working https links
     fun shareStoreLink(context: Context) {
         val shareText = getShareMessage()
 
