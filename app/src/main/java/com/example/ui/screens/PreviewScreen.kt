@@ -420,6 +420,21 @@ fun PreviewScreen(
 
                 Spacer(modifier = Modifier.height(28.dp))
 
+                // FUTURE ADS SWITCH - OFF FOR NOW
+                val showAds = false
+                // When you want to enable ads later, just change to true
+                if (showAds) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        // Future Ad Banner
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
+
                 // Footer branding
                 Surface(
                     shape = RoundedCornerShape(14.dp),
