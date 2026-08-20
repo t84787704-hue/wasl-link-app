@@ -223,33 +223,37 @@ fun QrBottomSheet(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     Text(
-                        text = uiState.shopName.ifBlank { stringResource(R.string.app_name) },
+                        text = uiState.shopName.ifBlank { "My Shop" },
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        SaudiVerifiedBadge(isArabic = false)
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = uiState.city.ifBlank { stringResource(R.string.preview_country_default) },
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    val subtitleText = when {
+                        uiState.category.isNotBlank() && uiState.city.isNotBlank() -> "${uiState.category} • ${uiState.city}"
+                        uiState.category.isNotBlank() -> uiState.category
+                        uiState.city.isNotBlank() -> uiState.city
+                        else -> "Specialty Cafe & Pastries"
                     }
 
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    // The Rendered QR Code
+                    Text(
+                        text = subtitleText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // The Rendered QR Code (250x250 with padding)
                     Surface(
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(18.dp),
                         color = Color.White,
                         border = BorderStroke(2.dp, WaslSandGold.copy(alpha = 0.4f)),
-                        shadowElevation = 2.dp,
+                        shadowElevation = 3.dp,
                         modifier = Modifier.padding(4.dp)
                     ) {
                         Box(
@@ -261,7 +265,7 @@ fun QrBottomSheet(
                                     bitmap = qrBitmap.asImageBitmap(),
                                     contentDescription = "Store QR Code",
                                     modifier = Modifier
-                                        .size(200.dp)
+                                        .size(250.dp)
                                         .testTag("qr_code_image")
                                 )
                             }
@@ -270,56 +274,35 @@ fun QrBottomSheet(
 
                     Spacer(modifier = Modifier.height(14.dp))
 
-                    // Scan instruction tag
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = WaslSaudiGreenLight
-                    ) {
-                        Text(
-                            text = stringResource(R.string.qr_scan_prompt),
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = WaslSaudiGreen,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
-                    }
+                    // Green Arabic text
+                    Text(
+                        text = "امسح الرمز لزيارة المتجر والتواصل فوراً",
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = WaslSaudiGreen,
+                        textAlign = TextAlign.Center
+                    )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    // Store URL text container with copy action
-                    Surface(
-                        shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
-                        ) {
-                            Text(
-                                text = waLinkWithGreeting,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            IconButton(
-                                onClick = { QrCodeGenerator.copyToClipboard(context, waLinkWithGreeting) },
-                                modifier = Modifier.size(30.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = "Copy Link",
-                                    tint = MaterialTheme.colorScheme.onSurface,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
-                    }
+                    // Small grey text
+                    Text(
+                        text = "Scan to visit store & chat on WhatsApp",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Bottom gold text
+                    Text(
+                        text = "Wasl Storefront | وصل ✨",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = WaslSandGold,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
 
