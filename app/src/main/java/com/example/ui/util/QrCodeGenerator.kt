@@ -137,7 +137,7 @@ object QrCodeGenerator {
         canvas.drawBitmap(qrBitmap, qrLeft, qrTop, null)
         try { qrBitmap.recycle() } catch (e: Exception) {}
 
-        // Scan Prompt
+        // Scan Prompt & Link
         val promptPaint = Paint().apply {
             color = android.graphics.Color.parseColor("#0F6B4B")
             textSize = 28f
@@ -145,15 +145,25 @@ object QrCodeGenerator {
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
-        canvas.drawText("امسح الرمز لزيارة المتجر والتواصل فوراً", cardWidth / 2f, 760f, promptPaint)
+        canvas.drawText("امسح الرمز لزيارة المتجر والتواصل فوراً", cardWidth / 2f, 750f, promptPaint)
 
-        val promptEnPaint = Paint().apply {
-            color = android.graphics.Color.parseColor("#8A8478")
-            textSize = 22f
+        val linkDisplay = qrContent.removePrefix("https://").removePrefix("http://")
+        val linkPaint = Paint().apply {
+            color = android.graphics.Color.parseColor("#1B1A17")
+            textSize = 24f
+            isFakeBoldText = true
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
-        canvas.drawText("Scan to visit store & chat on WhatsApp", cardWidth / 2f, 800f, promptEnPaint)
+        canvas.drawText(linkDisplay, cardWidth / 2f, 795f, linkPaint)
+
+        val promptEnPaint = Paint().apply {
+            color = android.graphics.Color.parseColor("#8A8478")
+            textSize = 20f
+            textAlign = Paint.Align.CENTER
+            isAntiAlias = true
+        }
+        canvas.drawText("Scan to visit store & chat on WhatsApp", cardWidth / 2f, 835f, promptEnPaint)
 
         // Footer Wasl Tag
         val footerPaint = Paint().apply {
@@ -163,7 +173,7 @@ object QrCodeGenerator {
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
-        canvas.drawText("✨ وصل | Wasl Storefront", cardWidth / 2f, 880f, footerPaint)
+        canvas.drawText("✨ وصل | Wasl Storefront", cardWidth / 2f, 895f, footerPaint)
 
         return bitmap
     }

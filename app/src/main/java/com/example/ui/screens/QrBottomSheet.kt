@@ -72,20 +72,44 @@ fun QrBottomSheet(
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val cleanWhatsapp = uiState.whatsappNumber.trim()
-    val formattedWhatsapp = if (cleanWhatsapp.startsWith("966")) cleanWhatsapp else "966$cleanWhatsapp"
-    val storeUrl = "https://wa.me/$formattedWhatsapp"
+    val shopSlug = remember(uiState.shopName, uiState.whatsappNumber) {
+        val clean = uiState.shopName.trim().replace(Regex("[^a-zA-Z0-9]"), "").lowercase()
+        if (clean.isNotBlank()) clean else {
+            val phoneDigits = uiState.whatsappNumber.replace(Regex("[^0-9]"), "")
+            if (phoneDigits.isNotBlank()) "store${phoneDigits.takeLast(4)}" else "store"
+        }
+    }
+    val shortStoreLink = "wasl.sa/$shopSlug"
+    val storeUrl = "https://wasl.sa/$shopSlug"
 
     val qrBitmap: Bitmap? = remember(storeUrl) {
         QrCodeGenerator.generateQrBitmap(storeUrl, 600)
     }
 
-    val shareText = """
-        📍 ${uiState.shopNameArabic} (${uiState.shopName})
-        💬 WhatsApp: $storeUrl
-        🗺️ Map: ${uiState.locationUrl}
-        ✨ Created via Wasl Market
-    """.trimIndent()
+    val nameEn = uiState.shopName.trim()
+    val nameAr = uiState.shopNameArabic.trim()
+    val city = uiState.city.trim()
+
+    val titleLine = when {
+        nameEn.isNotBlank() && nameAr.isNotBlank() -> "📍 $nameEn ($nameAr)"
+        nameEn.isNotBlank() -> "📍 $nameEn"
+        nameAr.isNotBlank() -> "📍 $nameAr"
+        else -> "📍 My Store"
+    }
+
+    val cityLine = if (city.isNotBlank()) "• $city" else ""
+
+    val shareText = buildString {
+        appendLine(titleLine)
+        if (cityLine.isNotBlank()) {
+            appendLine(cityLine)
+        }
+        appendLine()
+        appendLine("Tap to view store, chat on WhatsApp & get location:")
+        appendLine(shortStoreLink)
+        appendLine()
+        append("✨ Created via Wasl Market | وصل")
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -269,7 +293,7 @@ fun QrBottomSheet(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
                         ) {
                             Text(
-                                text = storeUrl,
+                                text = shortStoreLink,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 maxLines = 1,
@@ -278,7 +302,7 @@ fun QrBottomSheet(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             IconButton(
-                                onClick = { QrCodeGenerator.copyToClipboard(context, storeUrl) },
+                                onClick = { QrCodeGenerator.copyToClipboard(context, shortStoreLink) },
                                 modifier = Modifier.size(30.dp)
                             ) {
                                 Icon(
@@ -387,7 +411,7 @@ fun QrBottomSheet(
 
                 // Copy Link Button
                 OutlinedButton(
-                    onClick = { QrCodeGenerator.copyToClipboard(context, storeUrl) },
+                    onClick = { QrCodeGenerator.copyToClipboard(context, shortStoreLink) },
                     shape = RoundedCornerShape(14.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)),
                     modifier = Modifier

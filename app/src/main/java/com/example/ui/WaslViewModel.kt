@@ -345,46 +345,59 @@ class WaslViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // Share Storefront Link - Formatted to prevent generic WhatsApp preview cards
-    fun shareStoreLink(context: Context) {
+    // Store Slug and Short Link Generator
+    fun getStoreSlug(): String {
         val state = _uiState.value
-        val shopNameEn = state.shopName.ifBlank { "Wasl Store" }
-        val shopNameAr = state.shopNameArabic.ifBlank { "" }
-        val titleLine = if (shopNameAr.isNotBlank()) {
-            "📍 $shopNameEn ($shopNameAr)"
-        } else {
-            "📍 $shopNameEn"
+        val nameClean = state.shopName.trim()
+            .replace(Regex("[^a-zA-Z0-9]"), "")
+            .lowercase()
+        if (nameClean.isNotBlank()) return nameClean
+        val phoneDigits = state.whatsappNumber.replace(Regex("[^0-9]"), "")
+        if (phoneDigits.isNotBlank()) return "store${phoneDigits.takeLast(4)}"
+        return "store"
+    }
+
+    fun getShortStoreLink(): String {
+        return "wasl.sa/${getStoreSlug()}"
+    }
+
+    fun getStorefrontUrl(): String {
+        return "https://wasl.sa/${getStoreSlug()}"
+    }
+
+    // Clean Share Message with Single Short Storefront Link
+    fun getShareMessage(): String {
+        val state = _uiState.value
+        val nameEn = state.shopName.trim()
+        val nameAr = state.shopNameArabic.trim()
+        val city = state.city.trim()
+        val shortStoreLink = getShortStoreLink()
+
+        val titleLine = when {
+            nameEn.isNotBlank() && nameAr.isNotBlank() -> "📍 $nameEn ($nameAr)"
+            nameEn.isNotBlank() -> "📍 $nameEn"
+            nameAr.isNotBlank() -> "📍 $nameAr"
+            else -> "📍 My Store"
         }
 
-        val metaList = listOf(state.category, state.city).filter { it.isNotBlank() }
-        val metaLine = if (metaList.isNotEmpty()) metaList.joinToString(" • ") else "المملكة العربية السعودية • Saudi Arabia"
+        val cityLine = if (city.isNotBlank()) "• $city" else ""
 
-        val cleanPhone = state.whatsappNumber.replace(Regex("[^0-9]"), "")
-        val formattedPhone = when {
-            cleanPhone.startsWith("966") -> cleanPhone
-            cleanPhone.isNotBlank() -> "966$cleanPhone"
-            else -> ""
+        return buildString {
+            appendLine(titleLine)
+            if (cityLine.isNotBlank()) {
+                appendLine(cityLine)
+            }
+            appendLine()
+            appendLine("Tap to view store, chat on WhatsApp & get location:")
+            appendLine(shortStoreLink)
+            appendLine()
+            append("✨ Created via Wasl Market | وصل")
         }
+    }
 
-        val waSection = if (formattedPhone.isNotBlank()) {
-            "\n💬 رابط المتجر والتواصل عبر واتساب:\nwa.me/$formattedPhone"
-        } else {
-            ""
-        }
-
-        val mapSection = if (state.locationUrl.isNotBlank()) {
-            "\n🗺️ الموقع على خرائط جوجل:\n${state.locationUrl}"
-        } else {
-            ""
-        }
-
-        val shareText = """
-$titleLine
-$metaLine
-$waSection$mapSection
-
-تم إنشاء الرابط عبر تطبيق وصل ✨ (Wasl)
-        """.trimIndent()
+    // Share Storefront Link - Formatted with single short link
+    fun shareStoreLink(context: Context) {
+        val shareText = getShareMessage()
 
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
