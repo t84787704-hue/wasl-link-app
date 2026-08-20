@@ -27,24 +27,12 @@ android {
 
   signingConfigs {
     getByName("debug") {
-      storeFile = file("${rootDir}/debug.keystore")
-      storePassword = "android"
-      keyAlias = "androiddebugkey"
-      keyPassword = "android"
-    }
-    create("release") {
-      val keyPropertiesFile = file("${rootDir}/key.properties").takeIf { it.exists() } ?: file("${projectDir}/key.properties")
-      if (keyPropertiesFile.exists()) {
-        val properties = Properties()
-        FileInputStream(keyPropertiesFile).use { properties.load(it) }
-        val storeFilePath = properties.getProperty("storeFile") ?: "upload-keystore.jks"
-        val keystore = file("${rootDir}/$storeFilePath").takeIf { it.exists() } ?: file("${projectDir}/$storeFilePath")
-        if (keystore.exists()) {
-          storeFile = keystore
-          storePassword = properties.getProperty("storePassword")
-          keyAlias = properties.getProperty("keyAlias")
-          keyPassword = properties.getProperty("keyPassword")
-        }
+      val rootDebug = file("${rootDir}/debug.keystore")
+      val projectDebug = file("${projectDir}/debug.keystore")
+      if (rootDebug.exists()) {
+        storeFile = rootDebug
+      } else if (projectDebug.exists()) {
+        storeFile = projectDebug
       }
     }
   }
@@ -54,12 +42,7 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      val releaseSigning = signingConfigs.findByName("release")
-      if (releaseSigning?.storeFile != null && releaseSigning.storeFile!!.exists()) {
-        signingConfig = releaseSigning
-      } else {
-        signingConfig = signingConfigs.getByName("debug")
-      }
+      signingConfig = signingConfigs.getByName("debug")
     }
     debug {
       signingConfig = signingConfigs.getByName("debug")
