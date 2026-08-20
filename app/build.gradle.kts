@@ -1,4 +1,6 @@
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
   alias(libs.plugins.android.application)
@@ -30,6 +32,21 @@ android {
       keyAlias = "androiddebugkey"
       keyPassword = "android"
     }
+    create("release") {
+      val keyPropertiesFile = file("${rootDir}/key.properties").takeIf { it.exists() } ?: file("${projectDir}/key.properties")
+      if (keyPropertiesFile.exists()) {
+        val properties = Properties()
+        FileInputStream(keyPropertiesFile).use { properties.load(it) }
+        val storeFilePath = properties.getProperty("storeFile") ?: "upload-keystore.jks"
+        val keystore = file("${rootDir}/$storeFilePath").takeIf { it.exists() } ?: file("${projectDir}/$storeFilePath")
+        if (keystore.exists()) {
+          storeFile = keystore
+          storePassword = properties.getProperty("storePassword")
+          keyAlias = properties.getProperty("keyAlias")
+          keyPassword = properties.getProperty("keyPassword")
+        }
+      }
+    }
   }
 
   buildTypes {
@@ -37,7 +54,7 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("debug")
+      signingConfig = signingConfigs.getByName("release")
     }
     debug {
       signingConfig = signingConfigs.getByName("debug")

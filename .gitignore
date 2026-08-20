@@ -15,3 +15,6 @@
 .cxx
 local.properties
 .env
+*.jks
+key.properties
+**/key.properties
