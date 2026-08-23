@@ -28,16 +28,18 @@ jobs:
           echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > app/upload-keystore.jks
           ls -lh app/upload-keystore.jks
 
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
       - name: Build Release Bundle with new keystore
         env:
           STORE_PASS: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           KEY_PASS: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
-          ./gradlew bundleRelease --stacktrace -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
+          if [ -f "./gradlew" ]; then
+            chmod +x ./gradlew
+            ./gradlew bundleRelease --stacktrace -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
+          else
+            gradle bundleRelease --stacktrace -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
+          fi
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
