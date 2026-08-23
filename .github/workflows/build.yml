@@ -18,10 +18,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Gradle
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle 8.5
         uses: gradle/actions/setup-gradle@v4
         with:
-          gradle-version: 8.10.2
+          gradle-version: 8.5
 
       - name: Decode Keystore from Secret
         run: |
@@ -34,12 +37,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           KEY_PASS: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew
-            ./gradlew bundleRelease --stacktrace -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
-          else
-            gradle bundleRelease --stacktrace -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
-          fi
+          gradle bundleRelease --stacktrace --info -Pandroid.injected.signing.store.file=app/upload-keystore.jks -Pandroid.injected.signing.store.password=$STORE_PASS -Pandroid.injected.signing.key.alias=$KEY_ALIAS -Pandroid.injected.signing.key.password=$KEY_PASS
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
