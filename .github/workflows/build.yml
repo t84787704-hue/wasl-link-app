@@ -28,6 +28,11 @@ jobs:
           gradle-version: '9.3.1'
 
       - name: Prepare Keystore and Environment
+        env:
+          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
@@ -35,13 +40,26 @@ jobs:
             keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
           fi
 
-               if [ -f upload-keystore.jks.base64 ]; then
-            base64 -d upload-keystore.jks.base64 > upload-keystore.jks
-          fi
+          echo "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
+          
           if [ ! -f upload-keystore.jks ]; then
-            echo "ERROR: upload-keystore.jks nahi mila"
+            echo "ERROR: upload-keystore.jks nahi mila - secret check karo"
             exit 1
-          fi     
+          fi
+          
+          cat > keystore.properties <<EOF
+          storeFile=$(pwd)/upload-keystore.jks
+          storePassword=$UPLOAD_KEYSTORE_PASSWORD
+          keyAlias=$UPLOAD_KEY_ALIAS
+          keyPassword=$UPLOAD_KEY_PASSWORD
+          EOF
+          
+          cat > app/keystore.properties <<EOF
+          storeFile=$(pwd)/upload-keystore.jks
+          storePassword=$UPLOAD_KEYSTORE_PASSWORD
+          keyAlias=$UPLOAD_KEY_ALIAS
+          keyPassword=$UPLOAD_KEY_PASSWORD
+          EOF
           
           touch .env
           touch .env.example
@@ -50,7 +68,7 @@ jobs:
         run: |
           if [ -f gradlew ]; then
             chmod +x gradlew
-          
+          fi
 
       - name: Build Release Bundle
         run: |
