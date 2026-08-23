@@ -1,4 +1,4 @@
-name: Android CI
+name: Android CI / CD
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Build Debug APK
+    name: Build Release AAB for Play Store
     runs-on: ubuntu-latest
 
     steps:
@@ -27,22 +27,36 @@ jobs:
         with:
           gradle-version: '9.3.1'
 
-      - name: Prepare Debug Keystore and Environment
+      - name: Prepare Keystore and Environment
         run: |
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
           else
             keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
           fi
+          if [ ! -f wasl-market.jks ]; then
+            keytool -genkeypair -alias wasl -keyalg RSA -keysize 2048 -validity 10000 -keystore wasl-market.jks -storepass wasl123 -keypass wasl123 -dname "CN=Wasl Market, OU=Wasl, O=Wasl, L=Riyadh, ST=Riyadh, C=SA" -deststoretype PKCS12
+          fi
           touch .env
           touch .env.example
 
-      - name: Build Debug APK with Gradle
-        run: gradle assembleDebug --no-configuration-cache --stacktrace --info
+      - name: Make Gradlew Executable
+        run: |
+          if [ -f gradlew ]; then
+            chmod +x gradlew
+          fi
 
-      - name: Upload Debug APK Artifact
+      - name: Build Release Bundle
+        run: |
+          if [ -f gradlew ]; then
+            ./gradlew bundleRelease --no-configuration-cache --stacktrace --info
+          else
+            gradle bundleRelease --no-configuration-cache --stacktrace --info
+          fi
+
+      - name: Upload Release AAB Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wasl-app-debug
-          path: app/build/outputs/apk/debug/*.apk
-          retention-days: 7
+          name: wasl-market-release-aab
+          path: app/build/outputs/bundle/release/app-release.aab
+          retention-days: 14

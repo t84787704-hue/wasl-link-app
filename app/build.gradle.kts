@@ -19,8 +19,8 @@ android {
     applicationId = "com.wasl.saudishop"
     minSdk = 24
     targetSdk = 36
-    versionCode = 18
-    versionName = "2.0"
+    versionCode = 19
+    versionName = "2.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -35,6 +35,26 @@ android {
         storeFile = projectDebug
       }
     }
+    create("release") {
+      val waslKey = file("${rootDir}/wasl-market.jks").takeIf { it.exists() } ?: file("${projectDir}/wasl-market.jks")
+      if (waslKey != null && waslKey.exists()) {
+        storeFile = waslKey
+        storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "wasl123"
+        keyAlias = System.getenv("KEY_ALIAS") ?: "wasl"
+        keyPassword = System.getenv("KEY_PASSWORD") ?: "wasl123"
+      } else {
+        val uploadKey = file("${rootDir}/upload-keystore.jks").takeIf { it.exists() } ?: file("${projectDir}/upload-keystore.jks")
+        if (uploadKey != null && uploadKey.exists()) {
+          storeFile = uploadKey
+          storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "WaslShop@2025"
+          keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
+          keyPassword = System.getenv("KEY_PASSWORD") ?: "WaslShop@2025"
+        } else {
+          val rootDebug = file("${rootDir}/debug.keystore")
+          if (rootDebug.exists()) storeFile = rootDebug
+        }
+      }
+    }
   }
 
   buildTypes {
@@ -42,7 +62,7 @@ android {
       isCrunchPngs = false
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("debug")
+      signingConfig = signingConfigs.getByName("release")
     }
     debug {
       signingConfig = signingConfigs.getByName("debug")
