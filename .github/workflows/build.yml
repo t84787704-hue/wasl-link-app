@@ -22,47 +22,21 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
- - name: Setup Gradle
-  uses: gradle/actions/setup-gradle@v4
-  with:
-    gradle-version: 8.10.2
-
-        
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
 
       - name: Prepare Keystore and Environment
-        env:
-          UPLOAD_KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
-          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
           if [ -f debug.keystore.base64 ]; then
             base64 -d debug.keystore.base64 > debug.keystore
           else
             keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
           fi
-
-          echo "$UPLOAD_KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
-          
-          if [ ! -f upload-keystore.jks ]; then
-            echo "ERROR: upload-keystore.jks nahi mila - secret check karo"
-            exit 1
+          if [ ! -f wasl-market.jks ]; then
+            keytool -genkeypair -alias wasl -keyalg RSA -keysize 2048 -validity 10000 -keystore wasl-market.jks -storepass wasl123 -keypass wasl123 -dname "CN=Wasl Market, OU=Wasl, O=Wasl, L=Riyadh, ST=Riyadh, C=SA" -deststoretype PKCS12
           fi
-          
-          cat > keystore.properties <<EOF
-          storeFile=$(pwd)/upload-keystore.jks
-          storePassword=$UPLOAD_KEYSTORE_PASSWORD
-          keyAlias=$UPLOAD_KEY_ALIAS
-          keyPassword=$UPLOAD_KEY_PASSWORD
-          EOF
-          
-          cat > app/keystore.properties <<EOF
-          storeFile=$(pwd)/upload-keystore.jks
-          storePassword=$UPLOAD_KEYSTORE_PASSWORD
-          keyAlias=$UPLOAD_KEY_ALIAS
-          keyPassword=$UPLOAD_KEY_PASSWORD
-          EOF
-          
           touch .env
           touch .env.example
 
@@ -75,9 +49,9 @@ jobs:
       - name: Build Release Bundle
         run: |
           if [ -f gradlew ]; then
-            ./gradlew bundleRelease --no-configuration-cache --stacktrace --info
+            ./gradlew bundleRelease --stacktrace
           else
-            gradle bundleRelease --no-configuration-cache --stacktrace --info
+            gradle bundleRelease --stacktrace
           fi
 
       - name: Upload Release AAB Artifact
