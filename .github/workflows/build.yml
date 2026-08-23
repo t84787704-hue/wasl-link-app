@@ -41,6 +41,39 @@ jobs:
           fi
           touch .env
           touch .env.example
+          if [ ! -f app/google-services.json ]; then
+            cat << 'EOF' > app/google-services.json
+          {
+            "project_info": {
+              "project_number": "1234567890",
+              "project_id": "wasl-link-app",
+              "storage_bucket": "wasl-link-app.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:1234567890:android:abcdef123456",
+                  "android_client_info": {
+                    "package_name": "com.wasl.saudishop"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "fake_api_key_for_build"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+          fi
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -74,17 +107,9 @@ jobs:
           KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
           if [ -f gradlew ]; then
-            ./gradlew bundleRelease --stacktrace --no-daemon \
-              -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
-              -Pandroid.injected.signing.store.password="${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}" \
-              -Pandroid.injected.signing.key.alias="${{ secrets.UPLOAD_KEY_ALIAS }}" \
-              -Pandroid.injected.signing.key.password="${{ secrets.UPLOAD_KEY_PASSWORD }}"
+            ./gradlew bundleRelease --stacktrace --no-daemon --info
           else
-            gradle bundleRelease --stacktrace --no-daemon \
-              -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
-              -Pandroid.injected.signing.store.password="${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}" \
-              -Pandroid.injected.signing.key.alias="${{ secrets.UPLOAD_KEY_ALIAS }}" \
-              -Pandroid.injected.signing.key.password="${{ secrets.UPLOAD_KEY_PASSWORD }}"
+            gradle bundleRelease --stacktrace --no-daemon --info
           fi
 
       - name: Upload Release AAB Artifact
