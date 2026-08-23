@@ -3,6 +3,8 @@ name: Android CI / CD
 on:
   push:
     branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -27,13 +29,9 @@ jobs:
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           echo "sdk.dir=$ANDROID_HOME" > app/local.properties
-          echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -Djava.awt.headless=true" > gradle.properties
-          echo "org.gradle.configuration-cache=false" >> gradle.properties
-          echo "ksp.incremental=false" >> gradle.properties
-          echo "ksp.useKSP2=true" >> gradle.properties
           mkdir -p gradle/wrapper
           if [ -f gradle/wrapper/gradle-wrapper.properties ]; then
-            sed -i 's|distributionUrl=.*|distributionUrl=https\://services.gradle.org/distributions/gradle-9.3.1-bin.zip|' gradle/wrapper/gradle-wrapper.properties
+            sed -i 's|distributionUrl=.*|distributionUrl=https\\://services.gradle.org/distributions/gradle-9.3.1-bin.zip|' gradle/wrapper/gradle-wrapper.properties
           else
             echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
             echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
@@ -41,23 +39,8 @@ jobs:
             echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
             echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
           fi
-          cat gradle/wrapper/gradle-wrapper.properties
-
-      - name: Patch KSP version for Gradle 9.3.1
-        run: |
-          echo "=== Current KSP references ==="
-          grep -r "ksp" --include="*.toml" --include="*.kts" --include="*.gradle" -n || echo "No ksp found in grep"
-          if [ -f gradle/libs.versions.toml ]; then
-            echo "--- Before patch libs.versions.toml ---"
-            grep -i ksp gradle/libs.versions.toml || true
-            sed -i 's/ksp = ".*"/ksp = "2.1.20-1.0.32"/g' gradle/libs.versions.toml || true
-            sed -i 's/kspVersion = ".*"/kspVersion = "2.1.20-1.0.32"/g' gradle/libs.versions.toml || true
-            echo "--- After patch ---"
-            grep -i ksp gradle/libs.versions.toml || true
-          fi
-          if [ -f build.gradle.kts ]; then
-            sed -i 's/com.google.devtools.ksp.*version.*".*"/com.google.devtools.ksp" version "2.1.20-1.0.32"/g' build.gradle.kts || true
-          fi
+          touch .env
+          touch .env.example
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -65,33 +48,43 @@ jobs:
           gradle-version: 9.3.1
 
       - name: Decode Upload Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
         run: |
           mkdir -p app
-          echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > app/upload-keystore.jks
-          ls -lh app/upload-keystore.jks
-          echo "Keystore decoded - NOT modified"
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 --decode > app/upload-keystore.jks
+            echo "$KEYSTORE_BASE64" | base64 --decode > upload-keystore.jks
+            ls -lh app/upload-keystore.jks upload-keystore.jks
+          fi
 
-      - name: Build Release Bundle with new keystore
-        env:
-          STORE_PASS: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
-          KEY_PASS: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-          JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
-          GRADLE_OPTS: "-Djava.awt.headless=true"
+      - name: Make Gradlew Executable
         run: |
           if [ -f gradlew ]; then
             chmod +x gradlew
-            ./gradlew bundleRelease --stacktrace --no-daemon --no-configuration-cache -Djava.awt.headless=true \
+          fi
+
+      - name: Build Release Bundle with new keystore
+        env:
+          UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          UPLOAD_KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -f gradlew ]; then
+            ./gradlew bundleRelease --stacktrace --no-daemon \
               -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
-              -Pandroid.injected.signing.store.password=$STORE_PASS \
-              -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-              -Pandroid.injected.signing.key.password=$KEY_PASS
+              -Pandroid.injected.signing.store.password="${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}" \
+              -Pandroid.injected.signing.key.alias="${{ secrets.UPLOAD_KEY_ALIAS }}" \
+              -Pandroid.injected.signing.key.password="${{ secrets.UPLOAD_KEY_PASSWORD }}"
           else
-            gradle bundleRelease --stacktrace --no-daemon --no-configuration-cache -Djava.awt.headless=true \
+            gradle bundleRelease --stacktrace --no-daemon \
               -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
-              -Pandroid.injected.signing.store.password=$STORE_PASS \
-              -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
-              -Pandroid.injected.signing.key.password=$KEY_PASS
+              -Pandroid.injected.signing.store.password="${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}" \
+              -Pandroid.injected.signing.key.alias="${{ secrets.UPLOAD_KEY_ALIAS }}" \
+              -Pandroid.injected.signing.key.password="${{ secrets.UPLOAD_KEY_PASSWORD }}"
           fi
 
       - name: Upload Release AAB Artifact
