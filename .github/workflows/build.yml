@@ -3,8 +3,6 @@ name: Android CI / CD
 on:
   push:
     branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -29,6 +27,9 @@ jobs:
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           echo "sdk.dir=$ANDROID_HOME" > app/local.properties
+          echo "org.gradle.jvmargs=-Xmx4g -Dfile.encoding=UTF-8 -Djava.awt.headless=true" >> gradle.properties
+          echo "ksp.incremental=false" >> gradle.properties
+          echo "ksp.useKSP2=true" >> gradle.properties
           mkdir -p gradle/wrapper
           if [ -f gradle/wrapper/gradle-wrapper.properties ]; then
             sed -i 's|distributionUrl=.*|distributionUrl=https\://services.gradle.org/distributions/gradle-9.3.1-bin.zip|' gradle/wrapper/gradle-wrapper.properties
@@ -39,7 +40,6 @@ jobs:
             echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
             echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
           fi
-          cat gradle/wrapper/gradle-wrapper.properties
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -49,32 +49,27 @@ jobs:
       - name: Decode Upload Keystore
         run: |
           mkdir -p app
-          if [ -n "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > app/upload-keystore.jks
-            ls -lh app/upload-keystore.jks
-            echo "Keystore decoded - NOT modified"
-          fi
-
-      - name: Make Gradlew Executable
-        run: |
-          if [ -f gradlew ]; then
-            chmod +x gradlew
-          fi
+          echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 --decode > app/upload-keystore.jks
+          ls -lh app/upload-keystore.jks
+          echo "Keystore decoded - NOT modified, precious file safe"
 
       - name: Build Release Bundle with new keystore
         env:
           STORE_PASS: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.UPLOAD_KEY_ALIAS }}
           KEY_PASS: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          JAVA_TOOL_OPTIONS: "-Djava.awt.headless=true"
+          GRADLE_OPTS: "-Djava.awt.headless=true"
         run: |
           if [ -f gradlew ]; then
-            ./gradlew bundleRelease --stacktrace --no-daemon \
+            chmod +x gradlew
+            ./gradlew bundleRelease --stacktrace --no-daemon -Djava.awt.headless=true \
               -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
               -Pandroid.injected.signing.store.password=$STORE_PASS \
               -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
               -Pandroid.injected.signing.key.password=$KEY_PASS
           else
-            gradle bundleRelease --stacktrace --no-daemon \
+            gradle bundleRelease --stacktrace --no-daemon -Djava.awt.headless=true \
               -Pandroid.injected.signing.store.file=app/upload-keystore.jks \
               -Pandroid.injected.signing.store.password=$STORE_PASS \
               -Pandroid.injected.signing.key.alias=$KEY_ALIAS \
