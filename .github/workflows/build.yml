@@ -34,9 +34,15 @@ jobs:
           else
             keytool -genkey -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
           fi
-          if [ ! -f wasl-market.jks ]; then
-            keytool -genkeypair -alias wasl -keyalg RSA -keysize 2048 -validity 10000 -keystore wasl-market.jks -storepass wasl123 -keypass wasl123 -dname "CN=Wasl Market, OU=Wasl, O=Wasl, L=Riyadh, ST=Riyadh, C=SA" -deststoretype PKCS12
+
+               if [ -f upload-keystore.jks.base64 ]; then
+            base64 -d upload-keystore.jks.base64 > upload-keystore.jks
           fi
+          if [ ! -f upload-keystore.jks ]; then
+            echo "ERROR: upload-keystore.jks nahi mila"
+            exit 1
+          fi     
+          
           touch .env
           touch .env.example
 
@@ -44,7 +50,7 @@ jobs:
         run: |
           if [ -f gradlew ]; then
             chmod +x gradlew
-          fi
+          
 
       - name: Build Release Bundle
         run: |
