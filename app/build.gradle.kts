@@ -25,37 +25,28 @@ android {
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
-  signingConfigs {
-    getByName("debug") {
-      val rootDebug = file("${rootDir}/debug.keystore")
-      val projectDebug = file("${projectDir}/debug.keystore")
-      if (rootDebug.exists()) {
-        storeFile = rootDebug
-      } else if (projectDebug.exists()) {
-        storeFile = projectDebug
-      }
-    }
-    create("release") {
-      val waslKey = file("${rootDir}/wasl-market.jks").takeIf { it.exists() } ?: file("${projectDir}/wasl-market.jks")
-      if (waslKey != null && waslKey.exists()) {
-        storeFile = waslKey
-        storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "wasl123"
-        keyAlias = System.getenv("KEY_ALIAS") ?: "wasl"
-        keyPassword = System.getenv("KEY_PASSWORD") ?: "wasl123"
-      } else {
-        val uploadKey = file("${rootDir}/upload-keystore.jks").takeIf { it.exists() } ?: file("${projectDir}/upload-keystore.jks")
-        if (uploadKey != null && uploadKey.exists()) {
-          storeFile = uploadKey
-          storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "WaslShop@2025"
-          keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
-          keyPassword = System.getenv("KEY_PASSWORD") ?: "WaslShop@2025"
-        } else {
-          val rootDebug = file("${rootDir}/debug.keystore")
-          if (rootDebug.exists()) storeFile = rootDebug
+      signingConfigs {
+        getByName("debug") {
+            val rootDebug = file("${rootDir}/debug.keystore")
+            val projectDebug = file("${projectDir}/debug.keystore")
+            if (rootDebug.exists()) {
+                storeFile = rootDebug
+            } else if (projectDebug.exists()) {
+                storeFile = projectDebug
+            }
         }
-      }
+        create("release") {
+            val uploadKey = file("${rootDir}/upload-keystore.jks").takeIf { it.exists() } ?: file("${projectDir}/upload-keystore.jks")
+            if (uploadKey != null && uploadKey.exists()) {
+                storeFile = uploadKey
+                storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "WaslShop@2025"
+                keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
+                keyPassword = System.getenv("KEY_PASSWORD") ?: "WaslShop@2025"
+            }
+        }
     }
-  }
+
+    buildTypes {
 
   buildTypes {
     release {
